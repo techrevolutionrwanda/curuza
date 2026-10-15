@@ -1,133 +1,232 @@
 # Curuza
 
-A TypeScript project maintained by the Tech Revolution Rwanda organization.
+Curuza is a full-stack project for Tech Revolution Rwanda. It includes:
 
-> Short: this README explains how to clone the repo (terminal or VS Code), install dependencies, run the project locally, and the high-level project structure.
+- a Next.js frontend in `frontend/`
+- an Express + TypeScript backend in `backend/`
+- HTML-based template files in `templates/`
+
+This repository is structured as a monorepo so the frontend and backend can be developed and run independently.
+
+---
+
+## Project structure
+
+```text
+curuza/
+├─ README.md
+├─ backend/
+│  ├─ src/
+│  │  └─ server.ts
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  └─ package-lock.json
+├─ frontend/
+│  ├─ src/
+│  │  └─ app/
+│  ├─ public/
+│  ├─ package.json
+│  ├─ next.config.ts
+│  ├─ tsconfig.json
+│  ├─ eslint.config.mjs
+│  ├─ README.md
+│  └─ package-lock.json
+├─ templates/
+│  ├─ smart-ledger-template.html
+│  ├─ smart-ledger-web.html
+│  └─ Smart_Ledger_Investor_Project_Brief (1).pdf
+└─ .gitignore
+```
 
 ---
 
 ## Prerequisites
 
-- Node.js 18+ (or the version specified in `package.json` / `.nvmrc` if present)
+Before running the project, make sure you have the following installed:
+
 - Git
-- A GitHub account with access to this repository (this repo is private; use SSH or a PAT if cloning over HTTPS)
-- One of: npm, yarn, or pnpm (use whichever the project uses; `package.json` scripts will be the source of truth)
+- Node.js 18 or later
+- npm
+- VS Code (recommended, optional but helpful)
 
 ---
 
 ## Clone the repository
 
-Terminal (HTTPS):
+### Option 1: Terminal
 
 ```bash
-# using HTTPS (may require GitHub username/password or PAT for private repos)
 git clone https://github.com/techrevolutionrwanda/curuza.git
 cd curuza
 ```
 
-Terminal (SSH - recommended if you have SSH keys configured):
+### Option 2: SSH
 
 ```bash
 git clone git@github.com:techrevolutionrwanda/curuza.git
 cd curuza
 ```
 
-VS Code (GUI):
+### Option 3: VS Code
 
-1. Open Visual Studio Code.
-2. Open the Command Palette (View → Command Palette... or Ctrl/Cmd+Shift+P).
-3. Run `Git: Clone` and paste the repository URL (either the HTTPS or SSH URL above).
-4. When prompted, choose a local folder and open the cloned repository in VS Code.
-5. (Optional) Run `code .` in the repo folder to open the project in VS Code from the terminal.
+1. Open VS Code.
+2. Press `Ctrl+Shift+P` or `Cmd+Shift+P`.
+3. Run `Git: Clone`.
+4. Paste the repository URL:
+   - HTTPS: `https://github.com/techrevolutionrwanda/curuza.git`
+   - SSH: `git@github.com:techrevolutionrwanda/curuza.git`
+5. Select the folder where you want to save the project and open it.
 
 ---
 
 ## Install dependencies
 
-Check the project for a preferred package manager. If a `package-lock.json` exists, use npm; if `yarn.lock` exists, use yarn; if `pnpm-lock.yaml` exists, use pnpm.
-
-Common commands:
+### Frontend
 
 ```bash
-# npm
+cd frontend
 npm install
-# yarn
-yarn install
-# pnpm
-pnpm install
 ```
 
----
-
-## Run the project locally
-
-Look at `package.json` `scripts` to confirm available commands. Typical commands are:
+### Backend
 
 ```bash
-# start in development mode
+cd backend
+npm install
+```
+
+---
+
+## Run the project
+
+### Start the backend
+
+From the project root:
+
+```bash
+cd backend
 npm run dev
-# or
-npm start
-
-# build for production
-npm run build
-
-# run tests
-npm test
 ```
 
-If the project is a web app, the dev server usually runs on http://localhost:3000 or http://localhost:5173 — check the console output after running the dev script.
+This starts the Express API on:
+
+- `http://localhost:5000`
+
+The backend root endpoint returns a JSON message confirming the server is running.
+
+### Start the frontend
+
+From the project root:
+
+```bash
+cd frontend
+npm run dev
+```
+
+This starts the Next.js application on:
+
+- `http://localhost:3000`
+
+Open the browser to that URL to view the frontend.
 
 ---
 
-## Working with VS Code
+## Useful scripts
 
-- Open the project folder in VS Code.
-- Install recommended extensions (TypeScript, ESLint, Prettier, etc.) if prompted.
-- Use the built-in terminal (View → Terminal) to run the commands above.
-- Use the debugger configuration in `.vscode/launch.json` if present, or create one to attach to the dev server.
+### Backend (`backend/package.json`)
+
+```bash
+npm run dev   # runs TypeScript app in watch mode
+npm run build # compiles TypeScript to dist
+npm run start # starts the built app
+```
+
+### Frontend (`frontend/package.json`)
+
+```bash
+npm run dev   # starts the Next.js development server
+npm run build # production build
+npm run start # starts the built production app
+npm run lint  # runs ESLint
+```
 
 ---
 
-## Project structure (example — may vary)
+## Working in VS Code
 
-The exact structure may differ; this is a common layout for TypeScript apps:
+For this project, it is recommended to open the entire repository in VS Code, then open terminals in each folder separately:
 
-```
-curuza/
-├─ package.json          # scripts and dependencies
-├─ tsconfig.json         # TypeScript configuration
-├─ .eslintrc.js          # (optional) ESLint config
-├─ .prettierrc           # (optional) Prettier config
-├─ public/               # static assets (if a web project)
-├─ src/                  # application source code
-│  ├─ index.tsx          # app entry (React) or main.ts
-│  ├─ App.tsx            # root component (if applicable)
-│  ├─ components/        # reusable UI components
-│  ├─ pages/             # page-level components or routes
-│  └─ styles/            # styles or CSS modules
-├─ tests/                # tests (unit/integration)
-└─ README.md             # this file
-```
+- one terminal for `frontend/`
+- one terminal for `backend/`
 
-To find the true entry point and scripts, open `package.json` and look for the `main`, `scripts`, and `devDependencies` fields.
+This makes it easier to run both services at the same time.
+
+You can also use a VS Code multi-root workspace if you want to manage both apps more comfortably.
 
 ---
 
-## Troubleshooting
+## Templates folder
 
-- If cloning fails due to permission errors, make sure your GitHub user has access to the `techrevolutionrwanda/curuza` repository and that you are authenticating correctly (SSH keys set up or use a PAT for HTTPS).
-- If `npm install` fails, check your Node.js version and the error message — installing the correct Node version with nvm often resolves version mismatches.
+The repository includes static HTML templates in `templates/` for design and prototype work. These files are not part of the running app unless you explicitly use them for a demo or mockup.
+
+Examples:
+
+- `templates/smart-ledger-template.html`
+- `templates/smart-ledger-web.html`
+
+Use these as reference or starting points for UI mockups and project presentations.
+
+---
+
+## Notes
+
+- The backend is a minimal Express server written in TypeScript.
+- The frontend is a Next.js app using React and Tailwind CSS configuration.
+- The project is still in an early stage, so some files may evolve as the app grows.
 
 ---
 
 ## Contributing
 
-If you plan to contribute, please check for a `CONTRIBUTING.md` or existing issues/pull request guidelines in the repository.
+If you want to contribute:
+
+1. Clone the repo.
+2. Create a new branch.
+3. Make your changes.
+4. Run the relevant app locally.
+5. Commit and push your branch.
+6. Open a pull request.
 
 ---
 
-If you'd like, I can:
-- Open this README file in the repository so you can review/edit it.
-- Add more project-specific setup steps if you tell me the package manager and dev script names.
-- Add badges (build/test) or a short project description — provide the text you want shown.
+## Troubleshooting
+
+- If `npm install` fails, check your Node.js version.
+- If the backend does not start, make sure port `5000` is free.
+- If the frontend does not start, make sure port `3000` is free.
+- If Git asks for credentials, verify that your GitHub account has access to the repository.
+
+---
+
+## Quick start summary
+
+```bash
+# clone
+git clone https://github.com/techrevolutionrwanda/curuza.git
+cd curuza
+
+# backend
+cd backend
+npm install
+npm run dev
+
+# frontend (new terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+Then open:
+
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5000
