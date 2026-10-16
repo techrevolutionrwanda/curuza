@@ -117,9 +117,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="side sticky top-0 flex h-full flex-col gap-3 border-r border-line bg-surface px-4 py-4">
+    <aside className="side sticky top-0 flex h-full flex-col gap-1.5 border-r border-line bg-surface px-[14px] py-5">
       {/* Brand */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 px-2 pt-1 pb-[18px]">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary">
           <svg
             width="22"
@@ -137,7 +137,7 @@ export function Sidebar() {
           </svg>
         </div>
         <div>
-          <b className="block text-base font-bold text-ink">Smart Ledger</b>
+          <b className="block text-lg font-bold text-ink">Smart Ledger</b>
           <small className="mt-1 block text-xs text-ink-2">Duka rya Mukamana</small>
         </div>
       </div>
@@ -152,7 +152,7 @@ export function Sidebar() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={[
-                "flex min-h-12 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold",
+                "flex min-h-12 items-center gap-3 rounded-[14px] px-[14px] text-sm font-semibold",
                 active
                   ? "bg-primary-soft text-primary-dark"
                   : "text-ink-2 hover:bg-bg",
@@ -180,7 +180,7 @@ export function Sidebar() {
         </span>
         <button
           type="button"
-          className="mt-3 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-5 font-extrabold text-[#3A2A00] hover:brightness-95"
+          className="mt-3 inline-flex h-[40px] items-center justify-center gap-2 rounded-xl bg-accent px-5 font-extrabold text-[#3A2A00] hover:brightness-95"
         >
           Menya byinshi
         </button>
