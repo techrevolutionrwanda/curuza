@@ -41,7 +41,7 @@ export function KpiCard({
 
   return (
     <div
-      className={`bg-surface rounded-lg p-[20px] shadow-md ${
+      className={`kpi bg-surface rounded-lg p-[20px] shadow-md ${
         isHero
           ? "bg-gradient-to-br from-primary to-primary-dark text-white"
           : ""
