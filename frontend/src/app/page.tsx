@@ -1,34 +1,45 @@
+"use client";
+
+import { useState } from "react";
+import { SegmentControl } from "../components/home/SegmentControl";
+import { PromoBanner } from "../components/home/PromoBanner";
+import { KpiRow } from "../components/home/KpiRow";
+import { WeeklyChart } from "../components/home/WeeklyChart";
+import { RestockList } from "../components/home/RestockList";
+import { DebtorsTable } from "../components/home/DebtorsTable";
+import { SaleModal } from "../components/home/SaleModal";
+
 export default function Home() {
+  const [segment, setSegment] = useState(0);
+  const [open, setOpen] = useState(false);
+
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-[-0.02em]">Muraho, Mukamana 👋</h1>
-        <p className="mt-1 text-ink-2">Uko ubucuruzi bwawe buhagaze uyu munsi.</p>
+    <>
+      {/* Header */}
+      <div className="flex justify-between items-end gap-4 mb-[22px] flex-wrap">
+        <div>
+          <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-ink">
+            Muraho, Mukamana 👋
+          </h1>
+          <p className="mt-[4px] text-base text-ink-2">
+            Uko ubucuruzi bwawe buhagaze uyu munsi · Your business today
+          </p>
+        </div>
+        <SegmentControl value={segment} onChange={setSegment} />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-2xl bg-surface p-6 shadow-md">
-          <b className="block text-sm font-semibold text-ink">Ibyagurishijwe · Sales</b>
-          <span className="mt-1 block text-xs text-ink-2">Tano amakono</span>
-          <b className="mt-2 block text-2xl font-bold text-ink">
-            86,500 <small className="text-sm font-semibold text-ink-2">RWF</small>
-          </b>
-        </div>
-        <div className="rounded-2xl bg-surface p-6 shadow-md">
-          <b className="block text-sm font-semibold text-ink">Yakiriwe · Cash in</b>
-          <span className="mt-1 block text-xs text-ink-2">Tano amakono</span>
-          <b className="mt-2 block text-2xl font-bold text-ink">
-            61,500 <small className="text-sm font-semibold text-ink-2">RWF</small>
-          </b>
-        </div>
-        <div className="rounded-2xl bg-surface p-6 shadow-md">
-          <b className="block text-sm font-semibold text-ink">Amadeni · Owed to you</b>
-          <span className="mt-1 block text-xs text-ink-2">Abakiriya abo bashya</span>
-          <b className="mt-2 block text-2xl font-bold text-ink">
-            184,000 <small className="text-sm font-semibold text-ink-2">RWF</small>
-          </b>
-        </div>
+      <PromoBanner onReba={() => setOpen(true)} />
+
+      <KpiRow />
+
+      <div className="home-cols grid grid-cols-[2fr_1fr] gap-[16px] mb-[16px]">
+        <WeeklyChart />
+        <RestockList />
       </div>
-    </div>
-  )
+
+      <DebtorsTable />
+
+      <SaleModal open={open} onClose={() => setOpen(false)} />
+    </>
+  );
 }
