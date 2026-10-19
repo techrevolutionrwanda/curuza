@@ -47,6 +47,7 @@ const KPIS = [
     value: "61,500",
     unit: "RWF",
     trend: "▲ 7%",
+    trendColor: "up" as const,
   },
   {
     variant: "default" as const,
@@ -70,6 +71,8 @@ const KPIS = [
     value: "184,000",
     unit: "RWF",
     trend: "12 abakiriya",
+    iconColor: "red" as const,
+    trendColor: "down" as const,
   },
   {
     variant: "default" as const,
@@ -92,6 +95,8 @@ const KPIS = [
     value: "4",
     unit: "ibicuruzwa",
     trend: "1 byashize",
+    iconColor: "yellow" as const,
+    trendColor: "down" as const,
   },
 ];
 
