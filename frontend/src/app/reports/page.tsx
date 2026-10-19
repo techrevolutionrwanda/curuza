@@ -44,6 +44,49 @@ export default function ReportsPage() {
       </div>
 
       <div className="cols even">
+        <div className="card">
+          <div className="ch">
+            <div>
+              <h3>Inyungu yagereranijwe</h3>
+              <div className="sub">Estimated profit</div>
+            </div>
+            <span className="badge ok">+12%</span>
+          </div>
+          <div
+            style={{
+              fontSize: "34px",
+              fontWeight: 800,
+              letterSpacing: "-0.02em",
+              marginTop: "16px",
+            }}
+            className="num up"
+          >
+            214,300 <small style={{ fontSize: "15px", color: "var(--ink-2)" }}>RWF</small>
+          </div>
+          <div
+            style={{
+              height: "170px",
+              display: "flex",
+              alignItems: "flex-end",
+              gap: "14px",
+            }}
+          >
+            {REVENUE_BARS.map((b, i) => (
+              <div
+                key={i}
+                className="flex-1 h-full flex flex-col justify-end items-center gap-[8px] text-[12px] text-ink-2 group"
+              >
+                <i
+                  className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary"
+                  style={{ height: b.h }}
+                  aria-hidden="true"
+                />
+                {b.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="card" style={{ marginTop: "16px" }}>
           <h3 style={{ marginBottom: "8px" }}>Incamake · Summary</h3>
           {SUMMARY_KPIS.map((kpi, i) => (
@@ -56,21 +99,21 @@ export default function ReportsPage() {
             Ideni si amafaranga yinjiye. Inyungu ni igereranya rishingiye ku biciro wanditse.
           </div>
         </div>
+      </div>
 
-        <div className="card" style={{ marginTop: "16px" }}>
-          <h3 style={{ marginBottom: "8px" }}>Ibyaguzwe cyane · Top categories</h3>
-          {TOP_CATEGORIES.map((cat, i) => (
-            <div key={i} className="kv">
-              <span>{cat.name}</span>
-              <div style={{ flex: 1, margin: "6px 20px" }}>
-                <div className="bar">
-                  <i style={{ width: `${cat.percent}%` }} />
-                </div>
+      <div className="card" style={{ marginTop: "16px" }}>
+        <h3 style={{ marginBottom: "8px" }}>Ibyaguzwe cyane · Top categories</h3>
+        {TOP_CATEGORIES.map((cat, i) => (
+          <div key={i} className="kv">
+            <span>{cat.name}</span>
+            <div style={{ flex: 1, margin: "6px 20px" }}>
+              <div className="bar">
+                <i style={{ width: `${cat.percent}%` }} />
               </div>
-              <b className="num">{cat.count}</b>
             </div>
-          ))}
-        </div>
+            <b className="num">{cat.count}</b>
+          </div>
+        ))}
       </div>
     </div>
   );
