@@ -59,7 +59,7 @@ export function DebtorsTable() {
                   }`}
                 >
                   <div className="h-[8px] bg-line rounded-full overflow-hidden min-w-[100px]">
-                    <i className="h-full bg-danger" style={{ width: d.repaid }} aria-hidden="true" />
+                    <i className="block h-full bg-danger" style={{ width: d.repaid }} aria-hidden="true" />
                   </div>
                 </td>
                 <td
