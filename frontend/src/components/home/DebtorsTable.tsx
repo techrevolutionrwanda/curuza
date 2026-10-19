@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/dist/client/link";
+
 const debtors = [
   { initial: "JM", name: "Jean Marie", date: "18 Ukw 2026", repaid: "30%", owed: "45,000" },
   { initial: "CU", name: "Chantal Uwase", date: "02 Ukw 2026", repaid: "75%", owed: "12,500" },
@@ -15,9 +17,12 @@ export function DebtorsTable() {
           </h3>
           <div className="text-ink-2 text-[13px]">Recent debtors</div>
         </div>
-        <button className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
+        <Link
+          href="/debtors"
+          className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
+        >
           Reba byose
-        </button>
+        </Link>
       </div>
       <div className="overflow-x-auto mx-[-8px]">
         <table className="w-full border-collapse min-w-[560px]">
