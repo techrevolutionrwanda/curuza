@@ -4,7 +4,7 @@ export function Topbar() {
   return (
     <header className="topbar sticky top-0 z-10 flex items-center gap-3.5 border-b border-line bg-bg/90 px-8 py-4 backdrop-blur">
       {/* Search */}
-      <label className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border-[1.5px] border-line bg-surface px-[14px] min-h-12 focus-within:border-primary">
+      <label className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border-[1.5px] border-line bg-surface px-[14px] min-h-12 focus-within:border-primary max-w-[460px]">
         <svg
           className="h-5 w-5 shrink-0 text-ink-3"
           width="20"
