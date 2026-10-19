@@ -87,12 +87,12 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div className="card" style={{ marginTop: "16px" }}>
+        <div className="card">
           <h3 style={{ marginBottom: "8px" }}>Incamake · Summary</h3>
           {SUMMARY_KPIS.map((kpi, i) => (
-            <div key={i} className="kv" style={{ borderBottom: "1px solid var(--line)", padding: "13px 0" }}>
+            <div key={i} className="kv">
               <span>{kpi.label}</span>
-              <b className="num">{kpi.value}</b>
+              <b className={`num ${kpi.trend}`}>{kpi.value}</b>
             </div>
           ))}
           <div className="note">
@@ -104,25 +104,14 @@ export default function ReportsPage() {
       <div className="card" style={{ marginTop: "16px" }}>
         <h3 style={{ marginBottom: "8px" }}>Ibyaguzwe cyane · Top categories</h3>
         {TOP_CATEGORIES.map((cat, i) => (
-          <div key={i} className="kv" style={{ marginBottom: "16px" }}>
+          <div key={i} className="kv">
             <span>{cat.name}</span>
-            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              <div style={{ flex: 1, margin: "6px 20px" }}>
-                <div
-                  style={{
-                    height: "8px",
-                    background: "var(--line)",
-                    borderRadius: "var(--r-pill)",
-                    overflow: "hidden",
-                  }}
-                >
-                  <i
-                    style={{ width: "90%", height: "100%", background: "var(--primary)", borderRadius: "inherit" }}
-                  />
-                </div>
+            <div style={{ flex: 1, margin: "6px 20px" }}>
+              <div className="bar">
+                <i style={{ width: `${cat.percent}%`, height: "100%", background: "var(--primary)", borderRadius: "inherit" }} />
               </div>
-              <b className="num">{cat.count}</b>
             </div>
+            <b className="num">{cat.count}</b>
           </div>
         ))}
       </div>
