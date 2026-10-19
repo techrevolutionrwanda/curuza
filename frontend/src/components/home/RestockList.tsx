@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/dist/client/link";
+
 const ITEMS = [
   { name: "Amazi 1.5L", badge: "6 bisigaye", variant: "low" },
   { name: "Fanta 300ml", badge: "9 bisigaye", variant: "low" },
@@ -22,9 +24,12 @@ export function RestockList() {
           </h3>
           <div className="text-ink-2 text-[13px]">Needs restocking</div>
         </div>
-        <button className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
+        <Link
+          href="/stock"
+          className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
+        >
           Byose
-        </button>
+        </Link>
       </div>
       {ITEMS.map((item, i) => (
         <div
