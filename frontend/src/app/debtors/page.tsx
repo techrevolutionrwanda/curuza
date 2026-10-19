@@ -59,7 +59,7 @@ export default function DebtorsPage() {
       </p>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card rounded-lg p-6 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="h-12 w-12 rounded-lg bg-primary-soft flex items-center justify-center flex-shrink-0">
@@ -143,8 +143,8 @@ export default function DebtorsPage() {
       </div>
 
       {/* Debtors table */}
-      <div className="mt-8">
-        <table className="w-full">
+      <div className="mt-8 overflow-x-auto rounded-lg shadow-sm border">
+        <table className="w-full min-w-[560px]">
           <thead>
             <tr className="text-[12px] uppercase tracking-[0.06em] text-ink-2">
               <th className="text-left px-4 py-3 border-b border-line font-bold">Umukiriya</th>
