@@ -14,6 +14,8 @@ import {
   type Locale,
 } from "@/i18n/dictionaries";
 
+export type { Dictionary, Locale };
+
 type LocaleContextValue = {
   locale: Locale;
   setLocale: (locale: Locale) => void;

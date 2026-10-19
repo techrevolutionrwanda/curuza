@@ -51,8 +51,56 @@ const rw = {
     qty: "Bisigaye",
     submit: "Bika igicuruzwa",
   },
+  menu: {
+    ariaLabel: "Ibikorwa",
+  },
+  row: {
+    edit: "Hindura",
+    delete: "Siba",
+    restock: "Ongeramo",
+  },
+  restock: {
+    title: "Ongeramo ingano",
+    subtitle: "Ongeramo ingano y'igicuruzwa",
+    current: "Bisigaye ubu",
+    qty: "Ingano yo kongeramo",
+    submit: "Ongeramo",
+  },
+  delete: {
+    title: "Siba igicuruzwa",
+    subtitle: "Siba '{name}' muri stock",
+    confirm: "Siba",
+  },
+  category: {
+    title: "Ongeramo icyiciro",
+    subtitle: "Ongeramo icyiciro gishya",
+    nameRw: "Izina mu Kinyarwanda",
+    nameEn: "Izina mu Cyongereza",
+    submit: "Bika icyiciro",
+  },
+  edit: {
+    title: "Hindura igicuruzwa",
+  },
+  form: {
+    errors: {
+      required: "Uru ruhande rusabwa",
+      number: "Andika umubare",
+      invalid: "Agaciro katemewe",
+      duplicate: "Iri zina ryarakoreshejwe",
+    },
+  },
+  toast: {
+    productAdded: "'{name}' yongewe muri stock",
+    productUpdated: "'{name}' yahinduwe",
+    productDeleted: "'{name}' yasibwe",
+    restocked: "'{name}' yongeweho",
+    categoryAdded: "Icyiciro '{name}' cyongewe",
+  },
   common: {
     cancel: "Hagarika",
+    close: "Funga",
+    save: "Bika",
+    ok: "Emeza",
   },
 };
 
@@ -100,9 +148,67 @@ const en: Dictionary = {
     qty: "Quantity",
     submit: "Save product",
   },
+  menu: {
+    ariaLabel: "Actions",
+  },
+  row: {
+    edit: "Edit",
+    delete: "Delete",
+    restock: "Restock",
+  },
+  restock: {
+    title: "Restock",
+    subtitle: "Add quantity to this product",
+    current: "Current quantity",
+    qty: "Quantity to add",
+    submit: "Add to stock",
+  },
+  delete: {
+    title: "Delete product",
+    subtitle: "Delete '{name}' from stock",
+    confirm: "Delete",
+  },
+  category: {
+    title: "Add category",
+    subtitle: "Add a new category",
+    nameRw: "Name (Kinyarwanda)",
+    nameEn: "Name (English)",
+    submit: "Save category",
+  },
+  edit: {
+    title: "Edit product",
+  },
+  form: {
+    errors: {
+      required: "This field is required",
+      number: "Please enter a number",
+      invalid: "Invalid value",
+      duplicate: "This name is already used",
+    },
+  },
+  toast: {
+    productAdded: "'{name}' added to stock",
+    productUpdated: "'{name}' updated",
+    productDeleted: "'{name}' deleted",
+    restocked: "'{name}' restocked",
+    categoryAdded: "Category '{name}' added",
+  },
   common: {
     cancel: "Cancel",
+    close: "Close",
+    save: "Save",
+    ok: "OK",
   },
 };
+
+export function interpolate(
+  template: string,
+  vars: Record<string, string>,
+): string {
+  return template.replace(/\{(\w+)\}/g, (match, key) => {
+    const value = vars[key];
+    return value ?? match;
+  });
+}
 
 export const dictionaries: Record<Locale, Dictionary> = { rw, en };

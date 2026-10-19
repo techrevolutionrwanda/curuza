@@ -1,139 +1,100 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import {
-  CATEGORY_IDS,
-  stockStatus,
-  type CategoryId,
-  type Product,
-  type StockStatus,
-} from "@/data/products";
+import { useCallback, useMemo, useState } from "react";
+import { stockStatus, type Category, type Product } from "@/data/products";
 import { useI18n } from "@/i18n/locale-provider";
+import { RowMenu } from "./row-menu";
+import { ProductModal } from "./product-modal";
+import { CategoryModal } from "./category-modal";
+import { RestockModal } from "./restock-modal";
+import { ConfirmDeleteModal } from "./confirm-modal";
+import { Toast, type ToastMsg } from "./toast";
 
-const STATUS_TONE: Record<StockStatus, string> = {
+const STATUS_TONE = {
   ok: "bg-primary-soft text-primary-dark",
   low: "bg-warning-soft text-warning",
   out: "bg-danger-soft text-danger",
-};
+} as const;
 
-const btn =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-panel px-5 font-bold transition";
-const btnSm =
-  "inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-[11px] px-3.5 text-[13px] font-bold transition";
+const btn = "inline-flex min-h-12 items-center justify-center gap-2 rounded-panel px-5 font-bold transition";
+const btnSm = "inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-[11px] px-3.5 text-[13px] font-bold transition";
 
-const inputCls =
-  "min-h-12 w-full rounded-panel border border-line bg-surface px-3.5 outline-none transition focus:border-primary";
-
-const thCls =
-  "border-b border-line px-3 py-2.5 text-left text-[12px] font-bold uppercase tracking-[0.06em] text-ink-2";
+const thCls = "border-b border-line px-3 py-2.5 text-left text-[12px] font-bold uppercase tracking-[0.06em] text-ink-2";
 const thRightCls = `${thCls} text-right`;
 const tdCls = "border-b border-line px-3 py-3.5 align-middle";
 
-function initialsFrom(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return name.trim().slice(0, 2).toUpperCase();
-}
+export function StockView({
+  products,
+  categories,
+}: {
+  products: Product[];
+  categories: Category[];
+}) {
+  const { t, locale } = useI18n();
 
-export function StockView({ initialProducts }: { initialProducts: Product[] }) {
-  const { t } = useI18n();
-
-  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [query, setQuery] = useState("");
   const [chip, setChip] = useState("all");
-  const [open, setOpen] = useState(false);
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState<CategoryId>(CATEGORY_IDS[0]);
-  const [price, setPrice] = useState("");
-  const [qty, setQty] = useState("");
-  const nameRef = useRef<HTMLInputElement>(null);
+  const [addProductOpen, setAddProductOpen] = useState(false);
+  const [addCategoryOpen, setAddCategoryOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
+  const [restockProduct, setRestockProduct] = useState<{ id: string; name: string; qty: number } | null>(null);
+  const [deleteProduct, setDeleteProduct] = useState<{ id: string; name: string } | null>(null);
+  const [toasts, setToasts] = useState<ToastMsg[]>([]);
 
-  useEffect(() => {
-    if (!open) return;
-    nameRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    addEventListener("keydown", onKey);
-    return () => removeEventListener("keydown", onKey);
-  }, [open]);
-
-  const chips = useMemo(
-    () => [
+  const chips = useMemo(() => {
+    const custom = categories
+      .filter((c) => !["ibinyobwa", "ibiribwa", "isuku"].includes(c.id))
+      .map((c) => ({ key: c.id, label: c.label[locale] ?? c.label.rw }));
+    return [
       { key: "all", label: t.stock.chips.all },
-      ...CATEGORY_IDS.map((id) => ({ key: id, label: t.stock.categories[id] })),
+      ...["ibinyobwa", "ibiribwa", "isuku"].map((id) => {
+        const c = categories.find((x) => x.id === id);
+        return { key: id, label: c ? c.label[locale] ?? c.label.rw : id };
+      }),
+      ...custom,
       { key: "low", label: t.stock.chips.low },
-    ],
-    [t],
-  );
+    ];
+  }, [categories, t, locale]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return products.filter((p) => {
-      const categoryLabel = t.stock.categories[p.category];
+      const cat = categories.find((c) => c.id === p.category);
+      const categoryLabel = cat ? cat.label[locale] ?? cat.label.rw : p.category;
       const status = stockStatus(p.qty);
       const byChip =
-        chip === "all"
-          ? true
-          : chip === "low"
-            ? status !== "ok"
-            : p.category === chip;
-      const byQuery =
-        !q ||
-        p.name.toLowerCase().includes(q) ||
-        categoryLabel.toLowerCase().includes(q);
+        chip === "all" ? true : chip === "low" ? status !== "ok" : p.category === chip;
+      const byQuery = !q || p.name.toLowerCase().includes(q) || categoryLabel.toLowerCase().includes(q);
       return byChip && byQuery;
     });
-  }, [products, query, chip, t]);
+  }, [products, query, chip, categories, locale]);
 
-  function resetForm() {
-    setName("");
-    setCategory(CATEGORY_IDS[0]);
-    setPrice("");
-    setQty("");
-  }
+  const pushToast = useCallback((msg: ToastMsg) => {
+    setToasts((ts) => [...ts, msg]);
+  }, []);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    setProducts((prev) => [
-      {
-        id: `${Date.now()}`,
-        name: trimmed,
-        initials: initialsFrom(trimmed),
-        category,
-        price: Number(price) || 0,
-        qty: Number(qty) || 0,
-      },
-      ...prev,
-    ]);
-    setOpen(false);
-    resetForm();
+  const dismissToast = useCallback((id: string) => {
+    setToasts((ts) => ts.filter((x) => x.id !== id));
+  }, []);
+
+  function toastId() {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
   }
 
   return (
     <main className="mx-auto w-full max-w-[1280px] px-4 pb-24 pt-5 sm:px-8 sm:pb-[60px] sm:pt-7">
       <div className="mb-[22px] flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[28px] leading-tight tracking-[-0.02em]">
-            {t.stock.title}
-          </h1>
+          <h1 className="text-[28px] leading-tight tracking-[-0.02em]">{t.stock.title}</h1>
           <p className="mt-1 text-ink-2">{t.stock.subtitle}</p>
         </div>
         <div className="flex gap-2.5">
-          <button
-            type="button"
-            className={`${btn} border-[1.5px] border-line bg-surface hover:bg-bg`}
-          >
+          <button type="button" onClick={() => setAddCategoryOpen(true)} className={`${btn} border-[1.5px] border-line bg-surface hover:bg-bg`}>
             {t.stock.addCategory}
           </button>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className={`${btn} bg-primary text-white hover:bg-primary-dark`}
-          >
+          <button type="button" onClick={() => setAddProductOpen(true)} className={`${btn} bg-primary text-white hover:bg-primary-dark`}>
             + {t.stock.addProduct}
           </button>
         </div>
@@ -149,9 +110,7 @@ export function StockView({ initialProducts }: { initialProducts: Product[] }) {
                 onClick={() => setChip(c.key)}
                 aria-pressed={chip === c.key}
                 className={`min-h-[38px] rounded-pill border-[1.5px] px-4 text-[13px] font-semibold transition ${
-                  chip === c.key
-                    ? "border-primary bg-primary text-white"
-                    : "border-line bg-surface hover:bg-bg"
+                  chip === c.key ? "border-primary bg-primary text-white" : "border-line bg-surface hover:bg-bg"
                 }`}
               >
                 {c.label}
@@ -159,16 +118,7 @@ export function StockView({ initialProducts }: { initialProducts: Product[] }) {
             ))}
           </div>
           <label className="flex min-h-12 w-full max-w-[340px] items-center gap-2.5 rounded-panel border-[1.5px] border-line bg-surface px-3.5 focus-within:border-primary">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--color-ink-3)"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              aria-hidden="true"
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-3)" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
               <path d="M20 20l-4-4" />
             </svg>
@@ -197,6 +147,9 @@ export function StockView({ initialProducts }: { initialProducts: Product[] }) {
             <tbody>
               {filtered.map((p) => {
                 const status = stockStatus(p.qty);
+                const cat = categories.find((c) => c.id === p.category);
+                const categoryLabel = cat ? cat.label[locale] ?? cat.label.rw : p.category;
+                const isMenuOpen = menuOpenId === p.id;
                 return (
                   <tr key={p.id}>
                     <td className={tdCls}>
@@ -207,39 +160,40 @@ export function StockView({ initialProducts }: { initialProducts: Product[] }) {
                         <b>{p.name}</b>
                       </div>
                     </td>
-                    <td className={`${tdCls} text-ink-2`}>
-                      {t.stock.categories[p.category]}
-                    </td>
-                    <td className={`num ${tdCls} text-right`}>
-                      {p.price.toLocaleString("en-US")}
-                    </td>
+                    <td className={`${tdCls} text-ink-2`}>{categoryLabel}</td>
+                    <td className={`num ${tdCls} text-right`}>{p.price.toLocaleString("en-US")}</td>
                     <td className={`num ${tdCls} text-right`}>
                       <b>{p.qty}</b>
                     </td>
                     <td className={tdCls}>
-                      <span
-                        className={`inline-block whitespace-nowrap rounded-pill px-[11px] py-1 text-[12px] font-extrabold ${STATUS_TONE[status]}`}
-                      >
+                      <span className={`inline-block whitespace-nowrap rounded-pill px-[11px] py-1 text-[12px] font-extrabold ${STATUS_TONE[status]}`}>
                         {t.stock.status[status]}
                       </span>
                     </td>
-                    <td className={`${tdCls} text-right`}>
+                    <td className={`${tdCls} relative text-right`}>
                       <button
                         type="button"
+                        aria-haspopup="menu"
+                        aria-expanded={isMenuOpen}
+                        onClick={() => setMenuOpenId((id) => (id === p.id ? null : p.id))}
                         className={`${btnSm} bg-primary-soft text-primary-dark hover:brightness-95`}
                       >
-                        {t.stock.add}
+                        ⋯
                       </button>
+                      <RowMenu
+                        open={isMenuOpen}
+                        onClose={() => setMenuOpenId(null)}
+                        onRestock={() => setRestockProduct({ id: p.id, name: p.name, qty: p.qty })}
+                        onEdit={() => setEditProduct(p)}
+                        onDelete={() => setDeleteProduct({ id: p.id, name: p.name })}
+                      />
                     </td>
                   </tr>
                 );
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="border-b border-line px-3 py-8 text-center text-ink-2"
-                  >
+                  <td colSpan={6} className="border-b border-line px-3 py-8 text-center text-ink-2">
                     {t.stock.empty}
                   </td>
                 </tr>
@@ -249,101 +203,49 @@ export function StockView({ initialProducts }: { initialProducts: Product[] }) {
         </div>
       </div>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-50 grid place-items-center bg-[rgba(16,32,27,0.5)] p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setOpen(false);
-          }}
-        >
-          <form
-            role="dialog"
-            aria-modal="true"
-            aria-label={t.addProduct.title}
-            onSubmit={onSubmit}
-            className="animate-rise w-full max-w-[520px] rounded-[26px] bg-surface p-[26px] shadow-modal"
-          >
-            <h2 className="text-[22px] tracking-[-0.02em]">{t.addProduct.title}</h2>
-            <p className="mb-4 mt-0.5 text-sm text-ink-2">{t.addProduct.subtitle}</p>
-
-            <label className="mb-2.5 block">
-              <span className="mb-1 block text-[13px] font-semibold text-ink-2">
-                {t.addProduct.name}
-              </span>
-              <input
-                ref={nameRef}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                placeholder={t.addProduct.namePlaceholder}
-                className={inputCls}
-              />
-            </label>
-
-            <div className="mb-2.5 grid gap-2.5 sm:grid-cols-2">
-              <label className="block">
-                <span className="mb-1 block text-[13px] font-semibold text-ink-2">
-                  {t.addProduct.category}
-                </span>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as CategoryId)}
-                  className={inputCls}
-                >
-                  {CATEGORY_IDS.map((id) => (
-                    <option key={id} value={id}>
-                      {t.stock.categories[id]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-[13px] font-semibold text-ink-2">
-                  {t.addProduct.price}
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  placeholder="1800"
-                  className={`${inputCls} num`}
-                />
-              </label>
-            </div>
-
-            <label className="block">
-              <span className="mb-1 block text-[13px] font-semibold text-ink-2">
-                {t.addProduct.qty}
-              </span>
-              <input
-                type="number"
-                min={0}
-                value={qty}
-                onChange={(e) => setQty(e.target.value)}
-                placeholder="10"
-                className={`${inputCls} num`}
-              />
-            </label>
-
-            <div className="mt-[18px] flex gap-2.5">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className={`${btn} border-[1.5px] border-line bg-surface hover:bg-bg`}
-              >
-                {t.common.cancel}
-              </button>
-              <button
-                type="submit"
-                className={`${btn} flex-1 bg-primary text-white hover:bg-primary-dark`}
-              >
-                {t.addProduct.submit}
-              </button>
-            </div>
-          </form>
-        </div>
+      {addProductOpen && (
+        <ProductModal
+          open
+          mode="create"
+          categories={categories}
+          onClose={() => setAddProductOpen(false)}
+          onSuccess={(name) => pushToast({ id: toastId(), key: "productAdded", name })}
+        />
       )}
+      {editProduct && (
+        <ProductModal
+          open
+          mode="edit"
+          product={editProduct}
+          categories={categories}
+          onClose={() => setEditProduct(null)}
+          onSuccess={(name) => pushToast({ id: toastId(), key: "productUpdated", name })}
+        />
+      )}
+      {addCategoryOpen && (
+        <CategoryModal
+          open
+          onClose={() => setAddCategoryOpen(false)}
+          onSuccess={(name) => pushToast({ id: toastId(), key: "categoryAdded", name })}
+        />
+      )}
+      {restockProduct && (
+        <RestockModal
+          open
+          product={restockProduct}
+          onClose={() => setRestockProduct(null)}
+          onSuccess={(name) => pushToast({ id: toastId(), key: "restocked", name })}
+        />
+      )}
+      {deleteProduct && (
+        <ConfirmDeleteModal
+          open
+          product={deleteProduct}
+          onClose={() => setDeleteProduct(null)}
+          onSuccess={(name) => pushToast({ id: toastId(), key: "productDeleted", name })}
+        />
+      )}
+      <Toast toasts={toasts} onDismiss={dismissToast} />
     </main>
   );
 }
