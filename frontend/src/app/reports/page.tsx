@@ -78,7 +78,7 @@ export default function ReportsPage() {
               >
                 <i
                   className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary"
-                  style={{ height: b.h, background: "var(--primary-soft)" }}
+                  style={{ height: b.h }}
                   aria-hidden="true"
                 />
                 {b.label}
