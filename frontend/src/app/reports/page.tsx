@@ -28,7 +28,7 @@ const TOP_CATEGORIES = [
 
 export default function ReportsPage() {
   return (
-    <div className="page">
+    <div className="page reports-page">
       <div class="head">
         <div>
           <h1>Raporo</h1>
