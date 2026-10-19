@@ -77,8 +77,8 @@ export default function ReportsPage() {
                 className="flex-1 h-full flex flex-col justify-end items-center gap-[8px] text-[12px] text-ink-2 group"
               >
                 <i
-                  className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors"
-                  style={{ height: b.h, background: "var(--primary-soft)" }}
+                  className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary"
+                  style={{ height: b.h }}
                   aria-hidden="true"
                 />
                 {b.label}
