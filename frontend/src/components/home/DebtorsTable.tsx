@@ -24,7 +24,9 @@ export function DebtorsTable() {
           Reba byose
         </Link>
       </div>
-      <div className="overflow-x-auto mx-[-8px]">
+
+      {/* Desktop table */}
+      <div className="overflow-x-auto mx-[-8px] hidden md:block">
         <table className="w-full border-collapse min-w-[560px]">
           <thead>
             <tr>
@@ -87,6 +89,40 @@ export function DebtorsTable() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile card view */}
+      <div className="md:hidden">
+        {debtors.map((d, i) => (
+          <div
+            key={i}
+            className={`border border-line rounded-lg p-[16px] mb-[12px] bg-surface hover:bg-[#fafcfb] transition-colors`}
+          >
+            <div className="flex items-center gap-3 mb-[12px]">
+              <div className="h-[42px] w-[42px] rounded-[14px] bg-primary-soft text-primary-dark grid place-items-center font-extrabold shrink-0">
+                {d.initial}
+              </div>
+              <div className="flex-1">
+                <b className="block text-ink">{d.name}</b>
+                <span className="text-[12px] text-ink-2">{d.date}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between mb-[12px]">
+              <div className="flex-1">
+                <div className="text-[10px] uppercase tracking-[0.06em] text-ink-2 font-bold mb-[2px]">
+                  Yishyuwe
+                </div>
+                <div className="h-[8px] bg-line rounded-full overflow-hidden">
+                  <i className="block h-full bg-danger" style={{ width: d.repaid }} aria-hidden="true" />
+                </div>
+              </div>
+              <b className="text-danger font-nums tracking-[-0.01em] text-right">{d.owed}</b>
+            </div>
+            <button className="w-full h-[38px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
+              SMS
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
