@@ -118,6 +118,21 @@
   }
 }
 
+/* Topbar mobile behaviour, matching the web template. */
+@media (max-width: 820px) {
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .topbar-user-text {
+    display: none;
+  }
+
+  .topbar-gold-text {
+    display: none;
+  }
+}
+
 /* Home page responsive behaviour, matching the web template. */
 @media (max-width: 1100px) {
   .home-kpis {

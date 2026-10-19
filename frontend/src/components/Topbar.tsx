@@ -2,7 +2,7 @@
 
 export function Topbar() {
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-3.5 border-b border-line bg-bg/90 px-8 py-4 backdrop-blur">
+    <header className="topbar sticky top-0 z-10 flex items-center gap-3.5 border-b border-line bg-bg/90 px-8 py-4 backdrop-blur">
       {/* Search */}
       <label className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border-[1.5px] border-line bg-surface px-[14px] min-h-12 focus-within:border-primary">
         <svg
@@ -54,7 +54,7 @@ export function Topbar() {
         >
           <path d="M12 5v14M5 12h14" />
         </svg>
-        <span>Gurisha</span>
+        <span className="topbar-gold-text">Gurisha</span>
       </button>
 
       {/* User */}
@@ -62,7 +62,7 @@ export function Topbar() {
         <div className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark">
           MU
         </div>
-        <div>
+        <div className="topbar-user-text">
           <b className="block text-sm font-semibold text-ink">Mukamana</b>
           <small className="block text-xs text-ink-2">Nyiri duka · Owner</small>
         </div>
