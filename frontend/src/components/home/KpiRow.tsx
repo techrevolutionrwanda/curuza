@@ -21,7 +21,8 @@ const KPIS = [
       </svg>
     ),
     label: "Ibyagurishijwe · Sales",
-    value: "86,500 <small className=\"text-[13px] text-white/85 font-semibold\">RWF</small>",
+    value: "86,500",
+    unit: "RWF",
     trend: "▲ 12% ugereranyije n'ejo",
   },
   {
@@ -43,7 +44,8 @@ const KPIS = [
       </svg>
     ),
     label: "Yakiriwe · Cash in",
-    value: "61,500 <small className=\"text-[13px] text-ink-2 font-semibold\">RWF</small>",
+    value: "61,500",
+    unit: "RWF",
     trend: "▲ 7%",
   },
   {
@@ -65,7 +67,8 @@ const KPIS = [
       </svg>
     ),
     label: "Amadeni · Owed to you",
-    value: "184,000 <small className=\"text-[13px] text-ink-2 font-semibold\">RWF</small>",
+    value: "184,000",
+    unit: "RWF",
     trend: "12 abakiriya",
   },
   {
@@ -86,7 +89,8 @@ const KPIS = [
       </svg>
     ),
     label: "Stock nke · Low stock",
-    value: "4 <small className=\"text-[13px] text-ink-2 font-semibold\">ibicuruzwa</small>",
+    value: "4",
+    unit: "ibicuruzwa",
     trend: "1 byashize",
   },
 ];

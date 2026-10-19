@@ -4,6 +4,7 @@ interface KpiCardProps {
   icon: React.ReactNode;
   label: string;
   value: string;
+  unit?: string;
   trend: string;
   variant?: "hero" | "default";
 }
@@ -12,10 +13,12 @@ export function KpiCard({
   icon,
   label,
   value,
+  unit,
   trend,
   variant = "default",
 }: KpiCardProps) {
   const isHero = variant === "hero";
+  const unitColor = isHero ? "text-white/85" : "text-ink-2";
 
   return (
     <div
@@ -38,7 +41,7 @@ export function KpiCard({
         </span>
       </div>
       <div className="text-[28px] font-extrabold mt-[10px] mb-[4px] tracking-[-0.02em]">
-        {value}
+        {value} {unit && <small className={`text-[13px] font-semibold ${unitColor}`}>{unit}</small>}
       </div>
       <div
         className={`text-[12px] font-bold ${
