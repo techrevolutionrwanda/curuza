@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { createCategoryAction, type ActionResult } from "@/lib/stock/actions";
+import { createCategoryAction, type ActionResult } from "@/app/stock/_lib/actions";
 import { Modal } from "./modal";
 import { useI18n } from "@/i18n/locale-provider";
 

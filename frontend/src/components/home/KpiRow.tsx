@@ -1,5 +1,6 @@
 "use client";
 
+import { stockStatus, type Product } from "@/data/products";
 import { KpiCard } from "./KpiCard";
 
 const KPIS = [
@@ -74,7 +75,13 @@ const KPIS = [
     iconColor: "red" as const,
     trendColor: "down" as const,
   },
-  {
+];
+
+export function KpiRow({ products }: { products: Product[] }) {
+  const low = products.filter((p) => stockStatus(p.qty) === "low").length;
+  const out = products.filter((p) => stockStatus(p.qty) === "out").length;
+
+  const stockKpi = {
     variant: "default" as const,
     icon: (
       <svg
@@ -88,22 +95,20 @@ const KPIS = [
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+        <path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0-3.4 0z" />
       </svg>
     ),
     label: "Stock nke · Low stock",
-    value: "4",
+    value: String(low),
     unit: "ibicuruzwa",
-    trend: "1 byashize",
+    trend: `${out} byashize`,
     iconColor: "yellow" as const,
     trendColor: "down" as const,
-  },
-];
+  };
 
-export function KpiRow() {
   return (
     <div className="home-kpis grid grid-cols-4 gap-[16px] mb-[20px]">
-      {KPIS.map((kpi, i) => (
+      {[...KPIS, stockKpi].map((kpi, i) => (
         <KpiCard key={i} {...kpi} />
       ))}
     </div>
