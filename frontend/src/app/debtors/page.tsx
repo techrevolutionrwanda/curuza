@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 interface Debtor {
   id: string;
@@ -51,12 +51,93 @@ const sampleDebtors: Debtor[] = [
 ];
 
 export default function DebtorsPage() {
+  const [debtors, setDebtors] = useState<Debtor[]>(sampleDebtors);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const filtered = debtors.filter(
+    (d) =>
+      !searchTerm ||
+      d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      d.initial.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      d.phone.includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.trim().toLowerCase();
+    setSearchTerm(term);
+  };
+
+  const handlePayment = async (debtorId: string, amount: number) => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setDebtors(
+        debtors.map((d) =>
+          d.id === debtorId
+            ? { ...d, paid: d.paid + amount, owed: d.total - (d.paid + amount) }
+            : d
+        )
+      );
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openPaymentModal = (
+    debtorId: string,
+    currentOwed: number
+  ): void => {
+    const raw = prompt(
+      `Kwishyura ibiriho kugwa ${currentOwed.toLocaleString(
+        "en-US"
+      )} RWF. Rwiyere:`
+    );
+    const amount = raw !== null && raw !== "" ? Number(raw) : NaN;
+    if (!isNaN(amount) && amount > 0 && amount <= currentOwed) {
+      handlePayment(debtorId, amount);
+    } else if (raw !== null && raw !== "" && isNaN(amount)) {
+      alert(
+        "Ubere rw' ibiriho byinshi. Mbere 0 kugura ibiriho rw' icyo ushobora kugura."
+      );
+    }
+  };
+
   return (
     <div className="page">
       <h1 className="mb-2 text-3xl font-bold tracking-tight">Amadeni</h1>
       <p className="text-ink-2 text-sm mb-6">
         Abafitanye ideni · Who owes what
       </p>
+
+      {/* Search form */}
+      <div className="mb-6">
+        <label className="flex items-center gap-2">
+          <svg
+            className="h-5 w-5 shrink-0 text-ink-3"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-4-4" />
+          </svg>
+          <input
+            type="text"
+            className="flex-1 rounded-[14px] border-[1.5px] border-line bg-surface px-[14px] min-h-[46px] outline-none placeholder-text-ink-2"
+            placeholder="Shakisha igicuruzwa cyangwa umukiriya…"
+            onChange={handleSearch}
+            value={searchTerm}
+          />
+        </label>
+      </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -83,7 +164,7 @@ export default function DebtorsPage() {
             <div>
               <p className="text-ink-2 text-sm">Yose hamwe · Total owed</p>
               <p className="text-3xl font-extrabold text-ink num">
-                {sampleDebtors.reduce(
+                {filtered.reduce(
                   (sum, d) => sum + d.owed,
                   0
                 ).toLocaleString("en-US")} RWF</p>
@@ -110,7 +191,7 @@ export default function DebtorsPage() {
             </div>
             <div>
               <p className="text-ink-2 text-sm">Abakiriya · Customers</p>
-              <p className="text-3xl font-extrabold text-ink num">{sampleDebtors.length}</p>
+              <p className="text-3xl font-extrabold text-ink num">{filtered.length}</p>
             </div>
           </div>
         </div>
@@ -134,8 +215,8 @@ export default function DebtorsPage() {
             </div>
             <div>
               <p className="text-ink-2 text-sm">Yishyuwe uku kwezi · Repaid this month</p>
-              <p className="text-3xl font-extrabold text-ink num">
-                {sampleDebtors.reduce((sum, d) => sum + d.paid, 0)
+              <p className="text-3xl font-extrabold tracking-tighter text-ink text-success num">
+                {filtered.reduce((sum, d) => sum + d.paid, 0)
                   .toLocaleString("en-US")} RWF</p>
             </div>
           </div>
@@ -156,11 +237,18 @@ export default function DebtorsPage() {
             </tr>
           </thead>
           <tbody>
-            {sampleDebtors.map((d, i) => (
+            {filtered.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-4 py-8 text-center text-ink-2">
+                  No debtors found matching your search.
+                </td>
+              </tr>
+            )}
+            {filtered.map((d, i) => (
               <tr
                 key={d.id}
                 className={`hover:bg-[#fafcfb] ${
-                  i === sampleDebtors.length - 1 ? "border-b-0" : "border-b border-line"
+                  i === filtered.length - 1 ? "border-b-0" : "border-b border-line"
                 }`}
               >
                 <td className="px-4 py-3 align-middle">
@@ -194,10 +282,18 @@ export default function DebtorsPage() {
                 </td>
                 <td className="px-4 py-3 align-middle">
                   <div className="flex gap-2">
-                    <button className="flex-1 h-[34px] px-3 rounded-[8px] font-bold text-[12px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
+                    <button
+                      className="flex-1 h-[34px] px-3 rounded-[8px] font-bold text-[12px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
+                      onClick={() => openPaymentModal(d.id, d.owed)}
+                      disabled={isLoading}
+                    >
                       SMS
                     </button>
-                    <button className="flex-1 h-[34px] px-3 rounded-[8px] font-bold text-[12px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
+                    <button
+                      className="flex-1 h-[34px] px-3 rounded-[8px] font-bold text-[12px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
+                      onClick={() => openPaymentModal(d.id, d.owed)}
+                      disabled={isLoading}
+                    >
                       Kwishyura
                     </button>
                   </div>
