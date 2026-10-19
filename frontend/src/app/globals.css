@@ -131,6 +131,22 @@
   .topbar-gold-text {
     display: none;
   }
+
+  /* Page padding on mobile, extra bottom clears the bottom bar sidebar */
+  .app .main .page {
+    padding: 20px 16px 100px;
+  }
+
+  /* Home page mobile adjustments, matching the web template. */
+  .home-kpis {
+    gap: 10px;
+  }
+  .home-kpis .kpi {
+    padding: 16px;
+  }
+  .home-kpis .kpi .v {
+    font-size: 22px;
+  }
 }
 
 /* Home page responsive behaviour, matching the web template. */

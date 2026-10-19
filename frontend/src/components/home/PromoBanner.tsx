@@ -6,7 +6,7 @@ interface PromoBannerProps {
 
 export function PromoBanner({ onReba }: PromoBannerProps) {
   return (
-    <div className="flex gap-[14px] items-center bg-accent-soft border border-[#F1D88E] rounded-lg p-[16px_20px] mb-[20px]">
+    <div className="home-promo flex gap-[14px] items-center bg-accent-soft border border-[#F1D88E] rounded-lg p-[16px_20px] mb-[20px]">
       <span className="text-[10px] font-extrabold tracking-[0.06em] bg-accent text-[#3A2A00] px-[9px] py-[3px] rounded-full">
         IGICIRO
       </span>
@@ -20,7 +20,7 @@ export function PromoBanner({ onReba }: PromoBannerProps) {
       </div>
       <button
         type="button"
-        className="ml-auto h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
+        className="home-promo-btn ml-auto h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
         onClick={onReba}
       >
         Reba
