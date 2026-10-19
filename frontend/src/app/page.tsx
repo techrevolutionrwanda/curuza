@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { SegmentControl } from "@/components/home/SegmentControl";
 import { PromoBanner } from "@/components/home/PromoBanner";
 import { KpiRow } from "@/components/home/KpiRow";
+import { WeeklyChart } from "@/components/home/WeeklyChart";
+import { RestockList } from "@/components/home/RestockList";
 
 const debtors = [
   { initial: "JM", name: "Jean Marie", date: "18 Ukw 2026", repaid: "30%", owed: "45,000" },
@@ -50,83 +52,9 @@ export default function Home() {
 
       <KpiRow />
 
-      {/* Weekly chart + restocking list */}
       <div className="home-cols grid grid-cols-[2fr_1fr] gap-[16px] mb-[16px]">
-        <div className="bg-surface rounded-lg p-[22px] shadow-md">
-          <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
-            <div>
-              <h3 className="text-[16px] font-bold mb-[2px] text-ink">
-                Ibyagurishijwe mu cyumweru
-              </h3>
-              <div className="text-ink-2 text-[13px]">Sales this week · RWF</div>
-            </div>
-            <span className="inline-block text-[12px] font-extrabold px-[11px] py-[2px] rounded-full bg-primary-soft text-primary-dark whitespace-nowrap">
-              +12%
-            </span>
-          </div>
-          <div className="flex items-end gap-[14px] h-[220px] pt-[10px]">
-            {[
-              { label: "Mbe", h: "40%" },
-              { label: "Kab", h: "55%" },
-              { label: "Gat", h: "35%" },
-              { label: "Gnd", h: "70%" },
-              { label: "Gat", h: "50%" },
-              { label: "Ruh", h: "92%", top: true },
-              { label: "Cyu", h: "65%" },
-            ].map((b, i) => (
-              <div
-                key={i}
-                className="flex-1 h-full flex flex-col justify-end items-center gap-[8px] text-[12px] text-ink-2 group"
-              >
-                <i
-                  className={`w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary ${
-                    b.top ? "bg-primary" : "bg-primary-soft"
-                  }`}
-                  style={{ height: b.h }}
-                  aria-hidden="true"
-                />
-                {b.label}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="bg-surface rounded-lg p-[22px] shadow-md">
-          <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
-            <div>
-              <h3 className="text-[16px] font-bold mb-[2px] text-ink">
-                Biri hafi gushira
-              </h3>
-              <div className="text-ink-2 text-[13px]">Needs restocking</div>
-            </div>
-            <button className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
-              Byose
-            </button>
-          </div>
-          <div className="flex justify-between pt-[13px] pb-[13px] border-b border-line">
-            <span className="text-ink-2">Amazi 1.5L</span>
-            <span className="inline-block text-[12px] font-extrabold px-[11px] py-[2px] rounded-full bg-warning-soft text-warning whitespace-nowrap">
-              6 bisigaye
-            </span>
-          </div>
-          <div className="flex justify-between pt-[13px] pb-[13px] border-b border-line">
-            <span className="text-ink-2">Fanta 300ml</span>
-            <span className="inline-block text-[12px] font-extrabold px-[11px] py-[2px] rounded-full bg-warning-soft text-warning whitespace-nowrap">
-              9 bisigaye
-            </span>
-          </div>
-          <div className="flex justify-between pt-[13px] pb-[13px] border-b border-line">
-            <span className="text-ink-2">Ifu y'ibigori 2kg</span>
-            <span className="inline-block text-[12px] font-extrabold px-[11px] py-[2px] rounded-full bg-danger-soft text-danger whitespace-nowrap">
-              Byashize
-            </span>
-          </div>
-          <div className="flex justify-between pt-[13px] pb-[13px]">
-            <span className="text-ink-2">Amavuta 1L</span>
-            <span className="inline-block text-[12px] font-extrabold px-[11px] py-[2px] rounded-full bg-warning-soft text-warning whitespace-nowrap">
-              4 bisigaye
-            </span>
-          </div>
-        </div>
+        <WeeklyChart />
+        <RestockList />
       </div>
 
       {/* Recent debtors */}
