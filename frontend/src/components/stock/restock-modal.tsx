@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { restockProductAction, type ActionResult } from "@/lib/stock/actions";
+import { restockProductAction, type ActionResult } from "@/app/stock/_lib/actions";
 import { Modal } from "./modal";
 import { useI18n } from "@/i18n/locale-provider";
 
