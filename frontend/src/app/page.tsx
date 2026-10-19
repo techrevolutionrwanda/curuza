@@ -1,6 +1,36 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+const debtors = [
+  { initial: "JM", name: "Jean Marie", date: "18 Ukw 2026", repaid: "30%", owed: "45,000" },
+  { initial: "CU", name: "Chantal Uwase", date: "02 Ukw 2026", repaid: "75%", owed: "12,500" },
+];
+
+const price = [1800, 700];
+
 export default function Home() {
+  const [segment, setSegment] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [pay, setPay] = useState("cash");
+  const [qty, setQty] = useState([2, 1]);
+
+  const total = qty[0] * price[0] + qty[1] * price[1];
+
+  // Close the sale modal on Escape while it is open.
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    if (open) document.addEventListener("keydown", onEsc);
+    return () => document.removeEventListener("keydown", onEsc);
+  }, [open]);
+
+  const close = () => setOpen(false);
+
   return (
     <>
+      {/* Header */}
       <div className="flex justify-between items-end gap-4 mb-[22px] flex-wrap">
         <div>
           <h1 className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] text-ink">
@@ -11,19 +41,28 @@ export default function Home() {
           </p>
         </div>
         <div className="inline-flex bg-[#e7edea] rounded-[14px] p-1 gap-1">
-          <button className="h-[38px] px-4 rounded-[11px] font-bold text-[13px] bg-surface text-primary-dark shadow-md">
-            Uyu munsi
-          </button>
-          <button className="h-[38px] px-4 rounded-[11px] font-bold text-[13px] text-ink-2">
-            Icyumweru
-          </button>
-          <button className="h-[38px] px-4 rounded-[11px] font-bold text-[13px] text-ink-2">
-            Ukwezi
-          </button>
+          {[
+            { i: 0, label: "Uyu munsi" },
+            { i: 1, label: "Icyumweru" },
+            { i: 2, label: "Ukwezi" },
+          ].map((s) => (
+            <button
+              key={s.i}
+              onClick={() => setSegment(s.i)}
+              className={`h-[38px] px-4 rounded-[11px] font-bold text-[13px] ${
+                segment === s.i
+                  ? "bg-surface text-primary-dark shadow-md"
+                  : "text-ink-2"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="flex gap-[14px] items-center bg-accent-soft border border-[#F1D88E] rounded-lg p-[16px_20px] mb-[20px]">
+      {/* Promo */}
+      <div className="home-promo flex gap-[14px] items-center bg-accent-soft border border-[#F1D88E] rounded-lg p-[16px_20px] mb-[20px]">
         <span className="text-[10px] font-extrabold tracking-[0.06em] bg-accent text-[#3A2A00] px-[9px] py-[3px] rounded-full">
           IGICIRO
         </span>
@@ -33,12 +72,16 @@ export default function Home() {
             Ikoreshwa kugeza ku wa gatanu · Supplier offer
           </span>
         </div>
-        <button className="ml-auto h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
+        <button
+          className="home-promo-btn ml-auto h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
+          onClick={() => setOpen(true)}
+        >
           Reba
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-[16px] mb-[20px]">
+      {/* KPIs */}
+      <div className="home-kpis grid grid-cols-4 gap-[16px] mb-[20px]">
         <div className="bg-surface rounded-lg p-[20px] shadow-md bg-gradient-to-br from-primary to-primary-dark text-white">
           <div className="flex items-center gap-2 text-[13px] text-white/85">
             <div className="grid h-[30px] w-[30px] rounded-sm place-items-center bg-white/18 text-white">
@@ -139,7 +182,8 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-[2fr_1fr] gap-[16px] mb-[16px]">
+      {/* Weekly chart + restocking list */}
+      <div className="home-cols grid grid-cols-[2fr_1fr] gap-[16px] mb-[16px]">
         <div className="bg-surface rounded-lg p-[22px] shadow-md">
           <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
             <div>
@@ -217,6 +261,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Recent debtors */}
       <div className="bg-surface rounded-lg p-[22px] shadow-md">
         <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
           <div>
@@ -276,11 +321,111 @@ export default function Home() {
           </table>
         </div>
       </div>
-    </>
-  )
-}
 
-const debtors = [
-  { initial: "JM", name: "Jean Marie", date: "18 Ukw 2026", repaid: "30%", owed: "45,000" },
-  { initial: "CU", name: "Chantal Uwase", date: "02 Ukw 2026", repaid: "75%", owed: "12,500" },
-];
+      {/* Sale modal */}
+      <div
+        className={`fixed inset-0 z-[50] p-[16px] ${open ? "grid" : "hidden"} place-items-center bg-[#10201b]/50`}
+        role="scrim"
+        onClick={close}
+      >
+        <div
+          className="bg-surface rounded-[26px] w-full max-w-[520px] p-[26px] shadow-[0_30px_80px_rgba(0,0,0,0.3)]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2 className="text-[22px] font-bold tracking-[-0.02em] text-ink">
+            Igurisha rishya
+          </h2>
+          <div className="text-ink-2 text-[14px] mb-[16px]">
+            New sale · hitamo ibicuruzwa n'uburyo bwo kwishyura
+          </div>
+          {[
+            { name: "Isukari 1kg", price: "1,800 RWF", i: 0 },
+            { name: "Amazi 1.5L", price: "700 RWF", i: 1 },
+          ].map((item) => (
+            <div
+              key={item.i}
+              className="flex items-center gap-3 border border-line rounded-[14px] p-[10px_14px] mb-[10px]"
+            >
+              <div className="flex-1">
+                <b className="block text-ink">{item.name}</b>
+                <span className="block text-[13px] text-ink-2 font-nums">
+                  {item.price}
+                </span>
+              </div>
+              <div className="flex items-center gap-[10px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = [...qty];
+                    next[item.i] = Math.max(0, next[item.i] - 1);
+                    setQty(next);
+                  }}
+                  className="h-[40px] w-[40px] rounded-[12px] bg-primary-soft text-primary-dark text-[20px] font-extrabold"
+                >
+                  −
+                </button>
+                <b className="min-w-[22px] text-center text-ink font-extrabold font-nums">
+                  {qty[item.i]}
+                </b>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = [...qty];
+                    next[item.i] = next[item.i] + 1;
+                    setQty(next);
+                  }}
+                  className="h-[40px] w-[40px] rounded-[12px] bg-primary-soft text-primary-dark text-[20px] font-extrabold"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          ))}
+          <div className="grid grid-cols-3 gap-[8px] mb-[14px] mt-[14px]">
+            {[
+              { key: "cash", label: "Amafaranga", sub: "Cash" },
+              { key: "partial", label: "Igice", sub: "Partial" },
+              { key: "credit", label: "Ideni", sub: "Credit" },
+            ].map((p) => (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => setPay(p.key)}
+                className={`min-h-[58px] rounded-[14px] border border-line border-[1.5px] font-bold text-[14px] flex flex-col items-center justify-center gap-[2px] ${
+                  pay === p.key
+                    ? "border-primary bg-primary-soft text-primary-dark"
+                    : "text-ink"
+                }`}
+              >
+                {p.label}
+                <span className="text-[12px] text-ink-2 font-normal">{p.sub}</span>
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-between items-baseline mb-[18px] mt-[12px]">
+            <span className="text-ink-2">Yose hamwe · Total</span>
+            <b className="text-[30px] font-bold text-ink font-nums">
+              {total.toLocaleString("en-US")} RWF
+            </b>
+          </div>
+          <div className="flex gap-[10px]">
+            <button
+              type="button"
+              onClick={close}
+              className="h-[48px] px-[20px] rounded-[14px] font-bold border border-line border-[1.5px] bg-surface text-ink"
+            >
+              Hagarika
+            </button>
+            <button
+              type="button"
+              onClick={close}
+              className="flex-1 h-[48px] px-[20px] rounded-[14px] font-bold bg-primary text-white"
+            >
+              Bika igurisha
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

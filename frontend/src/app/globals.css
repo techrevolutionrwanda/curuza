@@ -87,3 +87,23 @@
     z-index: 30;
   }
 }
+
+/* Home page responsive behaviour, matching the web template. */
+@media (max-width: 1100px) {
+  .home-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .home-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .home-promo {
+    flex-wrap: wrap;
+  }
+  .home-promo .home-promo-btn {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
