@@ -86,6 +86,51 @@
     border-right: 0;
     z-index: 30;
   }
+
+  /* Hide brand, plan promo, and spacer on mobile bottom bar */
+  .app .side .sidebar-brand,
+  .app .side .sidebar-plan,
+  .app .side .sidebar-spacer {
+    display: none;
+  }
+
+  /* Nav becomes a 5-column grid on mobile */
+  .app .side .sidebar-nav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    width: 100%;
+  }
+
+  /* Stack icon above label on mobile nav items */
+  .app .side .sidebar-nav-item {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+    min-height: 56px;
+    padding: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Hide pill badges on mobile */
+  .app .side .sidebar-pill {
+    display: none;
+  }
+}
+
+/* Topbar mobile behaviour, matching the web template. */
+@media (max-width: 820px) {
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .topbar-user-text {
+    display: none;
+  }
+
+  .topbar-gold-text {
+    display: none;
+  }
 }
 
 /* Home page responsive behaviour, matching the web template. */
