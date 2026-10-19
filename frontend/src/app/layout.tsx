@@ -1,31 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
-import { LocaleProvider } from "@/i18n/locale-provider";
+import { Sidebar } from "../components/Sidebar";
+import { Topbar } from "../components/Topbar";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "Smart Ledger",
-  description: "Smart Ledger prototype – Duka rya Mukamana",
+  description: "Dashboard for the Smart Ledger shops",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="rw"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <LocaleProvider>{children}</LocaleProvider>
+    <html lang="en" className="h-full antialiased">
+      <body className="flex min-h-full flex-col bg-bg font-inter">
+        <div className="app">
+          <Sidebar />
+          <div className="main">
+            <Topbar />
+            <main className="page">{children}</main>
+          </div>
+        </div>
       </body>
     </html>
   );

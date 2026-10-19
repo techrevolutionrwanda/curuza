@@ -1,13 +1,21 @@
 @import "tailwindcss";
 
-/* ===== DESIGN TOKENS (from templates/smart-ledger-web.html) ===== */
+/*
+ * Design tokens for the Smart Ledger app.
+ * These are the same values used by the HTML templates in /templates,
+ * so the web and the Next.js frontend always look identical.
+ * Tailwind turns each token below into utility classes
+ * (for example `bg-primary`, `text-ink-2`, `rounded-lg`).
+ */
 @theme {
-  --color-primary: #0e7a5f;
+  /* Brand */
+  --color-primary: #0e7a5f; /* deep green: money in & go */
   --color-primary-dark: #095a46;
   --color-primary-soft: #e3f4ee;
-  --color-accent: #f4b223;
+  --color-accent: #f4b223; /* warm gold: highlights, promo */
   --color-accent-soft: #fff4d6;
-  --color-accent-line: #f1d88e;
+
+  /* Status */
   --color-success: #168a4a;
   --color-warning: #c77700;
   --color-warning-soft: #fff0d1;
@@ -15,7 +23,8 @@
   --color-danger-soft: #fde8e8;
   --color-info: #1f6fd1;
   --color-info-soft: #e4eefc;
-  --color-info-ink: #17497f;
+
+  /* Neutrals */
   --color-bg: #f5f7f6;
   --color-surface: #ffffff;
   --color-ink: #10201b;
@@ -23,53 +32,139 @@
   --color-ink-3: #7a8a84;
   --color-line: #e2e8e5;
 
-  --radius-card: 22px;
-  --radius-panel: 16px;
+  /* Shape */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
   --radius-pill: 999px;
 
-  --shadow-card: 0 1px 2px rgba(16, 32, 27, 0.06), 0 6px 20px rgba(16, 32, 27, 0.05);
-  --shadow-modal: 0 30px 80px rgba(0, 0, 0, 0.3);
+  /* Font */
+  --font-inter: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
 }
 
-@layer base {
-  html {
-    font-family: var(--font-inter), "Inter", "Segoe UI", system-ui, -apple-system,
-      Roboto, sans-serif;
+/*
+ * App shell layout.
+ * The sidebar and topbar are rendered by the root layout around the page.
+ * Only the parts that are not expressible with utility classes are defined
+ * here; components should prefer Tailwind utilities.
+ */
+.app {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app .main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app .main .page {
+  padding: 28px 32px 60px;
+  max-width: 1280px;
+  width: 100%;
+}
+
+/* Collapse the sidebar into a bottom bar on small screens,
+   like the responsive behaviour of the HTML templates. */
+@media (max-width: 820px) {
+  .app {
+    grid-template-columns: 1fr;
   }
 
-  body {
-    background-color: var(--color-bg);
-    color: var(--color-ink);
-    font-size: 15px;
-    line-height: 1.45;
+  .app .side {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    left: 0;
+    right: 0;
+    height: auto;
+    flex-direction: row;
+    padding: 6px;
+    border-top: 1px solid var(--color-line);
+    border-right: 0;
+    z-index: 30;
   }
 
-  button {
-    cursor: pointer;
+  /* Hide brand, plan promo, and spacer on mobile bottom bar */
+  .app .side .sidebar-brand,
+  .app .side .sidebar-plan,
+  .app .side .sidebar-spacer {
+    display: none;
   }
 
-  :focus-visible {
-    outline: 3px solid var(--color-info);
-    outline-offset: 2px;
+  /* Nav becomes a 5-column grid on mobile */
+  .app .side .sidebar-nav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    width: 100%;
+  }
+
+  /* Stack icon above label on mobile nav items */
+  .app .side .sidebar-nav-item {
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+    min-height: 56px;
+    padding: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Hide pill badges on mobile */
+  .app .side .sidebar-pill {
+    display: none;
   }
 }
 
-@utility num {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-
-@utility animate-rise {
-  animation: rise 0.25s ease;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
+/* Topbar mobile behaviour, matching the web template. */
+@media (max-width: 820px) {
+  .topbar {
+    padding: 12px 16px;
   }
-  to {
-    opacity: 1;
-    transform: none;
+
+  .topbar-user-text {
+    display: none;
+  }
+
+  .topbar-gold-text {
+    display: none;
+  }
+
+  /* Page padding on mobile, extra bottom clears the bottom bar sidebar */
+  .app .main .page {
+    padding: 20px 16px 100px;
+  }
+
+  /* Home page mobile adjustments, matching the web template. */
+  .home-kpis {
+    gap: 10px;
+  }
+  .home-kpis .kpi {
+    padding: 16px;
+  }
+  .home-kpis .kpi .v {
+    font-size: 22px;
+  }
+}
+
+/* Home page responsive behaviour, matching the web template. */
+@media (max-width: 1100px) {
+  .home-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .home-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .home-promo {
+    flex-wrap: wrap;
+  }
+  .home-promo .home-promo-btn {
+    margin-left: 0 !important;
+    width: 100%;
   }
 }
