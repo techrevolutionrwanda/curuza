@@ -119,7 +119,7 @@ export function Sidebar() {
   return (
     <aside className="side sticky top-0 flex h-full flex-col gap-1.5 border-r border-line bg-surface px-[14px] py-5">
       {/* Brand */}
-      <div className="flex items-center gap-3 px-2 pt-1 pb-[18px]">
+      <div className="sidebar-brand flex items-center gap-3 px-2 pt-1 pb-[18px]">
         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary">
           <svg
             width="22"
@@ -143,7 +143,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-2">
+      <nav className="sidebar-nav flex flex-col gap-2">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
           return (
@@ -152,7 +152,7 @@ export function Sidebar() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={[
-                "flex min-h-12 items-center gap-3 rounded-[14px] px-[14px] text-sm font-semibold",
+                "sidebar-nav-item flex min-h-12 items-center gap-3 rounded-[14px] px-[14px] text-sm font-semibold",
                 active
                   ? "bg-primary-soft text-primary-dark"
                   : "text-ink-2 hover:bg-bg",
@@ -161,7 +161,7 @@ export function Sidebar() {
               {item.icon}
               <span>{item.label}</span>
               {item.badge !== undefined && (
-                <span className="ml-auto rounded-pill bg-danger px-2 py-0.5 text-xs font-extrabold text-white">
+                <span className="sidebar-pill ml-auto rounded-pill bg-danger px-2 py-0.5 text-xs font-extrabold text-white">
                   {item.badge}
                 </span>
               )}
@@ -170,10 +170,10 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="flex-1" aria-hidden="true" />
+      <div className="sidebar-spacer flex-1" aria-hidden="true" />
 
       {/* Promo */}
-      <div className="rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-4 text-white">
+      <div className="sidebar-plan rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-4 text-white">
         <b className="block text-sm font-bold">Smart Ledger Plus</b>
         <span className="mt-1 block text-xs text-white/80">
           SMS reminders, richer reports and cloud backup.
