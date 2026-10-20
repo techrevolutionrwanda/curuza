@@ -20,7 +20,7 @@ export function ReportsView() {
     <div className="w-full">
       <ReportsHead period={period} onPeriodChange={setPeriod} />
 
-      <div className="mb-[16px] grid grid-cols-1 gap-[16px] lg:grid-cols-2">
+      <div className="mb-[18px] grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:gap-[18px]">
         <ProfitCard />
         <SummaryCard />
       </div>
