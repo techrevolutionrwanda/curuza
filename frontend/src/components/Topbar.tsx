@@ -20,7 +20,7 @@ export function Topbar() {
           <path d="M20 20l-4-4" />
         </svg>
         <input
-          className="min-h-[46px] flex-1 border-0 bg-transparent outline-none"
+          className="min-h-[46px] min-w-0 flex-1 border-0 bg-transparent outline-none"
           placeholder="Shakisha igicuruzwa cyangwa umukiriya…"
         />
       </label>

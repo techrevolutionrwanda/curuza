@@ -63,7 +63,7 @@ export function BusinessForm({
           onChange={(e) => setBusinessName(e.target.value)}
           placeholder={t.settings.form.namePlaceholder}
           aria-invalid={!!error("businessName")}
-          className={`${inputCls} w-[240px]`}
+          className={`${inputCls} w-full sm:w-[240px]`}
         />
         {error("businessName") && (
           <span className="text-xs text-danger">{error("businessName")}</span>
@@ -91,7 +91,7 @@ export function BusinessForm({
           value={currency}
           onChange={(e) => setCurrency(e.target.value)}
           aria-invalid={!!error("currency")}
-          className={`${inputCls} w-[240px]`}
+          className={`${inputCls} w-full sm:w-[240px]`}
         >
           {CURRENCIES.map((c) => (
             <option key={c.code} value={c.code}>
@@ -108,7 +108,7 @@ export function BusinessForm({
         <button
           type="submit"
           disabled={pending || !dirty}
-          className={`${btn} bg-primary text-white hover:bg-primary-dark disabled:opacity-50`}
+          className={`${btn} w-full bg-primary text-white hover:bg-primary-dark disabled:opacity-50 sm:w-auto`}
         >
           {pending ? t.settings.form.saving : t.settings.form.save}
         </button>
