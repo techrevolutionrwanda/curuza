@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { LOCALE_LABEL } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 import { Toast, type ToastMsg } from "@/components/toast";
 import type { Settings } from "@/data/settings";
 import { BusinessForm } from "./business-form";
+import { LanguageSwitch } from "./language-switch";
 import { SettingBadge } from "./setting-badge";
 import { SettingRow } from "./setting-row";
 
@@ -44,7 +44,7 @@ export function SettingsView({ settings }: { settings: Settings }) {
         <BusinessForm settings={settings} onSaved={pushToast} />
 
         <SettingRow label={t.settings.rows.language}>
-          <b>{LOCALE_LABEL[settings.locale]}</b>
+          <LanguageSwitch />
         </SettingRow>
 
         <SettingRow label={t.settings.rows.sms}>

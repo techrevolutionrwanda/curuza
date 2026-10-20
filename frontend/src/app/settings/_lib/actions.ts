@@ -1,7 +1,9 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { refresh } from "next/cache";
 import { isCurrency } from "@/data/settings";
+import type { Locale } from "@/i18n/dictionaries";
 import * as repo from "./repository";
 
 export type FormErrors = Record<string, string>;
@@ -40,6 +42,25 @@ export async function updateBusinessAction(
   } catch {
     return { ok: false, errors: { businessName: "invalid" } };
   }
+
+  refresh();
+  return { ok: true };
+}
+
+/**
+ * Save the dashboard language.
+ *
+ * The cookie lets the browser remember the choice on the next visit.
+ */
+export async function setLocaleAction(locale: Locale): Promise<SettingsActionResult> {
+  repo.setLocale(locale);
+
+  const store = await cookies();
+  store.set("locale", locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
 
   refresh();
   return { ok: true };

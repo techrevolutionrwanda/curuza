@@ -1,6 +1,7 @@
 import "server-only";
 
 import { SEED_SETTINGS, type Settings } from "@/data/settings";
+import type { Locale } from "@/i18n/dictionaries";
 
 export type { Settings };
 
@@ -28,5 +29,13 @@ export function updateBusiness(input: {
   state.businessName = input.businessName;
   state.phone = input.phone;
   state.currency = input.currency;
+  return getSettings();
+}
+
+/**
+ * Change the dashboard language.
+ */
+export function setLocale(locale: Locale): Settings {
+  state.locale = locale;
   return getSettings();
 }
