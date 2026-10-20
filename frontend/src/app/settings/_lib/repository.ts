@@ -47,3 +47,15 @@ export function setSmsReminders(enabled: boolean): Settings {
   state.smsReminders = enabled;
   return getSettings();
 }
+
+/**
+ * Turn the cloud backup on or off.
+ *
+ * Switching it on runs a backup right away, so the shop never waits for
+ * the next scheduled run.
+ */
+export function setCloudBackup(enabled: boolean): Settings {
+  state.cloudBackup = enabled;
+  if (enabled) state.lastBackupAt = new Date().toISOString();
+  return getSettings();
+}

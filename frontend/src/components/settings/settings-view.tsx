@@ -3,13 +3,29 @@
 import { useCallback, useState } from "react";
 import { useI18n } from "@/i18n/locale-provider";
 import { Toast, type ToastMsg } from "@/components/toast";
-import { setSmsRemindersAction } from "@/app/settings/_lib/actions";
+import {
+  setCloudBackupAction,
+  setSmsRemindersAction,
+} from "@/app/settings/_lib/actions";
 import type { Settings } from "@/data/settings";
 import { BusinessForm } from "./business-form";
 import { LanguageSwitch } from "./language-switch";
 import { SettingBadge } from "./setting-badge";
 import { SettingRow } from "./setting-row";
 import { SettingToggle } from "./setting-toggle";
+
+/**
+ * Formats a backup timestamp.
+ *
+ * The format is fixed so the server and the browser always render the
+ * same string and React never sees a mismatch.
+ */
+function formatBackup(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(iso));
+}
 
 /**
  * The settings page.
@@ -61,11 +77,26 @@ export function SettingsView({ settings }: { settings: Settings }) {
         </SettingRow>
 
         <SettingRow label={t.settings.rows.backup}>
-          <SettingBadge tone={settings.cloudBackup ? "ok" : "off"}>
-            {settings.cloudBackup
-              ? t.settings.badge.active
-              : t.settings.badge.inactive}
-          </SettingBadge>
+          <div className="flex items-center gap-2.5">
+            <SettingBadge tone={settings.cloudBackup ? "ok" : "off"}>
+              {settings.cloudBackup
+                ? t.settings.badge.active
+                : t.settings.badge.inactive}
+            </SettingBadge>
+            <SettingToggle
+              action={setCloudBackupAction}
+              enabled={settings.cloudBackup}
+              label={t.settings.rows.backup}
+            />
+          </div>
+        </SettingRow>
+
+        <SettingRow label={t.settings.rows.lastBackup}>
+          <b className="num">
+            {settings.lastBackupAt
+              ? formatBackup(settings.lastBackupAt)
+              : t.settings.badge.never}
+          </b>
         </SettingRow>
       </div>
 

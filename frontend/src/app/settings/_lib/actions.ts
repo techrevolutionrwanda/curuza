@@ -78,3 +78,16 @@ export async function setSmsRemindersAction(
   refresh();
   return { enabled };
 }
+
+/**
+ * Turn the cloud backup on or off.
+ */
+export async function setCloudBackupAction(
+  _prev: ToggleState,
+  formData: FormData,
+): Promise<ToggleState> {
+  const enabled = formData.get("enabled") === "true";
+  repo.setCloudBackup(enabled);
+  refresh();
+  return { enabled };
+}

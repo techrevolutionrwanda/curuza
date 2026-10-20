@@ -96,6 +96,7 @@ const rw = {
       language: "Ururimi · Language",
       sms: "Kwibutsa abafite ideni (SMS)",
       backup: "Backup ya cloud",
+      lastBackup: "Backup yabereye",
     },
     form: {
       name: "Izina ry'ubucuruzi",
@@ -110,6 +111,7 @@ const rw = {
       plus: "Plus",
       active: "Ikora",
       inactive: "Ntiko",
+      never: "Nta backup",
     },
   },
   toast: {
@@ -217,6 +219,7 @@ const en: Dictionary = {
       language: "Ururimi · Language",
       sms: "SMS debtor reminders",
       backup: "Cloud backup",
+      lastBackup: "Last backup",
     },
     form: {
       name: "Business name",
@@ -231,6 +234,7 @@ const en: Dictionary = {
       plus: "Plus",
       active: "Active",
       inactive: "Off",
+      never: "Never",
     },
   },
   toast: {
