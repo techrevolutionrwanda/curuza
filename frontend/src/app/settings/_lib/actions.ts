@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { refresh } from "next/cache";
-import { isCurrency } from "@/data/settings";
+import { isCurrency, type ToggleState } from "@/data/settings";
 import type { Locale } from "@/i18n/dictionaries";
 import * as repo from "./repository";
 
@@ -64,4 +64,17 @@ export async function setLocaleAction(locale: Locale): Promise<SettingsActionRes
 
   refresh();
   return { ok: true };
+}
+
+/**
+ * Turn the SMS reminders for debtors on or off.
+ */
+export async function setSmsRemindersAction(
+  _prev: ToggleState,
+  formData: FormData,
+): Promise<ToggleState> {
+  const enabled = formData.get("enabled") === "true";
+  repo.setSmsReminders(enabled);
+  refresh();
+  return { enabled };
 }

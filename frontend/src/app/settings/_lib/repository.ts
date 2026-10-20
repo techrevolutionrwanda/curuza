@@ -39,3 +39,11 @@ export function setLocale(locale: Locale): Settings {
   state.locale = locale;
   return getSettings();
 }
+
+/**
+ * Turn the SMS reminders for debtors on or off.
+ */
+export function setSmsReminders(enabled: boolean): Settings {
+  state.smsReminders = enabled;
+  return getSettings();
+}

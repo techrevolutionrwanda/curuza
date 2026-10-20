@@ -3,11 +3,13 @@
 import { useCallback, useState } from "react";
 import { useI18n } from "@/i18n/locale-provider";
 import { Toast, type ToastMsg } from "@/components/toast";
+import { setSmsRemindersAction } from "@/app/settings/_lib/actions";
 import type { Settings } from "@/data/settings";
 import { BusinessForm } from "./business-form";
 import { LanguageSwitch } from "./language-switch";
 import { SettingBadge } from "./setting-badge";
 import { SettingRow } from "./setting-row";
+import { SettingToggle } from "./setting-toggle";
 
 /**
  * The settings page.
@@ -48,7 +50,14 @@ export function SettingsView({ settings }: { settings: Settings }) {
         </SettingRow>
 
         <SettingRow label={t.settings.rows.sms}>
-          <SettingBadge tone="info">{t.settings.badge.plus}</SettingBadge>
+          <div className="flex items-center gap-2.5">
+            <SettingBadge tone="info">{t.settings.badge.plus}</SettingBadge>
+            <SettingToggle
+              action={setSmsRemindersAction}
+              enabled={settings.smsReminders}
+              label={t.settings.rows.sms}
+            />
+          </div>
         </SettingRow>
 
         <SettingRow label={t.settings.rows.backup}>
