@@ -1,9 +1,18 @@
 "use client";
 
+import { BarChart, type ChartBar } from "@/components/BarChart";
 import { useI18n } from "@/i18n/locale-provider";
 
 /** Height of each bar of the week. The day of each bar comes from the dictionary. */
-const HEIGHTS = ["40%", "55%", "35%", "70%", "50%", "92%", "65%"];
+const HEIGHTS: ChartBar[] = [
+  { height: "40%" },
+  { height: "55%" },
+  { height: "35%" },
+  { height: "70%" },
+  { height: "50%" },
+  { height: "92%", top: true },
+  { height: "65%" },
+];
 
 export function WeeklyChart() {
   const { t } = useI18n();
@@ -21,23 +30,7 @@ export function WeeklyChart() {
           +12%
         </span>
       </div>
-      <div className="flex items-end gap-[14px] h-[220px] pt-[10px]">
-        {HEIGHTS.map((h, i) => (
-          <div
-            key={i}
-            className="flex-1 h-full flex flex-col justify-end items-center gap-[8px] text-[12px] text-ink-2 group"
-          >
-            <i
-              className={`w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary ${
-                i === 5 ? "bg-primary" : "bg-primary-soft"
-              }`}
-              style={{ height: h }}
-              aria-hidden="true"
-            />
-            {t.home.chart.days[i]}
-          </div>
-        ))}
-      </div>
+      <BarChart bars={HEIGHTS} days={t.weekdays} />
     </div>
   );
 }
