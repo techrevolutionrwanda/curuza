@@ -29,7 +29,7 @@ export function SegmentControl({
           type="button"
           onClick={() => onChange(i)}
           aria-pressed={value === i}
-          className={`h-[38px] rounded-[11px] px-4 text-[13px] font-bold transition ${
+          className={`h-[38px] whitespace-nowrap rounded-[11px] px-2 text-[13px] font-bold transition sm:px-4 ${
             value === i
               ? "bg-surface text-primary-dark shadow-card"
               : "text-ink-2 hover:text-ink"
