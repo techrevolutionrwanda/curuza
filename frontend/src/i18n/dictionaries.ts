@@ -93,11 +93,18 @@ const rw = {
     title: "Igenamiterere",
     subtitle: "Ubucuruzi, ururimi n'ubutumwa",
     rows: {
-      businessName: "Izina ry'ubucuruzi",
       language: "Ururimi · Language",
-      currency: "Ifaranga · Currency",
       sms: "Kwibutsa abafite ideni (SMS)",
       backup: "Backup ya cloud",
+    },
+    form: {
+      name: "Izina ry'ubucuruzi",
+      namePlaceholder: "Urugero: Duka rya Mukamana",
+      phone: "Telefoni",
+      phonePlaceholder: "+250 788 000 000",
+      currency: "Ifaranga · Currency",
+      save: "Bika",
+      saving: "Kubika...",
     },
     badge: {
       plus: "Plus",
@@ -207,11 +214,18 @@ const en: Dictionary = {
     title: "Settings",
     subtitle: "Business, language and SMS",
     rows: {
-      businessName: "Business name",
       language: "Ururimi · Language",
-      currency: "Ifaranga · Currency",
       sms: "SMS debtor reminders",
       backup: "Cloud backup",
+    },
+    form: {
+      name: "Business name",
+      namePlaceholder: "e.g. Mukamana shop",
+      phone: "Phone",
+      phonePlaceholder: "+250 788 000 000",
+      currency: "Ifaranga · Currency",
+      save: "Save",
+      saving: "Saving...",
     },
     badge: {
       plus: "Plus",

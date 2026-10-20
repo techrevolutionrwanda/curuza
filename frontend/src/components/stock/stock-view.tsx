@@ -8,7 +8,7 @@ import { ProductModal } from "./product-modal";
 import { CategoryModal } from "./category-modal";
 import { RestockModal } from "./restock-modal";
 import { ConfirmDeleteModal } from "./confirm-modal";
-import { Toast, type ToastMsg } from "./toast";
+import { Toast, type ToastMsg } from "@/components/toast";
 
 const STATUS_TONE = {
   ok: "bg-primary-soft text-primary-dark",

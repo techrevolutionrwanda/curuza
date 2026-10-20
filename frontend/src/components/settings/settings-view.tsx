@@ -1,8 +1,11 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { LOCALE_LABEL } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
+import { Toast, type ToastMsg } from "@/components/toast";
 import type { Settings } from "@/data/settings";
+import { BusinessForm } from "./business-form";
 import { SettingBadge } from "./setting-badge";
 import { SettingRow } from "./setting-row";
 
@@ -15,6 +18,18 @@ import { SettingRow } from "./setting-row";
  */
 export function SettingsView({ settings }: { settings: Settings }) {
   const { t } = useI18n();
+  const [toasts, setToasts] = useState<ToastMsg[]>([]);
+
+  const pushToast = useCallback(() => {
+    setToasts((ts) => [
+      ...ts,
+      { id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, key: "settingsSaved" },
+    ]);
+  }, []);
+
+  const dismissToast = useCallback((id: string) => {
+    setToasts((ts) => ts.filter((x) => x.id !== id));
+  }, []);
 
   return (
     <div className="w-full">
@@ -25,17 +40,11 @@ export function SettingsView({ settings }: { settings: Settings }) {
         <p className="mt-1 text-ink-2">{t.settings.subtitle}</p>
       </div>
 
-      <div className="max-w-[640px] rounded-card bg-surface p-[22px] shadow-card">
-        <SettingRow label={t.settings.rows.businessName}>
-          <b>{settings.businessName}</b>
-        </SettingRow>
+      <div className="max-w-[640px] divide-y divide-line rounded-card bg-surface p-[22px] shadow-card">
+        <BusinessForm settings={settings} onSaved={pushToast} />
 
         <SettingRow label={t.settings.rows.language}>
           <b>{LOCALE_LABEL[settings.locale]}</b>
-        </SettingRow>
-
-        <SettingRow label={t.settings.rows.currency}>
-          <b className="num">{settings.currency}</b>
         </SettingRow>
 
         <SettingRow label={t.settings.rows.sms}>
@@ -44,10 +53,14 @@ export function SettingsView({ settings }: { settings: Settings }) {
 
         <SettingRow label={t.settings.rows.backup}>
           <SettingBadge tone={settings.cloudBackup ? "ok" : "off"}>
-            {settings.cloudBackup ? t.settings.badge.active : t.settings.badge.inactive}
+            {settings.cloudBackup
+              ? t.settings.badge.active
+              : t.settings.badge.inactive}
           </SettingBadge>
         </SettingRow>
       </div>
+
+      <Toast toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

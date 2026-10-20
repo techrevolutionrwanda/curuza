@@ -16,3 +16,17 @@ const state: Settings = { ...SEED_SETTINGS };
 export function getSettings(): Settings {
   return { ...state };
 }
+
+/**
+ * Update the business profile of the shop.
+ */
+export function updateBusiness(input: {
+  businessName: string;
+  phone: string;
+  currency: string;
+}): Settings {
+  state.businessName = input.businessName;
+  state.phone = input.phone;
+  state.currency = input.currency;
+  return getSettings();
+}
