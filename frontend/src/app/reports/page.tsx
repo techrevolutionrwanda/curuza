@@ -1,14 +1,14 @@
 ﻿"use client";
 
-import React from "react";
+import { useState } from "react";
 
 const REVENUE_BARS = [
-  { label: "Mbe", h: "40%", top: true },
+  { label: "Mbe", h: "40%" },
   { label: "Kab", h: "55%" },
   { label: "Gat", h: "35%" },
   { label: "Gnd", h: "70%" },
   { label: "Gat", h: "50%" },
-  { label: "Ruh", h: "92%" },
+  { label: "Ruh", h: "92%", top: true },
   { label: "Cyu", h: "65%" },
 ];
 
@@ -27,68 +27,65 @@ const TOP_CATEGORIES = [
 ];
 
 export default function ReportsPage() {
+  const [selectedRange, setSelectedRange] = useState("Uyu munsi");
+  const ranges = ["Uyu munsi", "Icyumweru", "Ukwezi", "Hitamo"];
+
   return (
     <div className="page reports-page">
-      <div className="head">
+      <div className="head report-head">
         <div>
           <h1>Raporo</h1>
           <p>Reports · understand your business</p>
         </div>
-        <div className="seg" data-seg>
-          <button className="on">Uyu munsi</button>
-          <button>Icyumweru</button>
-          <button>Ukwezi</button>
-          <button>Hitamo</button>
+        <div className="report-controls">
+          <div className="seg report-range" role="group" aria-label="Hitamo igihe cya raporo">
+            {ranges.map((range) => (
+              <button
+                key={range}
+                type="button"
+                className={selectedRange === range ? "on" : undefined}
+                aria-pressed={selectedRange === range}
+                onClick={() => setSelectedRange(range)}
+              >
+                {range}
+              </button>
+            ))}
+          </div>
+          <button className="btn ghost report-export">Sohora · Export</button>
         </div>
-        <button className="btn ghost">Sohora · Export</button>
       </div>
 
-      <div className="cols even">
-        <div className="card">
+      <div className="cols report-grid">
+        <section className="card report-card report-profit" aria-labelledby="profit-heading">
           <div className="ch">
             <div>
-              <h3>Inyungu yagereranijwe</h3>
+              <h3 id="profit-heading">Inyungu yagereranijwe</h3>
               <div className="sub">Estimated profit</div>
             </div>
             <span className="badge ok">+12%</span>
           </div>
-          <div
-            style={{
-              fontSize: "34px",
-              fontWeight: 800,
-              letterSpacing: "-0.02em",
-              marginTop: "16px",
-            }}
-            className="num up"
-          >
-            214,300 <small style={{ fontSize: "15px", color: "var(--ink-2)" }}>RWF</small>
+          <div className="report-value num up">
+            214,300 <small>RWF</small>
           </div>
           <div
-            style={{
-              height: "170px",
-              display: "flex",
-              alignItems: "flex-end",
-              gap: "14px",
-            }}
+            className="chart report-chart"
+            role="img"
+            aria-label="Estimated profit by day for the last seven days"
           >
             {REVENUE_BARS.map((b, i) => (
               <div
                 key={i}
-                className="flex-1 h-full flex flex-col justify-end items-center gap-[8px] text-[12px] text-ink-2 group"
+                className={b.top ? "top" : undefined}
               >
-                <i
-                  className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary"
-                  style={{ height: b.h }}
-                  aria-hidden="true"
-                />
+                <i style={{ height: b.h }} aria-hidden="true" />
                 {b.label}
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div className="card" style={{ marginTop: "16px" }}>
-          <h3 style={{ marginBottom: "8px" }}>Incamake · Summary</h3>
+        <section className="card report-card report-summary" aria-labelledby="summary-heading">
+          <h3 id="summary-heading">Incamake · Summary</h3>
           {SUMMARY_KPIS.map((kpi, i) => (
             <div key={i} className="kv">
               <span>{kpi.label}</span>
@@ -98,23 +95,29 @@ export default function ReportsPage() {
           <div className="note">
             Ideni si amafaranga yinjiye. Inyungu ni igereranya rishingiye ku biciro wanditse.
           </div>
-        </div>
+        </section>
       </div>
 
-      <div className="card" style={{ marginTop: "16px" }}>
-        <h3 style={{ marginBottom: "8px" }}>Ibyaguzwe cyane · Top categories</h3>
+      <section className="card report-card report-categories" aria-labelledby="categories-heading">
+        <h3 id="categories-heading">Ibyaguzwe cyane · Top categories</h3>
+        <div className="sub">Sales volume by product category</div>
         {TOP_CATEGORIES.map((cat, i) => (
-          <div key={i} className="kv">
+          <div key={i} className="kv report-category-row">
             <span>{cat.name}</span>
-            <div style={{ flex: 1, margin: "6px 20px" }}>
-              <div className="bar">
-                <i style={{ width: `${cat.percent}%` }} />
-              </div>
+            <div
+              className="category-bar"
+              role="progressbar"
+              aria-label={`${cat.name} sales volume`}
+              aria-valuenow={cat.percent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <i style={{ width: `${cat.percent}%` }} />
             </div>
             <b className="num">{cat.count}</b>
           </div>
         ))}
-      </div>
+      </section>
     </div>
   );
 }

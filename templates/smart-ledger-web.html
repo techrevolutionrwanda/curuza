@@ -101,6 +101,42 @@ input,select{font:inherit;color:inherit}
 .seg button{min-height:38px;padding:0 16px;border-radius:11px;font-weight:700;font-size:13px;color:var(--ink-2)}
 .seg button.on{background:var(--surface);color:var(--primary-dark);box-shadow:var(--shadow)}
 
+/* ===== REPORTS ===== */
+.report-head{align-items:center;margin-bottom:26px}
+.report-head h1{font-size:32px}
+.report-head p{font-size:14px}
+.report-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.report-range{background:#E9EFEC;border-radius:15px}
+.report-range button{white-space:nowrap}
+.report-export{min-height:46px;padding:0 18px}
+.report-grid{grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:18px;margin-bottom:18px}
+.report-card{border:1px solid rgba(16,32,27,.04)}
+.report-profit{background:linear-gradient(145deg,#fff 12%,#F1F8F5 100%);overflow:hidden;position:relative}
+.report-profit::after{content:"";position:absolute;width:190px;height:190px;right:-100px;top:-110px;border-radius:50%;background:rgba(14,122,95,.07);pointer-events:none}
+.report-profit .ch,.report-profit .report-value,.report-chart{position:relative;z-index:1}
+.report-profit .ch{margin-bottom:10px}
+.report-profit .badge{padding:6px 12px;font-size:13px}
+.report-value{font-size:clamp(30px,3vw,38px);font-weight:800;letter-spacing:-.04em;line-height:1.15}
+.report-value small{font-size:14px;letter-spacing:0;color:var(--ink-2);font-weight:600;margin-left:4px}
+.report-chart{height:190px;margin-top:12px;padding:12px 4px 0;background:repeating-linear-gradient(to top,transparent 0,transparent 44px,rgba(16,32,27,.055) 45px,transparent 46px)}
+.report-chart div{font-size:11px;gap:9px}
+.report-chart i{max-width:44px;border-radius:9px 9px 4px 4px;background:linear-gradient(180deg,#A9D9C8,var(--primary-soft))}
+.report-chart div:hover i,.report-chart .top i{background:linear-gradient(180deg,#26A17A,var(--primary))}
+.report-summary{padding:22px}
+.report-summary h3{margin-bottom:8px}
+.report-summary .kv{gap:16px;padding:14px 0;font-size:14px}
+.report-summary .kv span{line-height:1.4}
+.report-summary .kv b{white-space:nowrap}
+.report-summary .note{margin-top:14px;line-height:1.5}
+.report-categories{padding:22px}
+.report-categories h3{font-size:17px}
+.report-categories .sub{margin-top:3px}
+.report-category-row{gap:18px;padding:16px 0}
+.report-category-row > span{min-width:110px;font-weight:600;color:var(--ink)}
+.report-category-row .bar{height:10px;background:#EDF1EF}
+.report-category-row .bar i{background:linear-gradient(90deg,#72BDA4,var(--primary))}
+.report-category-row > b{min-width:76px;text-align:right;white-space:nowrap}
+
 /* ===== TABLES ===== */
 .tw{overflow-x:auto;margin:0 -8px}
 table{width:100%;border-collapse:collapse;min-width:560px}
@@ -163,6 +199,23 @@ th.r,td.r{text-align:right}
   .kpis{gap:10px}.kpi{padding:16px}.kpi .v{font-size:22px}
   .promo{flex-wrap:wrap}.promo .btn{margin-left:0;width:100%}
   .top .btn.gold span{display:none}
+  .report-head{align-items:flex-start}
+  .report-controls{width:100%}
+  .report-range{flex:1;justify-content:space-between}
+  .report-range button{flex:1;padding:0 10px}
+  .report-grid{gap:12px}
+}
+@media(max-width:520px){
+  .report-head h1{font-size:28px}
+  .report-controls{display:grid;grid-template-columns:1fr}
+  .report-range{width:100%;gap:2px;padding:3px}
+  .report-range button{min-width:0;padding:0 5px;font-size:11px}
+  .report-export{width:100%}
+  .report-profit,.report-summary,.report-categories{padding:18px}
+  .report-chart{gap:8px}
+  .report-category-row{gap:10px;padding:14px 0}
+  .report-category-row > span{min-width:82px;font-size:13px}
+  .report-category-row > b{min-width:64px;font-size:13px}
 }
 </style>
 </head>
@@ -278,19 +331,19 @@ th.r,td.r{text-align:right}
       </section>
 
       <!-- REPORTS -->
-      <section class="view" id="reports">
-        <div class="head"><div><h1>Raporo</h1><p>Reports · understand your business</p></div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap"><div class="seg" data-seg><button class="on">Uyu munsi</button><button>Icyumweru</button><button>Ukwezi</button><button>Hitamo</button></div><button class="btn ghost">Sohora · Export</button></div></div>
-        <div class="cols even">
-          <div class="card">
+      <section class="view report-view" id="reports">
+        <div class="head report-head"><div><h1>Raporo</h1><p>Reports · understand your business</p></div>
+          <div class="report-controls"><div class="seg report-range" data-seg><button class="on">Uyu munsi</button><button>Icyumweru</button><button>Ukwezi</button><button>Hitamo</button></div><button class="btn ghost report-export">Sohora · Export</button></div></div>
+        <div class="cols even report-grid">
+          <div class="card report-card report-profit">
             <div class="ch"><div><h3>Inyungu yagereranijwe</h3><div class="sub">Estimated profit</div></div><span class="badge ok">+12%</span></div>
-            <div style="font-size:34px;font-weight:800;letter-spacing:-.02em" class="num up">214,300 <small style="font-size:15px;color:var(--ink-2)">RWF</small></div>
-            <div class="chart" style="height:170px">
+            <div class="report-value num up">214,300 <small>RWF</small></div>
+            <div class="chart report-chart">
               <div><i style="height:40%"></i>Mbe</div><div><i style="height:55%"></i>Kab</div><div><i style="height:35%"></i>Gat</div><div><i style="height:70%"></i>Gnd</div><div><i style="height:50%"></i>Gat</div><div class="top"><i style="height:92%"></i>Ruh</div><div><i style="height:65%"></i>Cyu</div>
             </div>
           </div>
-          <div class="card">
-            <h3 style="margin-bottom:8px">Incamake · Summary</h3>
+          <div class="card report-card report-summary">
+            <h3>Incamake · Summary</h3>
             <div class="kv"><span>Ibyagurishijwe · Sales</span><b class="num">612,000</b></div>
             <div class="kv"><span>Yakiriwe · Cash collected</span><b class="num up">427,000</b></div>
             <div class="kv"><span>Ku ideni · Credit given</span><b class="num dn">185,000</b></div>
@@ -299,10 +352,10 @@ th.r,td.r{text-align:right}
             <div class="note">Ideni si amafaranga yinjiye. Inyungu ni igereranya rishingiye ku biciro wanditse.</div>
           </div>
         </div>
-        <div class="card" style="margin-top:16px"><h3 style="margin-bottom:8px">Ibyaguzwe cyane · Top categories</h3>
-          <div class="kv"><span>Ibinyobwa</span><div style="flex:1;margin:6px 20px"><div class="bar"><i style="width:90%"></i></div></div><b class="num">214 pcs</b></div>
-          <div class="kv"><span>Ibiribwa</span><div style="flex:1;margin:6px 20px"><div class="bar"><i style="width:70%"></i></div></div><b class="num">167 pcs</b></div>
-          <div class="kv"><span>Isuku</span><div style="flex:1;margin:6px 20px"><div class="bar"><i style="width:37%"></i></div></div><b class="num">89 pcs</b></div>
+        <div class="card report-card report-categories"><h3>Ibyaguzwe cyane · Top categories</h3><div class="sub">Sales volume by product category</div>
+          <div class="kv report-category-row"><span>Ibinyobwa</span><div style="flex:1"><div class="bar"><i style="width:90%"></i></div></div><b class="num">214 pcs</b></div>
+          <div class="kv report-category-row"><span>Ibiribwa</span><div style="flex:1"><div class="bar"><i style="width:70%"></i></div></div><b class="num">167 pcs</b></div>
+          <div class="kv report-category-row"><span>Isuku</span><div style="flex:1"><div class="bar"><i style="width:37%"></i></div></div><b class="num">89 pcs</b></div>
         </div>
       </section>
 
