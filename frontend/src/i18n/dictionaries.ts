@@ -128,6 +128,25 @@ const rw = {
         trend: "{count} byashize",
       },
     },
+    promo: {
+      tag: "IGICIRO",
+      title: "Isukari -8% kuri Kg 50",
+      subtitle: "Ikoreshwa kugeza ku wa gatanu · Supplier offer",
+      cta: "Reba",
+    },
+    chart: {
+      title: "Ibyagurishijwe mu cyumweru",
+      subtitle: "Sales this week · RWF",
+      days: ["Mbe", "Kab", "Gat", "Gnd", "Gat", "Ruh", "Cyu"],
+    },
+    restock: {
+      title: "Biri hafi gushira",
+      subtitle: "Needs restocking",
+      cta: "Byose",
+      empty: "Nta kintu gishyura · Nothing to restock",
+      out: "Byashize",
+      remaining: "{count} bisigaye",
+    },
   },
   settings: {
     title: "Igenamiterere",
@@ -289,6 +308,25 @@ const en: Dictionary = {
         unit: "products",
         trend: "{count} out of stock",
       },
+    },
+    promo: {
+      tag: "OFFER",
+      title: "Sugar -8% for 50 kg",
+      subtitle: "Valid until Friday · Supplier offer",
+      cta: "See offer",
+    },
+    chart: {
+      title: "Sales this week",
+      subtitle: "Sales of the last 7 days · RWF",
+      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+    restock: {
+      title: "Needs restocking",
+      subtitle: "Products to reorder",
+      cta: "All",
+      empty: "Nothing to restock",
+      out: "Out of stock",
+      remaining: "{count} left",
     },
   },
   settings: {
