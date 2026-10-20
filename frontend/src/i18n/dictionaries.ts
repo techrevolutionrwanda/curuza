@@ -105,6 +105,7 @@ const rw = {
     newSale: "Gurisha",
     owner: "Nyiri duka · Owner",
   },
+  weekdays: ["Mbe", "Kab", "Gat", "Gnd", "Gat", "Ruh", "Cyu"],
   home: {
     greeting: "Muraho",
     subtitle: "Uko ubucuruzi bwawe buhagaze uyu munsi · Your business today",
@@ -137,7 +138,6 @@ const rw = {
     chart: {
       title: "Ibyagurishijwe mu cyumweru",
       subtitle: "Sales this week · RWF",
-      days: ["Mbe", "Kab", "Gat", "Gnd", "Gat", "Ruh", "Cyu"],
     },
     restock: {
       title: "Biri hafi gushira",
@@ -169,6 +169,33 @@ const rw = {
         partial: { label: "Igice", sub: "Partial" },
         credit: { label: "Ideni", sub: "Credit" },
       },
+    },
+  },
+  reports: {
+    title: "Raporo",
+    subtitle: "Sobanura ibucuruzi bwawe",
+    periodLabel: "Igihe · Period",
+    periods: ["Uyu munsi", "Icyumweru", "Ukwezi", "Hitamo"],
+    export: "Sohora · Export",
+    profit: {
+      title: "Inyungu yagereranijwe",
+      subtitle: "Inyungu y'igihe cyatoranyijwe",
+      trend: "+12%",
+    },
+    summary: {
+      title: "Incamake · Summary",
+      rows: {
+        sales: "Ibyagurishijwe · Sales",
+        cash: "Yakiriwe · Cash collected",
+        credit: "Ku ideni · Credit given",
+        cost: "Igiciro cy'ibicuruzwa · Cost of goods",
+        expenses: "Ibindi bikoreshwa · Expenses",
+      },
+      note: "Ideni si amafaranga yinjiye. Inyungu ni igereranya rishingiye ku biciro wanditse.",
+    },
+    categories: {
+      title: "Ibyaguzwe cyane · Top categories",
+      units: "{count} pcs",
     },
   },
   settings: {
@@ -309,6 +336,7 @@ const en: Dictionary = {
     newSale: "New sale",
     owner: "Shop owner",
   },
+  weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
   home: {
     greeting: "Hello",
     subtitle: "Here is how your business is doing today",
@@ -341,7 +369,6 @@ const en: Dictionary = {
     chart: {
       title: "Sales this week",
       subtitle: "Sales of the last 7 days · RWF",
-      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     },
     restock: {
       title: "Needs restocking",
@@ -373,6 +400,33 @@ const en: Dictionary = {
         partial: { label: "Partial", sub: "Partial" },
         credit: { label: "Credit", sub: "Credit" },
       },
+    },
+  },
+  reports: {
+    title: "Reports",
+    subtitle: "Understand your business",
+    periodLabel: "Period",
+    periods: ["Today", "This week", "This month", "Custom"],
+    export: "Export",
+    profit: {
+      title: "Estimated profit",
+      subtitle: "Profit of the selected period",
+      trend: "+12%",
+    },
+    summary: {
+      title: "Summary",
+      rows: {
+        sales: "Sales",
+        cash: "Cash collected",
+        credit: "Credit given",
+        cost: "Cost of goods",
+        expenses: "Expenses",
+      },
+      note: "Debt is not money in the bank. The profit is what is left from what you sold.",
+    },
+    categories: {
+      title: "Top categories",
+      units: "{count} pcs",
     },
   },
   settings: {

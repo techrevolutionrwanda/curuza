@@ -34,7 +34,7 @@ export function WeeklyChart() {
               style={{ height: h }}
               aria-hidden="true"
             />
-            {t.home.chart.days[i]}
+            {t.weekdays[i]}
           </div>
         ))}
       </div>

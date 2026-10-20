@@ -1,6 +1,8 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { interpolate } from "@/i18n/dictionaries";
+import { useI18n } from "@/i18n/locale-provider";
 
 const REVENUE_BARS = [
   { h: "40%" },
@@ -12,25 +14,22 @@ const REVENUE_BARS = [
   { h: "65%" },
 ];
 
-const DAYS = ["Mbe", "Kab", "Gat", "Gnd", "Gat", "Ruh", "Cyu"];
-
-const PERIODS = ["Uyu munsi", "Icyumweru", "Ukwezi", "Hitamo"];
-
 const SUMMARY_KPIS = [
-  { label: "Ibyagurishijwe · Sales", value: "612,000", trend: "up" },
-  { label: "Yakiriwe · Cash collected", value: "427,000", trend: "up" },
-  { label: "Ku ideni · Credit given", value: "185,000", trend: "down" },
-  { label: "Igiciro cy'ibicuruzwa · Cost of goods", value: "351,200" },
-  { label: "Ibindi bikoreshwa · Expenses", value: "46,500" },
-];
+  { key: "sales", value: "612,000", trend: "up" },
+  { key: "cash", value: "427,000", trend: "up" },
+  { key: "credit", value: "185,000", trend: "down" },
+  { key: "cost", value: "351,200", trend: "" },
+  { key: "expenses", value: "46,500", trend: "" },
+] as const;
 
 const TOP_CATEGORIES = [
-  { name: "Ibinyobwa", percent: 90, count: "214 pcs" },
-  { name: "Ibiribwa", percent: 70, count: "167 pcs" },
-  { name: "Isuku", percent: 37, count: "89 pcs" },
-];
+  { id: "ibinyobwa", percent: 90, count: 214 },
+  { id: "ibiribwa", percent: 70, count: 167 },
+  { id: "isuku", percent: 37, count: 89 },
+] as const;
 
 export default function ReportsPage() {
+  const { t } = useI18n();
   const [period, setPeriod] = useState(0);
 
   return (
@@ -38,17 +37,17 @@ export default function ReportsPage() {
       <div className="mb-[22px] flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[28px] font-bold leading-[1.15] tracking-[-0.02em]">
-            Raporo
+            {t.reports.title}
           </h1>
-          <p className="mt-1 text-ink-2">Reports · understand your business</p>
+          <p className="mt-1 text-ink-2">{t.reports.subtitle}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           <div
             className="inline-flex gap-1 rounded-[14px] bg-[#e7edea] p-1"
             role="group"
-            aria-label="Period"
+            aria-label={t.reports.periodLabel}
           >
-            {PERIODS.map((label, i) => (
+            {t.reports.periods.map((label, i) => (
               <button
                 key={label}
                 type="button"
@@ -68,7 +67,7 @@ export default function ReportsPage() {
             type="button"
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-panel border-[1.5px] border-line bg-surface px-5 font-bold transition hover:bg-bg"
           >
-            Sohora · Export
+            {t.reports.export}
           </button>
         </div>
       </div>
@@ -79,12 +78,14 @@ export default function ReportsPage() {
           <div className="mb-[16px] flex flex-wrap items-center justify-between gap-2.5">
             <div>
               <h3 className="text-[16px] font-bold text-ink">
-                Inyungu yagereranijwe
+                {t.reports.profit.title}
               </h3>
-              <div className="mt-0.5 text-[13px] text-ink-2">Estimated profit</div>
+              <div className="mt-0.5 text-[13px] text-ink-2">
+                {t.reports.profit.subtitle}
+              </div>
             </div>
             <span className="inline-block whitespace-nowrap rounded-pill bg-primary-soft px-[11px] py-1 text-[12px] font-extrabold text-primary-dark">
-              +12%
+              {t.reports.profit.trend}
             </span>
           </div>
           <div className="mt-4 text-[34px] font-extrabold leading-none tracking-[-0.02em] text-success tabular-nums">
@@ -104,7 +105,7 @@ export default function ReportsPage() {
                   style={{ height: bar.h }}
                   aria-hidden="true"
                 />
-                {DAYS[i]}
+                {t.weekdays[i]}
               </div>
             ))}
           </div>
@@ -112,14 +113,16 @@ export default function ReportsPage() {
 
         {/* Summary */}
         <div className="rounded-card bg-surface p-[22px] shadow-card">
-          <h3 className="mb-2 text-[16px] font-bold text-ink">Incamake · Summary</h3>
+          <h3 className="mb-2 text-[16px] font-bold text-ink">
+            {t.reports.summary.title}
+          </h3>
           <div className="divide-y divide-line">
-            {SUMMARY_KPIS.map((kpi, i) => (
+            {SUMMARY_KPIS.map((kpi) => (
               <div
-                key={i}
+                key={kpi.key}
                 className="flex items-center justify-between gap-4 py-[13px]"
               >
-                <span className="text-ink-2">{kpi.label}</span>
+                <span className="text-ink-2">{t.reports.summary.rows[kpi.key]}</span>
                 <b
                   className={`tabular-nums ${
                     kpi.trend === "up"
@@ -135,8 +138,7 @@ export default function ReportsPage() {
             ))}
           </div>
           <div className="mt-4 rounded-[14px] bg-info-soft px-4 py-3 text-[13px] text-[#17497F]">
-            Ideni si amafaranga yinjiye. Inyungu ni igereranya rishingiye ku
-            biciro wanditse.
+            {t.reports.summary.note}
           </div>
         </div>
       </div>
@@ -144,15 +146,15 @@ export default function ReportsPage() {
       {/* Top categories */}
       <div className="rounded-card bg-surface p-[22px] shadow-card">
         <h3 className="mb-2 text-[16px] font-bold text-ink">
-          Ibyaguzwe cyane · Top categories
+          {t.reports.categories.title}
         </h3>
         <div className="divide-y divide-line">
-          {TOP_CATEGORIES.map((cat, i) => (
+          {TOP_CATEGORIES.map((cat) => (
             <div
-              key={i}
+              key={cat.id}
               className="flex items-center justify-between gap-4 py-[13px]"
             >
-              <span className="text-ink-2">{cat.name}</span>
+              <span className="text-ink-2">{t.stock.categories[cat.id]}</span>
               <div className="mx-5 flex-1">
                 <div className="h-2 overflow-hidden rounded-pill bg-line">
                   <div
@@ -161,7 +163,9 @@ export default function ReportsPage() {
                   />
                 </div>
               </div>
-              <b className="tabular-nums">{cat.count}</b>
+              <b className="tabular-nums">
+                {interpolate(t.reports.categories.units, { count: String(cat.count) })}
+              </b>
             </div>
           ))}
         </div>
