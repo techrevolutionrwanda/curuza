@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { stockStatus, type Product } from "@/data/products";
+import { interpolate } from "@/i18n/dictionaries";
+import { useI18n } from "@/i18n/locale-provider";
 
 const badgeStyles: Record<string, string> = {
   low: "bg-warning-soft text-warning",
@@ -9,6 +11,7 @@ const badgeStyles: Record<string, string> = {
 };
 
 export function RestockList({ products }: { products: Product[] }) {
+  const { t } = useI18n();
   const items = products
     .filter((p) => stockStatus(p.qty) !== "ok")
     .sort((a, b) => a.qty - b.qty)
@@ -19,20 +22,20 @@ export function RestockList({ products }: { products: Product[] }) {
       <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
         <div>
           <h3 className="text-[16px] font-bold mb-[2px] text-ink">
-            Biri hafi gushira
+            {t.home.restock.title}
           </h3>
-          <div className="text-ink-2 text-[13px]">Needs restocking</div>
+          <div className="text-ink-2 text-[13px]">{t.home.restock.subtitle}</div>
         </div>
         <Link
           href="/stock"
           className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
         >
-          Byose
+          {t.home.restock.cta}
         </Link>
       </div>
       {items.length === 0 ? (
         <div className="py-[13px] text-ink-2 text-[13px]">
-          Nta kintu gishyura · Nothing to restock
+          {t.home.restock.empty}
         </div>
       ) : (
         items.map((item) => {
@@ -48,7 +51,9 @@ export function RestockList({ products }: { products: Product[] }) {
                   badgeStyles[out ? "out" : "low"]
                 }`}
               >
-                {out ? "Byashize" : `${item.qty} bisigaye`}
+                {out
+                  ? t.home.restock.out
+                  : interpolate(t.home.restock.remaining, { count: String(item.qty) })}
               </span>
             </div>
           );

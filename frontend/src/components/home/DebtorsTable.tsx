@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/dist/client/link";
+import { useI18n } from "@/i18n/locale-provider";
 
 const debtors = [
   { initial: "JM", name: "Jean Marie", date: "18 Ukw 2026", repaid: "30%", owed: "45,000" },
@@ -8,20 +9,22 @@ const debtors = [
 ];
 
 export function DebtorsTable() {
+  const { t } = useI18n();
+
   return (
     <div className="bg-surface rounded-lg p-[22px] shadow-md">
       <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
         <div>
           <h3 className="text-[16px] font-bold mb-[2px] text-ink">
-            Amadeni ya vuba
+            {t.home.debtors.title}
           </h3>
-          <div className="text-ink-2 text-[13px]">Recent debtors</div>
+          <div className="text-ink-2 text-[13px]">{t.home.debtors.subtitle}</div>
         </div>
         <Link
           href="/debtors"
           className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center"
         >
-          Reba byose
+          {t.home.debtors.cta}
         </Link>
       </div>
 
@@ -31,13 +34,13 @@ export function DebtorsTable() {
           <thead>
             <tr>
               <th className="text-[12px] uppercase tracking-[0.06em] text-ink-2 text-left px-[12px] py-[10px] border-b border-line font-bold">
-                Umukiriya
+                {t.home.debtors.columns.customer}
               </th>
               <th className="text-[12px] uppercase tracking-[0.06em] text-ink-2 text-left px-[12px] py-[10px] border-b border-line font-bold">
-                Yishyuwe
+                {t.home.debtors.columns.repaid}
               </th>
               <th className="text-[12px] uppercase tracking-[0.06em] text-ink-2 text-right px-[12px] py-[10px] border-b border-line font-bold">
-                Asigaye
+                {t.home.debtors.columns.owed}
               </th>
               <th className="text-[12px] uppercase tracking-[0.06em] text-ink-2 text-left px-[12px] py-[10px] border-b border-line font-bold"></th>
             </tr>
@@ -82,7 +85,7 @@ export function DebtorsTable() {
                   }`}
                 >
                   <button className="h-[38px] px-[14px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
-                    SMS
+                    {t.home.debtors.sms}
                   </button>
                 </td>
               </tr>
@@ -110,7 +113,7 @@ export function DebtorsTable() {
             <div className="flex items-center justify-between mb-[12px]">
               <div className="flex-1">
                 <div className="text-[10px] uppercase tracking-[0.06em] text-ink-2 font-bold mb-[2px]">
-                  Yishyuwe
+                  {t.home.debtors.columns.repaid}
                 </div>
                 <div className="h-[8px] bg-line rounded-full overflow-hidden">
                   <i className="block h-full bg-danger" style={{ width: d.repaid }} aria-hidden="true" />
@@ -119,7 +122,7 @@ export function DebtorsTable() {
               <b className="text-danger font-nums tracking-[-0.01em] text-right">{d.owed}</b>
             </div>
             <button className="w-full h-[38px] rounded-[11px] font-bold text-[13px] bg-primary-soft text-primary-dark inline-flex items-center justify-center">
-              SMS
+              {t.home.debtors.sms}
             </button>
           </div>
         ))}
