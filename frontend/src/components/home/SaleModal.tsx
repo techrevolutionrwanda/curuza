@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/i18n/locale-provider";
 import { QtyStepper } from "./QtyStepper";
 import { PaymentToggle } from "./PaymentToggle";
 
@@ -17,6 +18,7 @@ interface SaleModalProps {
 }
 
 export function SaleModal({ open, onClose }: SaleModalProps) {
+  const { t } = useI18n();
   const [qty, setQty] = useState([2, 1]);
   const [pay, setPay] = useState("cash");
 
@@ -44,10 +46,10 @@ export function SaleModal({ open, onClose }: SaleModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-[22px] font-bold tracking-[-0.02em] text-ink">
-          Igurisha rishya
+          {t.home.sale.title}
         </h2>
         <div className="text-ink-2 text-[14px] mb-[16px]">
-          New sale · hitamo ibicuruzwa n'uburyo bwo kwishyura
+          {t.home.sale.subtitle}
         </div>
         {ITEMS.map((item) => (
           <div
@@ -72,7 +74,7 @@ export function SaleModal({ open, onClose }: SaleModalProps) {
         ))}
         <PaymentToggle value={pay} onChange={setPay} />
         <div className="flex justify-between items-baseline mb-[18px] mt-[12px]">
-          <span className="text-ink-2">Yose hamwe · Total</span>
+          <span className="text-ink-2">{t.home.sale.total}</span>
           <b className="text-[30px] font-bold text-ink font-nums">
             {total.toLocaleString("en-US")} RWF
           </b>
@@ -83,14 +85,14 @@ export function SaleModal({ open, onClose }: SaleModalProps) {
             onClick={onClose}
             className="h-[48px] px-[20px] rounded-[14px] font-bold border border-line border-[1.5px] bg-surface text-ink"
           >
-            Hagarika
+            {t.home.sale.cancel}
           </button>
           <button
             type="button"
             onClick={onClose}
             className="flex-1 h-[48px] px-[20px] rounded-[14px] font-bold bg-primary text-white"
           >
-            Bika igurisha
+            {t.home.sale.save}
           </button>
         </div>
       </div>

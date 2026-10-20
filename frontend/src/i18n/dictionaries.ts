@@ -147,6 +147,29 @@ const rw = {
       out: "Byashize",
       remaining: "{count} bisigaye",
     },
+    debtors: {
+      title: "Amadeni ya vuba",
+      subtitle: "Recent debtors",
+      cta: "Reba byose",
+      columns: {
+        customer: "Umukiriya",
+        repaid: "Yishyuwe",
+        owed: "Asigaye",
+      },
+      sms: "SMS",
+    },
+    sale: {
+      title: "Igurisha rishya",
+      subtitle: "New sale · hitamo ibicuruzwa n'uburyo bwo kwishyura",
+      total: "Yose hamwe · Total",
+      cancel: "Hagarika",
+      save: "Bika igurisha",
+      payment: {
+        cash: { label: "Amafaranga", sub: "Cash" },
+        partial: { label: "Igice", sub: "Partial" },
+        credit: { label: "Ideni", sub: "Credit" },
+      },
+    },
   },
   settings: {
     title: "Igenamiterere",
@@ -327,6 +350,29 @@ const en: Dictionary = {
       empty: "Nothing to restock",
       out: "Out of stock",
       remaining: "{count} left",
+    },
+    debtors: {
+      title: "Recent debtors",
+      subtitle: "Who still owes you",
+      cta: "See all",
+      columns: {
+        customer: "Customer",
+        repaid: "Repaid",
+        owed: "Owed",
+      },
+      sms: "SMS",
+    },
+    sale: {
+      title: "New sale",
+      subtitle: "New sale · pick the products and how to pay",
+      total: "Total",
+      cancel: "Cancel",
+      save: "Save sale",
+      payment: {
+        cash: { label: "Cash", sub: "Cash" },
+        partial: { label: "Partial", sub: "Partial" },
+        credit: { label: "Credit", sub: "Credit" },
+      },
     },
   },
   settings: {
