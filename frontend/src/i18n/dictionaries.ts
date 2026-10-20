@@ -181,6 +181,7 @@ const rw = {
     profit: {
       title: "Inyungu yagereranijwe",
       subtitle: "Inyungu y'igihe cyatoranyijwe",
+      chartLabel: "Inyungu yagereranijwe ku munsi w'iminsi itandatu",
       trend: "+12%",
     },
     summary: {
@@ -197,6 +198,7 @@ const rw = {
     categories: {
       title: "Ibyaguzwe cyane · Top categories",
       subtitle: "Inyungu y'ibigurishijwe icyiciro ku bicuruzwa",
+      rowLabel: "Inyungu y'ibigurishijwe {name}",
       units: "{count} pcs",
     },
   },
@@ -414,6 +416,7 @@ const en: Dictionary = {
     profit: {
       title: "Estimated profit",
       subtitle: "Profit of the selected period",
+      chartLabel: "Estimated profit by day for the last seven days",
       trend: "+12%",
     },
     summary: {
@@ -430,6 +433,7 @@ const en: Dictionary = {
     categories: {
       title: "Top categories",
       subtitle: "Sales volume by product category",
+      rowLabel: "{name} sales volume",
       units: "{count} pcs",
     },
   },

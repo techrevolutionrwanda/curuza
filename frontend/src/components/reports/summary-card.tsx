@@ -15,10 +15,11 @@ export function SummaryCard() {
   const { t } = useI18n();
 
   return (
-    <div
+    <section
+      aria-labelledby="summary-heading"
       className="rounded-card bg-surface p-[22px] shadow-card max-[520px]:p-[18px]"
     >
-      <h3 className="mb-2 text-[16px] font-bold text-ink">
+      <h3 id="summary-heading" className="mb-2 text-[16px] font-bold text-ink">
         {t.reports.summary.title}
       </h3>
 
@@ -49,6 +50,6 @@ export function SummaryCard() {
       <div className="mt-[14px] rounded-[14px] bg-info-soft px-4 py-3 text-[13px] leading-[1.5] text-[#17497F]">
         {t.reports.summary.note}
       </div>
-    </div>
+    </section>
   );
 }

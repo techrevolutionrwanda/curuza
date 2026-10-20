@@ -14,10 +14,11 @@ export function TopCategoriesCard() {
   const { t } = useI18n();
 
   return (
-    <div
+    <section
+      aria-labelledby="categories-heading"
       className="rounded-card bg-surface p-[22px] shadow-card max-[520px]:p-[18px]"
     >
-      <h3 className="text-[17px] font-bold text-ink">
+      <h3 id="categories-heading" className="text-[17px] font-bold text-ink">
         {t.reports.categories.title}
       </h3>
       <div className="mt-[3px] text-[13px] text-ink-2">
@@ -35,7 +36,14 @@ export function TopCategoriesCard() {
               <span className="min-w-[110px] font-semibold text-ink max-[520px]:min-w-[82px] max-[520px]:text-[13px]">
                 {name}
               </span>
-              <div className="flex-1">
+              <div
+                role="progressbar"
+                aria-label={interpolate(t.reports.categories.rowLabel, { name })}
+                aria-valuenow={cat.percent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className="flex-1"
+              >
                 <div className="h-[10px] overflow-hidden rounded-pill bg-[#EDF1EF]">
                   <div
                     className="block h-full rounded-pill bg-[linear-gradient(90deg,#72BDA4,var(--color-primary))]"
@@ -50,6 +58,6 @@ export function TopCategoriesCard() {
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

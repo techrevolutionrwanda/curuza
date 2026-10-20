@@ -22,7 +22,8 @@ export function ProfitCard() {
   const { t } = useI18n();
 
   return (
-    <div
+    <section
+      aria-labelledby="profit-heading"
       className="relative overflow-hidden rounded-card border border-[rgba(16,32,27,0.04)] bg-[linear-gradient(145deg,#fff_12%,#F1F8F5_100%)] p-[22px] shadow-card max-[520px]:p-[18px]"
     >
       {/* The soft circle of the template, in the corner of the card. */}
@@ -30,7 +31,10 @@ export function ProfitCard() {
 
       <div className="relative z-[1] mb-[10px] flex flex-wrap items-center justify-between gap-2.5">
         <div>
-          <h3 className="text-[16px] font-bold text-ink">
+          <h3
+            id="profit-heading"
+            className="text-[16px] font-bold text-ink"
+          >
             {t.reports.profit.title}
           </h3>
           <div className="mt-0.5 text-[13px] text-ink-2">
@@ -50,6 +54,8 @@ export function ProfitCard() {
       </div>
 
       <div
+        role="img"
+        aria-label={t.reports.profit.chartLabel}
         className="relative z-[1] mt-3 h-[190px] bg-[repeating-linear-gradient(to_top,transparent_0,transparent_44px,rgba(16,32,27,0.055)_45px,transparent_46px)]"
       >
         <BarChart
@@ -60,6 +66,6 @@ export function ProfitCard() {
           gap="gap-[14px] max-[520px]:gap-2"
         />
       </div>
-    </div>
+    </section>
   );
 }
