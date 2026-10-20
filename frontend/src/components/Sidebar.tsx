@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { useBusinessName } from "@/lib/business-store";
+import { useI18n, type Dictionary } from "@/i18n/locale-provider";
 
 type NavItem = {
   href: string;
-  label: string;
+  /** Key of the label in the dictionary, so the nav can be translated. */
+  labelKey: keyof Dictionary["nav"];
   icon: ReactNode;
   /** Shown as a small count badge on the right of the item. */
   badge?: number;
@@ -15,7 +18,7 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   {
     href: "/",
-    label: "Ahabanza",
+    labelKey: "home",
     icon: (
       <svg
         width="22"
@@ -34,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/stock",
-    label: "Stock",
+    labelKey: "stock",
     badge: 4,
     icon: (
       <svg
@@ -54,7 +57,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/debtors",
-    label: "Amadeni",
+    labelKey: "debtors",
     icon: (
       <svg
         width="22"
@@ -74,7 +77,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/reports",
-    label: "Raporo",
+    labelKey: "reports",
     icon: (
       <svg
         width="22"
@@ -93,7 +96,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/settings",
-    label: "Igenamiterere",
+    labelKey: "settings",
     icon: (
       <svg
         width="22"
@@ -115,6 +118,8 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const businessName = useBusinessName();
+  const { t } = useI18n();
 
   return (
     <aside className="side sticky top-0 flex h-full flex-col gap-1.5 border-r border-line bg-surface px-[14px] py-5">
@@ -138,7 +143,7 @@ export function Sidebar() {
         </div>
         <div>
           <b className="block text-lg font-bold text-ink">Smart Ledger</b>
-          <small className="mt-1 block text-xs text-ink-2">Duka rya Mukamana</small>
+          <small className="mt-1 block text-xs text-ink-2">{businessName}</small>
         </div>
       </div>
 
@@ -159,7 +164,7 @@ export function Sidebar() {
               ].join(" ")}
             >
               {item.icon}
-              <span>{item.label}</span>
+              <span>{t.nav[item.labelKey]}</span>
               {item.badge !== undefined && (
                 <span className="sidebar-pill ml-auto rounded-pill bg-danger px-2 py-0.5 text-xs font-extrabold text-white">
                   {item.badge}
@@ -176,13 +181,13 @@ export function Sidebar() {
       <div className="sidebar-plan rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-4 text-white">
         <b className="block text-sm font-bold">Smart Ledger Plus</b>
         <span className="mt-1 block text-xs text-white/80">
-          SMS reminders, richer reports and cloud backup.
+          {t.nav.planDescription}
         </span>
         <button
           type="button"
           className="mt-3 inline-flex h-[40px] items-center justify-center gap-2 rounded-xl bg-accent px-5 font-extrabold text-[#3A2A00] hover:brightness-95"
         >
-          Menya byinshi
+          {t.nav.planCta}
         </button>
       </div>
     </aside>

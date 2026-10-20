@@ -1,0 +1,61 @@
+import "server-only";
+
+import { SEED_SETTINGS, type Settings } from "@/data/settings";
+import type { Locale } from "@/i18n/dictionaries";
+
+export type { Settings };
+
+/**
+ * In-memory store for the shop settings.
+ *
+ * Mirrors the stock repository: the server owns the data and the client
+ * only ever receives a snapshot. It resets when the server restarts,
+ * which is fine until the settings are backed by the API.
+ */
+const state: Settings = { ...SEED_SETTINGS };
+
+export function getSettings(): Settings {
+  return { ...state };
+}
+
+/**
+ * Update the business profile of the shop.
+ */
+export function updateBusiness(input: {
+  businessName: string;
+  phone: string;
+  currency: string;
+}): Settings {
+  state.businessName = input.businessName;
+  state.phone = input.phone;
+  state.currency = input.currency;
+  return getSettings();
+}
+
+/**
+ * Change the dashboard language.
+ */
+export function setLocale(locale: Locale): Settings {
+  state.locale = locale;
+  return getSettings();
+}
+
+/**
+ * Turn the SMS reminders for debtors on or off.
+ */
+export function setSmsReminders(enabled: boolean): Settings {
+  state.smsReminders = enabled;
+  return getSettings();
+}
+
+/**
+ * Turn the cloud backup on or off.
+ *
+ * Switching it on runs a backup right away, so the shop never waits for
+ * the next scheduled run.
+ */
+export function setCloudBackup(enabled: boolean): Settings {
+  state.cloudBackup = enabled;
+  if (enabled) state.lastBackupAt = new Date().toISOString();
+  return getSettings();
+}
