@@ -89,12 +89,29 @@ const rw = {
       duplicate: "Iri zina ryarakoreshejwe",
     },
   },
+  settings: {
+    title: "Igenamiterere",
+    subtitle: "Ubucuruzi, ururimi n'ubutumwa",
+    rows: {
+      businessName: "Izina ry'ubucuruzi",
+      language: "Ururimi · Language",
+      currency: "Ifaranga · Currency",
+      sms: "Kwibutsa abafite ideni (SMS)",
+      backup: "Backup ya cloud",
+    },
+    badge: {
+      plus: "Plus",
+      active: "Ikora",
+      inactive: "Ntiko",
+    },
+  },
   toast: {
     productAdded: "'{name}' yongewe muri stock",
     productUpdated: "'{name}' yahinduwe",
     productDeleted: "'{name}' yasibwe",
     restocked: "'{name}' yongeweho",
     categoryAdded: "Icyiciro '{name}' cyongewe",
+    settingsSaved: "Igenamiterere ryabitswe",
   },
   common: {
     cancel: "Hagarika",
@@ -186,12 +203,29 @@ const en: Dictionary = {
       duplicate: "This name is already used",
     },
   },
+  settings: {
+    title: "Settings",
+    subtitle: "Business, language and SMS",
+    rows: {
+      businessName: "Business name",
+      language: "Ururimi · Language",
+      currency: "Ifaranga · Currency",
+      sms: "SMS debtor reminders",
+      backup: "Cloud backup",
+    },
+    badge: {
+      plus: "Plus",
+      active: "Active",
+      inactive: "Off",
+    },
+  },
   toast: {
     productAdded: "'{name}' added to stock",
     productUpdated: "'{name}' updated",
     productDeleted: "'{name}' deleted",
     restocked: "'{name}' restocked",
     categoryAdded: "Category '{name}' added",
+    settingsSaved: "Settings saved",
   },
   common: {
     cancel: "Cancel",
