@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { useBusinessName } from "@/lib/business-store";
 
 type NavItem = {
   href: string;
@@ -115,6 +116,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const businessName = useBusinessName();
 
   return (
     <aside className="side sticky top-0 flex h-full flex-col gap-1.5 border-r border-line bg-surface px-[14px] py-5">
@@ -138,7 +140,7 @@ export function Sidebar() {
         </div>
         <div>
           <b className="block text-lg font-bold text-ink">Smart Ledger</b>
-          <small className="mt-1 block text-xs text-ink-2">Duka rya Mukamana</small>
+          <small className="mt-1 block text-xs text-ink-2">{businessName}</small>
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import {
   type SettingsActionResult,
 } from "@/app/settings/_lib/actions";
 import { CURRENCIES, type Settings } from "@/data/settings";
+import { publishBusinessName } from "@/lib/business-store";
 import { useI18n } from "@/i18n/locale-provider";
 import { SettingRow } from "./setting-row";
 
@@ -39,8 +40,11 @@ export function BusinessForm({
   const [currency, setCurrency] = useState(settings.currency);
 
   useEffect(() => {
-    if (state.ok) onSaved();
-  }, [state, onSaved]);
+    if (!state.ok) return;
+    // Show the new name in the sidebar right away.
+    publishBusinessName(businessName);
+    onSaved();
+  }, [state, businessName, onSaved]);
 
   const error = (field: string): string | null => {
     if (state.ok) return null;
