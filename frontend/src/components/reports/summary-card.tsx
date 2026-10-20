@@ -15,18 +15,24 @@ export function SummaryCard() {
   const { t } = useI18n();
 
   return (
-    <div className="rounded-card bg-surface p-[22px] shadow-card">
-      <h3 className="mb-2 text-[16px] font-bold text-ink">{t.reports.summary.title}</h3>
+    <div
+      className="rounded-card bg-surface p-[22px] shadow-card max-[520px]:p-[18px]"
+    >
+      <h3 className="mb-2 text-[16px] font-bold text-ink">
+        {t.reports.summary.title}
+      </h3>
 
       <div className="divide-y divide-line">
         {SUMMARY_KPIS.map((kpi) => (
           <div
             key={kpi.key}
-            className="flex items-center justify-between gap-4 py-[13px]"
+            className="flex items-center justify-between gap-4 py-[14px] text-[14px]"
           >
-            <span className="text-ink-2">{t.reports.summary.rows[kpi.key]}</span>
+            <span className="leading-[1.4] text-ink-2">
+              {t.reports.summary.rows[kpi.key]}
+            </span>
             <b
-              className={`tabular-nums ${
+              className={`whitespace-nowrap tabular-nums ${
                 kpi.trend === "up"
                   ? "text-success"
                   : kpi.trend === "down"
@@ -40,7 +46,7 @@ export function SummaryCard() {
         ))}
       </div>
 
-      <div className="mt-4 rounded-[14px] bg-info-soft px-4 py-3 text-[13px] text-[#17497F]">
+      <div className="mt-[14px] rounded-[14px] bg-info-soft px-4 py-3 text-[13px] leading-[1.5] text-[#17497F]">
         {t.reports.summary.note}
       </div>
     </div>

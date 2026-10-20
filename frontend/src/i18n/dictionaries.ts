@@ -196,6 +196,7 @@ const rw = {
     },
     categories: {
       title: "Ibyaguzwe cyane · Top categories",
+      subtitle: "Inyungu y'ibigurishijwe icyiciro ku bicuruzwa",
       units: "{count} pcs",
     },
   },
@@ -428,6 +429,7 @@ const en: Dictionary = {
     },
     categories: {
       title: "Top categories",
+      subtitle: "Sales volume by product category",
       units: "{count} pcs",
     },
   },
