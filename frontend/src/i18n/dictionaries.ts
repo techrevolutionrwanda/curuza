@@ -89,6 +89,22 @@ const rw = {
       duplicate: "Iri zina ryarakoreshejwe",
     },
   },
+  nav: {
+    home: "Ahabanza",
+    stock: "Stock",
+    debtors: "Amadeni",
+    reports: "Raporo",
+    settings: "Igenamiterere",
+    planDescription:
+      "Ubutumwa (SMS) bwo kurembera abakiriya, raporo nziza n'ubwikorezi bwa cloud.",
+    planCta: "Menya byinshi",
+  },
+  topbar: {
+    search: "Shakisha igicuruzwa cyangwa umukiriya…",
+    sync: "Byabitswe",
+    newSale: "Gurisha",
+    owner: "Nyiri duka · Owner",
+  },
   settings: {
     title: "Igenamiterere",
     subtitle: "Ubucuruzi, ururimi n'ubutumwa",
@@ -211,6 +227,21 @@ const en: Dictionary = {
       invalid: "Invalid value",
       duplicate: "This name is already used",
     },
+  },
+  nav: {
+    home: "Home",
+    stock: "Stock",
+    debtors: "Debtors",
+    reports: "Reports",
+    settings: "Settings",
+    planDescription: "SMS reminders, richer reports and cloud backup.",
+    planCta: "Learn more",
+  },
+  topbar: {
+    search: "Search for a product or a customer…",
+    sync: "Synced",
+    newSale: "New sale",
+    owner: "Shop owner",
   },
   settings: {
     title: "Settings",
