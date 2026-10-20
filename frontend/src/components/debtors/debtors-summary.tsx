@@ -1,6 +1,7 @@
 "use client";
 
 import { formatMoney } from "@/data/debtors";
+import { useI18n } from "@/i18n/locale-provider";
 
 /**
  * The three numbers that summarise the debtors of the shop:
@@ -15,6 +16,8 @@ export function DebtorsSummary({
   customerCount: number;
   totalPaid: number;
 }) {
+  const { t } = useI18n();
+
   const card =
     "flex min-h-[100px] items-center gap-3 rounded-[22px] border border-line bg-surface px-5 py-4 shadow-[0_1px_2px_rgba(16,32,27,.06),0_4px_12px_rgba(16,32,27,.04)]";
   const value =
@@ -30,7 +33,7 @@ export function DebtorsSummary({
           </svg>
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] text-ink-2">Yose hamwe · Total owed</p>
+          <p className="text-[13px] text-ink-2">{t.debtors.summary.total}</p>
           <p className={value}>
             {formatMoney(totalOwed)} <span className="text-base">RWF</span>
           </p>
@@ -46,7 +49,7 @@ export function DebtorsSummary({
           </svg>
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] text-ink-2">Abakiriya · Customers</p>
+          <p className="text-[13px] text-ink-2">{t.debtors.summary.customers}</p>
           <p className={value}>{customerCount}</p>
         </div>
       </section>
@@ -59,7 +62,7 @@ export function DebtorsSummary({
           </svg>
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] text-ink-2">Yishyuwe uku kwezi · Repaid this month</p>
+          <p className="text-[13px] text-ink-2">{t.debtors.summary.repaid}</p>
           <p className={`${value} text-success`}>
             {formatMoney(totalPaid)} <span className="text-base">RWF</span>
           </p>

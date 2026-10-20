@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { formatMoney, SAMPLE_DEBTORS, type Debtor } from "@/data/debtors";
+import { interpolate } from "@/i18n/dictionaries";
+import { useI18n } from "@/i18n/locale-provider";
 import { DebtorsSummary } from "./debtors-summary";
 import { DebtorsTable } from "./debtors-table";
 
@@ -10,6 +12,7 @@ import { DebtorsTable } from "./debtors-table";
  * owe and what they already paid.
  */
 export function DebtorsView() {
+  const { t } = useI18n();
   const [debtors, setDebtors] = useState<Debtor[]>(SAMPLE_DEBTORS);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -47,18 +50,24 @@ export function DebtorsView() {
 
   const openPaymentModal = (debtorId: string, currentOwed: number) => {
     if (currentOwed <= 0) {
-      alert("Uyu mukiriya nta deni asigaje.");
+      alert(t.debtors.alerts.nothingOwed);
       return;
     }
 
     const raw = prompt(
-      `Amafaranga yishyuwe (asigaye ${formatMoney(currentOwed)} RWF):`,
+      interpolate(t.debtors.alerts.amountPrompt, {
+        amount: formatMoney(currentOwed),
+      }),
     );
     if (raw === null || raw.trim() === "") return;
 
     const amount = Number(raw);
     if (!Number.isFinite(amount) || amount <= 0 || amount > currentOwed) {
-      alert(`Andika amafaranga hagati ya 1 na ${formatMoney(currentOwed)} RWF.`);
+      alert(
+        interpolate(t.debtors.alerts.amountInvalid, {
+          amount: formatMoney(currentOwed),
+        }),
+      );
       return;
     }
 
@@ -66,18 +75,16 @@ export function DebtorsView() {
   };
 
   const sendReminder = (debtor: Debtor) => {
-    alert(`Kwibutsa ${debtor.name} kuri SMS bizaboneka igihe SMS izaba ihujwe.`);
+    alert(interpolate(t.debtors.alerts.smsReminder, { name: debtor.name }));
   };
 
   return (
     <div className="page mx-auto w-full max-w-[1400px]">
       <div className="mb-6">
         <h1 className="text-[28px] font-bold leading-tight tracking-[-0.02em] text-ink">
-          Amadeni
+          {t.debtors.title}
         </h1>
-        <p className="mt-1 text-sm text-ink-2">
-          Abafitanye ideni · Who owes what
-        </p>
+        <p className="mt-1 text-sm text-ink-2">{t.debtors.subtitle}</p>
       </div>
 
       {/* Search */}
@@ -97,11 +104,11 @@ export function DebtorsView() {
           <path d="M20 20l-4-4" />
         </svg>
         <label className="flex min-h-[54px] flex-1 items-center rounded-[16px] border border-line bg-surface px-4 transition-colors focus-within:border-primary">
-          <span className="sr-only">Shakisha umukiriya</span>
+          <span className="sr-only">{t.debtors.searchLabel}</span>
           <input
             type="search"
             className="min-w-0 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
-            placeholder="Shakisha umukiriya..."
+            placeholder={t.debtors.search}
             onChange={(event) => setSearchTerm(event.target.value)}
             value={searchTerm}
           />

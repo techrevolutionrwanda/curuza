@@ -1,6 +1,8 @@
 "use client";
 
 import { formatMoney, type Debtor } from "@/data/debtors";
+import { interpolate } from "@/i18n/dictionaries";
+import { useI18n } from "@/i18n/locale-provider";
 
 /** The table of the customers that owe the shop money. */
 export function DebtorsTable({
@@ -14,19 +16,31 @@ export function DebtorsTable({
   onSendReminder: (debtor: Debtor) => void;
   onPay: (debtor: Debtor) => void;
 }) {
+  const { t } = useI18n();
+
   return (
     <div className="overflow-hidden rounded-[22px] border border-line bg-surface shadow-[0_1px_2px_rgba(16,32,27,.06),0_6px_20px_rgba(16,32,27,.05)]">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[760px] border-collapse">
           <thead>
             <tr className="bg-[#FAFCFB] text-[12px] uppercase tracking-[0.06em] text-ink-2">
-              <th className="border-b border-line px-4 py-3 text-left font-bold">Umukiriya</th>
-              <th className="border-b border-line px-4 py-3 text-left font-bold">Telefoni</th>
-              <th className="border-b border-line px-4 py-3 text-right font-bold">Yose</th>
-              <th className="border-b border-line px-4 py-3 text-left font-bold">Yishyuwe</th>
-              <th className="border-b border-line px-4 py-3 text-right font-bold">Asigaye</th>
               <th className="border-b border-line px-4 py-3 text-left font-bold">
-                <span className="sr-only">Ibikorwa</span>
+                {t.debtors.columns.customer}
+              </th>
+              <th className="border-b border-line px-4 py-3 text-left font-bold">
+                {t.debtors.columns.phone}
+              </th>
+              <th className="border-b border-line px-4 py-3 text-right font-bold">
+                {t.debtors.columns.total}
+              </th>
+              <th className="border-b border-line px-4 py-3 text-left font-bold">
+                {t.debtors.columns.repaid}
+              </th>
+              <th className="border-b border-line px-4 py-3 text-right font-bold">
+                {t.debtors.columns.owed}
+              </th>
+              <th className="border-b border-line px-4 py-3 text-left font-bold">
+                <span className="sr-only">{t.debtors.columns.actions}</span>
               </th>
             </tr>
           </thead>
@@ -34,7 +48,7 @@ export function DebtorsTable({
             {debtors.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-10 text-center text-sm text-ink-2">
-                  Nta mukiriya uhuye n&apos;ibyo washakishije.
+                  {t.debtors.empty}
                 </td>
               </tr>
             )}
@@ -69,7 +83,9 @@ export function DebtorsTable({
                       <div
                         className="h-2 flex-1 overflow-hidden rounded-full bg-line"
                         role="progressbar"
-                        aria-label={`${debtor.name} repayment progress`}
+                        aria-label={interpolate(t.debtors.progressLabel, {
+                          name: debtor.name,
+                        })}
                         aria-valuemin={0}
                         aria-valuemax={100}
                         aria-valuenow={paidPercent}
@@ -100,7 +116,7 @@ export function DebtorsTable({
                         className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[11px] bg-primary-soft px-3 text-[12px] font-bold text-primary-dark transition-colors hover:bg-[#D5EEE5] disabled:cursor-not-allowed disabled:opacity-50"
                         onClick={() => onSendReminder(debtor)}
                       >
-                        SMS
+                        {t.debtors.sms}
                       </button>
                       <button
                         type="button"
@@ -108,7 +124,7 @@ export function DebtorsTable({
                         onClick={() => onPay(debtor)}
                         disabled={isLoading || debtor.owed <= 0}
                       >
-                        {isLoading ? "..." : "Kwishyura"}
+                        {isLoading ? t.debtors.paying : t.debtors.pay}
                       </button>
                     </div>
                   </td>
