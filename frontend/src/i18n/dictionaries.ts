@@ -109,6 +109,7 @@ const rw = {
   home: {
     greeting: "Muraho",
     subtitle: "Uko ubucuruzi bwawe buhagaze uyu munsi · Your business today",
+    periodLabel: "Igihe · Period",
     segments: ["Uyu munsi", "Icyumweru", "Ukwezi"],
     kpis: {
       sales: {
@@ -340,6 +341,7 @@ const en: Dictionary = {
   home: {
     greeting: "Hello",
     subtitle: "Here is how your business is doing today",
+    periodLabel: "Period",
     segments: ["Today", "This week", "This month"],
     kpis: {
       sales: {

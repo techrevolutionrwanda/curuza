@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import type { Product } from "@/data/products";
+import { SegmentControl } from "@/components/SegmentControl";
 import { useI18n } from "@/i18n/locale-provider";
-import { SegmentControl } from "./SegmentControl";
 import { PromoBanner } from "./PromoBanner";
 import { KpiRow } from "./KpiRow";
 import { WeeklyChart } from "./WeeklyChart";
@@ -28,7 +28,12 @@ export function HomeView({ products }: { products: Product[] }) {
             {t.home.subtitle}
           </p>
         </div>
-        <SegmentControl value={segment} onChange={setSegment} />
+        <SegmentControl
+          options={t.home.segments}
+          value={segment}
+          onChange={setSegment}
+          ariaLabel={t.home.periodLabel}
+        />
       </div>
 
       <PromoBanner onReba={() => setOpen(true)} />
