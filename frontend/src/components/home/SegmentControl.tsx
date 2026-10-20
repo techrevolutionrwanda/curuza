@@ -1,12 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-const SEGMENTS = [
-  { value: 0, label: "Uyu munsi" },
-  { value: 1, label: "Icyumweru" },
-  { value: 2, label: "Ukwezi" },
-];
+import { useI18n } from "@/i18n/locale-provider";
 
 interface SegmentControlProps {
   value: number;
@@ -14,20 +8,23 @@ interface SegmentControlProps {
 }
 
 export function SegmentControl({ value, onChange }: SegmentControlProps) {
+  const { t } = useI18n();
+
   return (
     <div className="inline-flex bg-[#e7edea] rounded-[14px] p-1 gap-1">
-      {SEGMENTS.map((s) => (
+      {t.home.segments.map((label, i) => (
         <button
-          key={s.value}
+          key={label}
           type="button"
-          onClick={() => onChange(s.value)}
+          onClick={() => onChange(i)}
+          aria-pressed={value === i}
           className={`h-[38px] px-4 rounded-[11px] font-bold text-[13px] ${
-            value === s.value
+            value === i
               ? "bg-surface text-primary-dark shadow-md"
               : "text-ink-2"
           }`}
         >
-          {s.label}
+          {label}
         </button>
       ))}
     </div>

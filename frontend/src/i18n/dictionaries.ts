@@ -105,6 +105,30 @@ const rw = {
     newSale: "Gurisha",
     owner: "Nyiri duka · Owner",
   },
+  home: {
+    greeting: "Muraho",
+    subtitle: "Uko ubucuruzi bwawe buhagaze uyu munsi · Your business today",
+    segments: ["Uyu munsi", "Icyumweru", "Ukwezi"],
+    kpis: {
+      sales: {
+        label: "Ibyagurishijwe · Sales",
+        trend: "▲ 12% ugereranyije n'ejo",
+      },
+      cash: {
+        label: "Yakiriwe · Cash in",
+        trend: "▲ 7%",
+      },
+      debtors: {
+        label: "Amadeni · Owed to you",
+        trend: "{count} abakiriya",
+      },
+      lowStock: {
+        label: "Stock nke · Low stock",
+        unit: "ibicuruzwa",
+        trend: "{count} byashize",
+      },
+    },
+  },
   settings: {
     title: "Igenamiterere",
     subtitle: "Ubucuruzi, ururimi n'ubutumwa",
@@ -242,6 +266,30 @@ const en: Dictionary = {
     sync: "Synced",
     newSale: "New sale",
     owner: "Shop owner",
+  },
+  home: {
+    greeting: "Hello",
+    subtitle: "Here is how your business is doing today",
+    segments: ["Today", "This week", "This month"],
+    kpis: {
+      sales: {
+        label: "Sales",
+        trend: "▲ 12% vs yesterday",
+      },
+      cash: {
+        label: "Cash in",
+        trend: "▲ 7%",
+      },
+      debtors: {
+        label: "Owed to you",
+        trend: "{count} customers",
+      },
+      lowStock: {
+        label: "Low stock",
+        unit: "products",
+        trend: "{count} out of stock",
+      },
+    },
   },
   settings: {
     title: "Settings",
