@@ -69,6 +69,7 @@ export default function ReportsPage() {
               display: "flex",
               alignItems: "flex-end",
               gap: "14px",
+              paddingTop: "8px",
             }}
           >
             {REVENUE_BARS.map((b, i) => (
@@ -77,8 +78,8 @@ export default function ReportsPage() {
                 className="flex-1 h-full flex flex-col justify-end items-center gap-[8px] text-[12px] text-ink-2 group"
               >
                 <i
-                  className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary"
-                  style={{ height: b.h }}
+                  className="w-full max-w-[56px] rounded-[10px_10px_4px_4px] transition-colors group-hover:bg-primary transition-all duration-200 ease-out"
+                  style={{ height: b.h, background: b.top ? "var(--primary)" : "var(--primary-soft)" }}
                   aria-hidden="true"
                 />
                 {b.label}
@@ -108,7 +109,7 @@ export default function ReportsPage() {
             <span>{cat.name}</span>
             <div style={{ flex: 1, margin: "6px 20px" }}>
               <div className="bar">
-                <i style={{ width: `${cat.percent}%` }} />
+                <i style={{ width: `${cat.percent}%`, height: "8px", background: "var(--primary)", borderRadius: "var(--r-pill)" }} />
               </div>
             </div>
             <b className="num">{cat.count}</b>
