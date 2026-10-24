@@ -6,7 +6,7 @@ import { Toast, type ToastMsg } from "@/components/toast";
 import {
   setCloudBackupAction,
   setSmsRemindersAction,
-} from "@/app/settings/_lib/actions";
+} from "@/app/(app)/settings/_lib/actions";
 import type { Settings } from "@/data/settings";
 import { BusinessForm } from "./business-form";
 import { LanguageSwitch } from "./language-switch";

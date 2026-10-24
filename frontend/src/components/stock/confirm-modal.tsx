@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { deleteProductAction, type ActionResult } from "@/app/stock/_lib/actions";
+import { deleteProductAction, type ActionResult } from "@/app/(app)/stock/_lib/actions";
 import { Modal } from "./modal";
 import { useI18n } from "@/i18n/locale-provider";
 import { interpolate } from "@/i18n/dictionaries";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { setLocaleAction } from "@/app/settings/_lib/actions";
+import { setLocaleAction } from "@/app/(app)/settings/_lib/actions";
 import { LOCALES, LOCALE_LABEL } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 
