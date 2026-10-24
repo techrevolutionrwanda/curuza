@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { startSession } from "@/lib/session";
 import { authLinkCls } from "./auth-shell";
 import { AuthInput, PasswordField } from "./auth-fields";
 
@@ -12,6 +14,7 @@ import { AuthInput, PasswordField } from "./auth-fields";
  */
 export function RegisterForm() {
   const [error, setError] = useState("");
+  const router = useRouter();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     // Never submit anywhere until the backend exposes an auth API.
@@ -30,7 +33,9 @@ export function RegisterForm() {
       setError("Please fill in all required fields.");
     } else {
       setError("");
-      // TODO: POST to the auth API once the backend provides it.
+      // TODO: create the account via the auth API once it exists.
+      startSession();
+      router.push("/home");
     }
   }
 

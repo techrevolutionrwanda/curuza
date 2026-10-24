@@ -1,19 +1,25 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
+import { startSession } from "@/lib/session";
 import { authLinkCls } from "./auth-shell";
 import { AuthInput, PasswordField } from "./auth-fields";
 
 /**
  * The login form from templates/login.html.
  *
- * No API call yet — the backend has no auth routes, so the submit is
- * simply held until one exists.
+ * No API call yet — the backend has no auth routes, so submitting starts
+ * the placeholder session and continues to the dashboard.
  */
 export function LoginForm() {
+  const router = useRouter();
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    // TODO: POST to the auth API once the backend provides it.
+    // TODO: verify the credentials against the auth API once it exists.
     e.preventDefault();
+    startSession();
+    router.push("/home");
   }
 
   return (
