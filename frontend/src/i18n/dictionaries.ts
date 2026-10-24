@@ -104,6 +104,8 @@ const rw = {
     sync: "Byabitswe",
     newSale: "Gurisha",
     owner: "Nyiri duka · Owner",
+    logout: "Sohoka",
+    loggingOut: "Urasohoka…",
   },
   weekdays: ["Mbe", "Kab", "Gat", "Gnd", "Gat", "Ruh", "Cyu"],
   home: {
@@ -370,6 +372,8 @@ const en: Dictionary = {
     sync: "Synced",
     newSale: "New sale",
     owner: "Shop owner",
+    logout: "Log out",
+    loggingOut: "Logging out…",
   },
   weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
   home: {

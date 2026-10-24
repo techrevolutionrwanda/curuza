@@ -2,40 +2,53 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { startSession } from "@/lib/session";
+import { submitAuth } from "@/lib/auth";
 import { authLinkCls } from "./auth-shell";
 import { AuthInput, PasswordField } from "./auth-fields";
 
-/**
- * The registration form from templates/register.html.
- *
- * Client-side checks only for now (password length, match, terms) —
- * there is no auth API in the backend yet.
- */
 export function RegisterForm() {
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    // Never submit anywhere until the backend exposes an auth API.
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const f = e.currentTarget;
-    const terms = f.elements.namedItem("terms") as HTMLInputElement;
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const password = String(formData.get("password") ?? "");
+    const confirm = String(formData.get("confirm") ?? "");
 
-    if (f.password.value.length < 8) {
+    if (password.length < 8) {
       setError("Password must be at least 8 characters.");
-    } else if (f.password.value !== f.confirm.value) {
+    } else if (password !== confirm) {
       setError("Passwords do not match.");
-    } else if (!terms.checked) {
+    } else if (!formData.has("terms")) {
       setError("Please accept the terms to continue.");
-    } else if (!f.checkValidity()) {
+    } else if (!form.checkValidity()) {
       setError("Please fill in all required fields.");
     } else {
       setError("");
-      // TODO: create the account via the auth API once it exists.
-      startSession();
-      router.push("/home");
+      setSubmitting(true);
+      try {
+        await submitAuth("register", {
+          username: String(formData.get("fullname") ?? ""),
+          businessName: String(formData.get("business") ?? ""),
+          phone: String(formData.get("phone") ?? ""),
+          email: String(formData.get("email") ?? ""),
+          password,
+        });
+        router.replace("/login");
+        router.refresh();
+      } catch (cause) {
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : "Unable to create your account. Please try again.",
+        );
+      } finally {
+        setSubmitting(false);
+      }
     }
   }
 
@@ -175,9 +188,10 @@ export function RegisterForm() {
 
       <button
         type="submit"
+        disabled={submitting}
         className="flex h-[50px] w-full items-center justify-center rounded-panel bg-primary text-[15px] font-bold text-white transition hover:bg-primary-dark active:translate-y-px focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        Create account
+        {submitting ? "Creating account…" : "Create account"}
       </button>
     </form>
   );

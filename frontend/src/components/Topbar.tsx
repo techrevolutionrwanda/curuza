@@ -1,9 +1,61 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/locale-provider";
+import { fetchCurrentUser, logoutAuth, type AuthUser } from "@/lib/auth";
 
 export function Topbar() {
   const { t } = useI18n();
+  const router = useRouter();
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchCurrentUser(controller.signal)
+      .then((currentUser) => {
+        if (controller.signal.aborted) return;
+        if (!currentUser) {
+          router.replace("/");
+          return;
+        }
+        setUser(currentUser);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setError("Unable to load account information.");
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoadingUser(false);
+      });
+
+    return () => controller.abort();
+  }, [router]);
+
+  async function handleLogout() {
+    setError("");
+    setLoggingOut(true);
+    try {
+      await logoutAuth();
+      window.location.replace("/");
+    } catch {
+      setError("Unable to log out. Please try again.");
+      setLoggingOut(false);
+    }
+  }
+
+  const initials =
+    user?.username
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "–";
 
   return (
     <header className="topbar sticky top-0 z-10 flex items-center gap-3.5 border-b border-line bg-bg/90 px-8 py-4 backdrop-blur">
@@ -62,16 +114,38 @@ export function Topbar() {
         <span className="topbar-gold-text">{t.topbar.newSale}</span>
       </button>
 
-      {/* User. The name of the owner is data, not text to translate. */}
       <div className="flex items-center gap-2.5">
-        <div className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark">
-          MU
+        <div
+          aria-hidden="true"
+          className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark"
+        >
+          {loadingUser ? "…" : initials}
         </div>
         <div className="topbar-user-text">
-          <b className="block text-sm font-semibold text-ink">Mukamana</b>
-          <small className="block text-xs text-ink-2">{t.topbar.owner}</small>
+          <b className="block max-w-36 truncate text-sm font-semibold text-ink">
+            {loadingUser ? "…" : user?.username}
+          </b>
+          <small className="block max-w-36 truncate text-xs text-ink-2">
+            {user?.businessName || t.topbar.owner}
+          </small>
         </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-ink-2 transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {loggingOut ? t.topbar.loggingOut : t.topbar.logout}
+        </button>
       </div>
+      {error ? (
+        <span
+          role="alert"
+          className="max-w-40 truncate text-xs font-medium text-danger"
+        >
+          {error}
+        </span>
+      ) : null}
     </header>
   );
 }
