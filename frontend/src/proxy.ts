@@ -7,10 +7,8 @@ const PROTECTED = ["/home", "/stock", "/debtors", "/reports", "/settings"];
 /**
  * Optimistic auth gate (Next.js Proxy, formerly middleware).
  *
- * Until the backend issues real sessions:
- * - the dashboard routes bounce back to the login page at / when the
- *   placeholder cookie is missing
- * - when the cookie is present, / skips the login and goes to /home
+ * The backend sets the HTTP-only session cookie after successful
+ * registration or login.
  */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

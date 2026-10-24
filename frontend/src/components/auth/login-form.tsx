@@ -1,29 +1,50 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { FormEvent } from "react";
-import { startSession } from "@/lib/session";
+import { useState, type FormEvent } from "react";
+import { submitAuth } from "@/lib/auth";
 import { authLinkCls } from "./auth-shell";
 import { AuthInput, PasswordField } from "./auth-fields";
 
-/**
- * The login form from templates/login.html.
- *
- * No API call yet — the backend has no auth routes, so submitting starts
- * the placeholder session and continues to the dashboard.
- */
 export function LoginForm() {
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    // TODO: verify the credentials against the auth API once it exists.
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    startSession();
-    router.push("/home");
+    setError("");
+    setSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    try {
+      await submitAuth("login", {
+        identifier: String(formData.get("identifier") ?? ""),
+        password: String(formData.get("password") ?? ""),
+      });
+      router.replace("/home");
+      router.refresh();
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Unable to log in. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <form onSubmit={handleSubmit}>
+      {error ? (
+        <p
+          role="alert"
+          className="mb-4 rounded-panel bg-danger-soft px-3.5 py-2.5 text-[13px] font-semibold text-danger"
+        >
+          {error}
+        </p>
+      ) : null}
       <div className="mb-4">
         <label
           htmlFor="login-id"
@@ -73,9 +94,10 @@ export function LoginForm() {
 
       <button
         type="submit"
+        disabled={submitting}
         className="flex h-[50px] w-full items-center justify-center rounded-panel bg-primary text-[15px] font-bold text-white transition hover:bg-primary-dark active:translate-y-px focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        Log in
+        {submitting ? "Logging in…" : "Log in"}
       </button>
     </form>
   );
