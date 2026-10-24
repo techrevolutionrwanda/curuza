@@ -17,7 +17,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    href: "/",
+    href: "/home",
     labelKey: "home",
     icon: (
       <svg

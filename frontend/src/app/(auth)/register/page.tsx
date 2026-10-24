@@ -23,7 +23,7 @@ export default function RegisterPage() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className={authLinkCls}>
+          <Link href="/" className={authLinkCls}>
             Log in
           </Link>
         </>

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
 import { HomeView } from "@/components/home/HomeView";
-import { listProducts } from "./stock/_lib/repository";
+import { listProducts } from "../stock/_lib/repository";
 
 async function HomeData() {
   await connection();
