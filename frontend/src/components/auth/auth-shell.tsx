@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { CuruzaLogo } from "./curuza-logo";
 
+/** Link style used across the auth pages (the templates set it globally). */
+export const authLinkCls =
+  "font-semibold text-primary hover:text-primary-dark hover:underline";
+
 /** Gold tick used in the brand panel bullet points. */
 function Tick() {
   return (
