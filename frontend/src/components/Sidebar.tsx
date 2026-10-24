@@ -125,25 +125,31 @@ export function Sidebar() {
     <aside className="side sticky top-0 flex h-full flex-col gap-1.5 border-r border-line bg-surface px-[14px] py-5">
       {/* Brand */}
       <div className="sidebar-brand flex items-center gap-3 px-2 pt-1 pb-[18px]">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl ">
           <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+            viewBox="0 0 120 120"
+            role="img"
+            aria-label="Curuza symbol"
           >
-            <path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z" />
-            <path d="M9 9h6M9 13h4" />
+            <title>Curuza symbol</title>
+            <path
+              d="M93.7 31.7 A44 44 0 1 0 93.7 88.3"
+              fill="none"
+              stroke="#0d6c54"
+              stroke-width="16"
+              stroke-linecap="round"
+            />
+            <circle cx="96" cy="60" r="13" fill="#f4b122" />
           </svg>
         </div>
         <div>
-          <b className="block text-lg font-bold text-ink">Smart Ledger</b>
-          <small className="mt-1 block text-xs text-ink-2">{businessName}</small>
+          <b className="block text-lg font-bold text-ink">CURUZA</b>
+          <small className="mt-1 block text-xs text-ink-2">
+            {businessName}
+          </small>
         </div>
       </div>
 
@@ -179,7 +185,7 @@ export function Sidebar() {
 
       {/* Promo */}
       <div className="sidebar-plan rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-4 text-white">
-        <b className="block text-sm font-bold">Smart Ledger Plus</b>
+        <b className="block text-sm font-bold">Curuza</b>
         <span className="mt-1 block text-xs text-white/80">
           {t.nav.planDescription}
         </span>
