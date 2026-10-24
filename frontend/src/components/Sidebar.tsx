@@ -17,7 +17,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    href: "/",
+    href: "/home",
     labelKey: "home",
     icon: (
       <svg
@@ -140,7 +140,7 @@ export function Sidebar() {
               fill="none"
               stroke="#0d6c54"
               strokeWidth={16}
-              stroke-linecap="round"
+              strokeLinecap="round"
             />
             <circle cx="96" cy="60" r="13" fill="#f4b122" />
           </svg>

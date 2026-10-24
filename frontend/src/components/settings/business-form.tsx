@@ -4,7 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import {
   updateBusinessAction,
   type SettingsActionResult,
-} from "@/app/settings/_lib/actions";
+} from "@/app/(app)/settings/_lib/actions";
 import { CURRENCIES, type Settings } from "@/data/settings";
 import { publishBusinessName } from "@/lib/business-store";
 import { useI18n } from "@/i18n/locale-provider";
