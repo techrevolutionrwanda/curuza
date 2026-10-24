@@ -139,7 +139,7 @@ export function Sidebar() {
               d="M93.7 31.7 A44 44 0 1 0 93.7 88.3"
               fill="none"
               stroke="#0d6c54"
-              stroke-width="16"
+              strokeWidth={16}
               stroke-linecap="round"
             />
             <circle cx="96" cy="60" r="13" fill="#f4b122" />
