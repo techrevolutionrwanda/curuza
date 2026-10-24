@@ -6,6 +6,10 @@ import type { Locale } from "@/i18n/dictionaries";
  * and the client controls can share the same shape.
  */
 export type Settings = {
+  /** Account owner's name. */
+  username: string;
+  /** Account email address. */
+  email: string;
   /** Izina ry'ubucuruzi · Business name. */
   businessName: string;
   /** Contact phone of the shop. */
@@ -53,8 +57,10 @@ export function isCurrency(code: string): boolean {
 
 /** The settings a fresh install starts with. */
 export const SEED_SETTINGS: Settings = {
-  businessName: "Duka rya Mukamana",
-  phone: "+250 788 000 000",
+  username: "",
+  email: "",
+  businessName: "",
+  phone: "",
   currency: DEFAULT_CURRENCY,
   locale: "rw",
   smsReminders: false,

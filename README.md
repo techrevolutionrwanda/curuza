@@ -129,8 +129,9 @@ This starts the Express API on:
 
 The authentication endpoints are `POST /api/auth/register` and
 `POST /api/auth/login`. `GET /api/auth/me` returns the current account, and
-`POST /api/auth/logout` ends its session. Successful login and registration set
-the HTTP-only `curuza_session` cookie used by the frontend route gate.
+`PATCH /api/auth/me` updates its profile. `POST /api/auth/logout` ends the
+session. Successful login and registration set the HTTP-only `curuza_session`
+cookie used by the frontend route gate.
 
 ### Start the frontend
 

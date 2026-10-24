@@ -4,13 +4,14 @@ import { cookies } from "next/headers";
 import { refresh } from "next/cache";
 import { isCurrency, type ToggleState } from "@/data/settings";
 import type { Locale } from "@/i18n/dictionaries";
+import { updateAccountProfile } from "./account";
 import * as repo from "./repository";
 
 export type FormErrors = Record<string, string>;
 
 export type SettingsActionResult =
   | { ok: true }
-  | { ok: false; errors: FormErrors };
+  | { ok: false; errors: FormErrors; message?: string };
 
 function str(v: FormDataEntryValue | null): string {
   return typeof v === "string" ? v.trim() : "";
@@ -26,11 +27,20 @@ export async function updateBusinessAction(
   _prev: SettingsActionResult,
   formData: FormData,
 ): Promise<SettingsActionResult> {
+  const username = str(formData.get("username"));
+  const email = str(formData.get("email"));
   const businessName = str(formData.get("businessName"));
   const phone = str(formData.get("phone"));
   const currency = str(formData.get("currency"));
 
   const errors: FormErrors = {};
+  if (username.length < 2) errors.username = "required";
+  if (
+    email &&
+    (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+  ) {
+    errors.email = "invalid";
+  }
   if (businessName.length < 2) errors.businessName = "required";
   if (phone && !PHONE_RE.test(phone)) errors.phone = "invalid";
   if (!isCurrency(currency)) errors.currency = "invalid";
@@ -38,9 +48,22 @@ export async function updateBusinessAction(
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 
   try {
-    repo.updateBusiness({ businessName, phone, currency });
-  } catch {
-    return { ok: false, errors: { businessName: "invalid" } };
+    const profile = await updateAccountProfile({
+      username,
+      email,
+      businessName,
+      phone,
+    });
+    repo.updateBusiness({ ...profile, currency });
+  } catch (cause) {
+    return {
+      ok: false,
+      errors: {},
+      message:
+        cause instanceof Error
+          ? cause.message
+          : "Unable to save your account profile.",
+    };
   }
 
   refresh();

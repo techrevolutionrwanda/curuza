@@ -17,7 +17,7 @@ const btn =
   "inline-flex min-h-12 items-center justify-center gap-2 rounded-panel px-5 font-bold transition";
 
 /**
- * The business profile: shop name, phone and currency.
+ * The account and business profile, with currency preference.
  *
  * Saves through the `updateBusinessAction` server action so the settings
  * live on the server and survive a reload.
@@ -35,6 +35,8 @@ export function BusinessForm({
     { ok: false, errors: {} },
   );
 
+  const [username, setUsername] = useState(settings.username);
+  const [email, setEmail] = useState(settings.email);
   const [businessName, setBusinessName] = useState(settings.businessName);
   const [phone, setPhone] = useState(settings.phone);
   const [currency, setCurrency] = useState(settings.currency);
@@ -54,12 +56,48 @@ export function BusinessForm({
   };
 
   const dirty =
+    username !== settings.username ||
+    email !== settings.email ||
     businessName !== settings.businessName ||
     phone !== settings.phone ||
     currency !== settings.currency;
 
   return (
     <form action={formAction} noValidate className="divide-y divide-line">
+      {!state.ok && state.message ? (
+        <p role="alert" className="pb-3 text-sm font-medium text-danger">
+          {state.message}
+        </p>
+      ) : null}
+      <SettingRow label={t.settings.form.ownerName}>
+        <input
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          autoComplete="name"
+          aria-invalid={!!error("username")}
+          className={`${inputCls} w-full sm:w-[240px]`}
+        />
+        {error("username") && (
+          <span className="text-xs text-danger">{error("username")}</span>
+        )}
+      </SettingRow>
+
+      <SettingRow label={t.settings.form.email}>
+        <input
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          aria-invalid={!!error("email")}
+          className={`${inputCls} w-full sm:w-[240px]`}
+        />
+        {error("email") && (
+          <span className="text-xs text-danger">{error("email")}</span>
+        )}
+      </SettingRow>
+
       <SettingRow label={t.settings.form.name}>
         <input
           name="businessName"
