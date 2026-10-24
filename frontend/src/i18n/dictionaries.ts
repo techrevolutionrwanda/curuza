@@ -245,6 +245,8 @@ const rw = {
       lastBackup: "Backup yabereye",
     },
     form: {
+      ownerName: "Izina rya nyiri ubucuruzi",
+      email: "Imeyili",
       name: "Izina ry'ubucuruzi",
       namePlaceholder: "Urugero: Duka rya Mukamana",
       phone: "Telefoni",
@@ -513,6 +515,8 @@ const en: Dictionary = {
       lastBackup: "Last backup",
     },
     form: {
+      ownerName: "Account name",
+      email: "Email",
       name: "Business name",
       namePlaceholder: "e.g. Mukamana shop",
       phone: "Phone",

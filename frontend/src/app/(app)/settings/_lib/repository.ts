@@ -22,10 +22,14 @@ export function getSettings(): Settings {
  * Update the business profile of the shop.
  */
 export function updateBusiness(input: {
+  username: string;
+  email: string;
   businessName: string;
   phone: string;
   currency: string;
 }): Settings {
+  state.username = input.username;
+  state.email = input.email;
   state.businessName = input.businessName;
   state.phone = input.phone;
   state.currency = input.currency;

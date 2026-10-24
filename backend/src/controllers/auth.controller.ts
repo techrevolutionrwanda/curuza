@@ -166,6 +166,63 @@ export async function currentUser(req: Request, res: Response) {
   });
 }
 
+export async function updateCurrentUser(req: Request, res: Response) {
+  const userId = req.session.userId;
+  if (!userId) {
+    res.status(401).json({ message: "You are not logged in." });
+    return;
+  }
+
+  const username = stringField(req.body?.username);
+  const businessName = stringField(req.body?.businessName);
+  const phone = stringField(req.body?.phone).replace(/[\s()-]/g, "");
+  const email = stringField(req.body?.email).toLowerCase();
+
+  if (!username || !businessName || !phone) {
+    res.status(400).json({ message: "Complete the required profile fields." });
+    return;
+  }
+  if (username.length > 120 || businessName.length > 120 || phone.length > 30) {
+    res.status(400).json({ message: "One or more fields are too long." });
+    return;
+  }
+  if (email && (email.length > 254 || !EMAIL_PATTERN.test(email))) {
+    res.status(400).json({ message: "Please enter a valid email address." });
+    return;
+  }
+
+  try {
+    const update = email
+      ? { $set: { username, businessName, phone, email } }
+      : { $set: { username, businessName, phone }, $unset: { email: 1 } };
+    const user = await User.findByIdAndUpdate(userId, update, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      res.status(404).json({ message: "Account not found." });
+      return;
+    }
+    res.json({
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        businessName: user.businessName,
+      },
+    });
+  } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      res.status(409).json({
+        message: "That name, email, or phone is already used by another account.",
+      });
+      return;
+    }
+    throw error;
+  }
+}
+
 export async function logout(req: Request, res: Response) {
   if (req.session) {
     await new Promise<void>((resolve, reject) => {
