@@ -66,13 +66,26 @@ export function ProductModal({
         <div className="mb-2.5 grid gap-2.5 sm:grid-cols-2">
           <label className="block">
             <span className="mb-1 block text-[13px] font-semibold text-ink-2">{t.addProduct.category}</span>
-            <select name="category" value={category} onChange={(e) => setCategory(e.target.value)} className={inputCls}>
+            <select
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              disabled={categories.length === 0}
+              className={inputCls}
+            >
+              {categories.length === 0 && <option value="">{t.addProduct.noCategories}</option>}
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.label[locale] ?? c.label.rw}
                 </option>
               ))}
             </select>
+            {categories.length === 0 && (
+              <span className="mt-1 block text-xs text-ink-2">{t.addProduct.createCategoryFirst}</span>
+            )}
+            {state.ok === false && state.errors.category && (
+              <span className="mt-1 block text-xs text-danger">{err(state.errors.category)}</span>
+            )}
           </label>
           <label className="block">
             <span className="mb-1 block text-[13px] font-semibold text-ink-2">{t.addProduct.price}</span>
@@ -95,7 +108,7 @@ export function ProductModal({
           <button type="button" onClick={onClose} className={`${btn} border-[1.5px] border-line bg-surface hover:bg-bg`}>
             {t.common.cancel}
           </button>
-          <button type="submit" disabled={pending} className={`${btn} flex-1 bg-primary text-white hover:bg-primary-dark disabled:opacity-60`}>
+          <button type="submit" disabled={pending || categories.length === 0} className={`${btn} flex-1 bg-primary text-white hover:bg-primary-dark disabled:opacity-60`}>
             {t.addProduct.submit}
           </button>
         </div>

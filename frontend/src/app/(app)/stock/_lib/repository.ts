@@ -1,102 +1,208 @@
 import "server-only";
 
-import type { Locale } from "@/i18n/dictionaries";
-import { SEED_CATEGORIES, SEED_PRODUCTS, initialsFor, slugify, type Category, type Product, stockStatus } from "@/data/products";
+import { cookies } from "next/headers";
+import { SESSION_COOKIE } from "@/lib/session";
+import { stockStatus, type Category, type Product } from "@/data/products";
 
 export { stockStatus };
 
 export type { Category, Product };
 
-type State = {
-  categories: Category[];
-  products: Product[];
-};
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
 
-const state: State = {
-  categories: SEED_CATEGORIES.map((c) => ({ id: c.id, label: { rw: c.label.rw, en: c.label.en } })),
-  products: SEED_PRODUCTS.map((p) => ({ ...p })),
-};
-
-export function listCategories(): Category[] {
-  return state.categories.slice();
+export class StockApiError extends Error {
+  constructor(
+    readonly status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "StockApiError";
+  }
 }
 
-export function listProducts(): Product[] {
-  return state.products.slice();
+function record(value: unknown): Record<string, unknown> | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return null;
+  }
+  return value as Record<string, unknown>;
 }
 
-export function getProduct(id: string): Product | undefined {
-  return state.products.find((p) => p.id === id);
+function requiredArray(result: unknown, key: string): unknown[] {
+  const data = record(result);
+  const value = data?.[key];
+  if (!Array.isArray(value)) {
+    throw new Error("The server returned invalid stock data.");
+  }
+  return value;
 }
 
-export function categoryLabel(id: string, locale: Locale): string {
-  const c = state.categories.find((cat) => cat.id === id);
-  if (c) return c.label[locale] ?? c.label.rw ?? id;
-  return id;
+function requiredRecord(result: unknown, key: string): Record<string, unknown> {
+  const data = record(result);
+  const value = data?.[key];
+  const item = record(value);
+  if (!item) {
+    throw new Error("The server returned invalid stock data.");
+  }
+  return item;
 }
 
-export function createProduct(input: {
+function parseProduct(value: unknown): Product {
+  const product = record(value);
+  if (
+    !product ||
+    typeof product.id !== "string" ||
+    typeof product.name !== "string" ||
+    typeof product.initials !== "string" ||
+    typeof product.category !== "string" ||
+    typeof product.price !== "number" ||
+    !Number.isFinite(product.price) ||
+    typeof product.qty !== "number" ||
+    !Number.isFinite(product.qty)
+  ) {
+    throw new Error("The server returned invalid product data.");
+  }
+
+  return {
+    id: product.id,
+    name: product.name,
+    initials: product.initials,
+    category: product.category,
+    price: product.price,
+    qty: product.qty,
+  };
+}
+
+function parseCategory(value: unknown): Category {
+  const category = record(value);
+  const label = record(category?.label);
+  if (
+    !category ||
+    typeof category.id !== "string" ||
+    !label ||
+    typeof label.rw !== "string" ||
+    typeof label.en !== "string"
+  ) {
+    throw new Error("The server returned invalid category data.");
+  }
+
+  return {
+    id: category.id,
+    label: {
+      rw: label.rw,
+      en: label.en,
+    },
+  };
+}
+
+async function request(
+  path: string,
+  options: { method?: string; body?: unknown } = {},
+): Promise<unknown> {
+  const sessionCookie = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (!sessionCookie) {
+    throw new StockApiError(401, "Your session has expired. Please log in again.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/stock/${path}`, {
+      method: options.method ?? "GET",
+      cache: "no-store",
+      headers: {
+        Cookie: `${SESSION_COOKIE}=${sessionCookie}`,
+        ...(options.body === undefined ? {} : { "Content-Type": "application/json" }),
+      },
+      ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) }),
+    });
+  } catch {
+    throw new StockApiError(503, "Unable to reach the stock service. Please try again.");
+  }
+
+  let result: unknown = null;
+  try {
+    result = await response.json();
+  } catch {
+    result = null;
+  }
+
+  if (!response.ok) {
+    const message = record(result)?.message;
+    throw new StockApiError(
+      response.status,
+      typeof message === "string"
+        ? message
+        : "Unable to complete your stock request.",
+    );
+  }
+
+  return result;
+}
+
+export async function listProducts(): Promise<Product[]> {
+  try {
+    const result = await request("products");
+    return requiredArray(result, "products").map(parseProduct);
+  } catch {
+    return [];
+  }
+}
+
+export async function listCategories(): Promise<Category[]> {
+  try {
+    const result = await request("categories");
+    return requiredArray(result, "categories").map(parseCategory);
+  } catch {
+    return [];
+  }
+}
+
+export async function createProduct(input: {
   name: string;
   category: string;
   price: number;
   qty: number;
-}): Product {
-  const trimmed = input.name.trim();
-  if (!trimmed) throw new Error("required:name");
-  if (!Number.isFinite(input.price) || input.price < 0) throw new Error("invalid:price");
-  if (!Number.isFinite(input.qty) || input.qty < 0 || !Number.isInteger(input.qty)) throw new Error("invalid:qty");
-  const p: Product = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    name: trimmed,
-    initials: initialsFor(trimmed),
-    category: input.category,
-    price: Math.trunc(input.price),
-    qty: Math.trunc(input.qty),
-  };
-  state.products.unshift(p);
-  return p;
+}): Promise<Product> {
+  const result = await request("products", {
+    method: "POST",
+    body: input,
+  });
+  return parseProduct(requiredRecord(result, "product"));
 }
 
-export function updateProduct(
+export async function updateProduct(
   id: string,
   input: { name: string; category: string; price: number; qty: number },
-): Product {
-  const p = state.products.find((x) => x.id === id);
-  if (!p) throw new Error("not-found");
-  const trimmed = input.name.trim();
-  if (!trimmed) throw new Error("required:name");
-  if (!Number.isFinite(input.price) || input.price < 0) throw new Error("invalid:price");
-  if (!Number.isFinite(input.qty) || input.qty < 0 || !Number.isInteger(input.qty)) throw new Error("invalid:qty");
-  p.name = trimmed;
-  p.initials = initialsFor(trimmed);
-  p.category = input.category;
-  p.price = Math.trunc(input.price);
-  p.qty = Math.trunc(input.qty);
-  return p;
+): Promise<Product> {
+  const result = await request(`products/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: input,
+  });
+  return parseProduct(requiredRecord(result, "product"));
 }
 
-export function deleteProduct(id: string): void {
-  const idx = state.products.findIndex((x) => x.id === id);
-  if (idx < 0) throw new Error("not-found");
-  state.products.splice(idx, 1);
+export async function deleteProduct(id: string): Promise<Product> {
+  const result = await request(`products/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+  return parseProduct(requiredRecord(result, "product"));
 }
 
-export function restockProduct(id: string, amount: number): Product {
-  const p = state.products.find((x) => x.id === id);
-  if (!p) throw new Error("not-found");
-  if (!Number.isFinite(amount) || amount <= 0 || !Number.isInteger(amount)) throw new Error("invalid:amount");
-  p.qty = p.qty + amount;
-  return p;
+export async function restockProduct(id: string, amount: number): Promise<Product> {
+  const result = await request(`products/${encodeURIComponent(id)}/restock`, {
+    method: "POST",
+    body: { amount },
+  });
+  return parseProduct(requiredRecord(result, "product"));
 }
 
-export function createCategory(input: { nameRw: string; nameEn: string }): Category {
-  const rw = input.nameRw.trim();
-  const en = input.nameEn.trim();
-  if (!rw) throw new Error("required:nameRw");
-  if (!en) throw new Error("required:nameEn");
-  const id = slugify(rw) || slugify(en);
-  if (state.categories.some((c) => c.id === id)) throw new Error("duplicate:id");
-  const c: Category = { id, label: { rw, en } };
-  state.categories.push(c);
-  return c;
+export async function createCategory(input: {
+  nameRw: string;
+  nameEn: string;
+}): Promise<Category> {
+  const result = await request("categories", {
+    method: "POST",
+    body: input,
+  });
+  return parseCategory(requiredRecord(result, "category"));
 }

@@ -44,15 +44,16 @@ export function StockView({
   const [toasts, setToasts] = useState<ToastMsg[]>([]);
 
   const chips = useMemo(() => {
+    const standard = ["ibinyobwa", "ibiribwa", "isuku"]
+      .map((id) => categories.find((category) => category.id === id))
+      .filter((category): category is Category => category !== undefined)
+      .map((category) => ({ key: category.id, label: category.label[locale] ?? category.label.rw }));
     const custom = categories
-      .filter((c) => !["ibinyobwa", "ibiribwa", "isuku"].includes(c.id))
-      .map((c) => ({ key: c.id, label: c.label[locale] ?? c.label.rw }));
+      .filter((category) => !["ibinyobwa", "ibiribwa", "isuku"].includes(category.id))
+      .map((category) => ({ key: category.id, label: category.label[locale] ?? category.label.rw }));
     return [
       { key: "all", label: t.stock.chips.all },
-      ...["ibinyobwa", "ibiribwa", "isuku"].map((id) => {
-        const c = categories.find((x) => x.id === id);
-        return { key: id, label: c ? c.label[locale] ?? c.label.rw : id };
-      }),
+      ...standard,
       ...custom,
       { key: "low", label: t.stock.chips.low },
     ];
