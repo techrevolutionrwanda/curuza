@@ -5,7 +5,8 @@ import { listCategories, listProducts } from "./_lib/repository";
 
 async function StockData() {
   await connection();
-  return <StockView products={listProducts()} categories={listCategories()} />;
+  const [products, categories] = await Promise.all([listProducts(), listCategories()]);
+  return <StockView products={products} categories={categories} />;
 }
 
 function StockFallback() {

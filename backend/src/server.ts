@@ -4,6 +4,7 @@ import cors from "cors";
 import session from "express-session";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
+import stockRoutes from "./routes/stock.routes.js";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/stock", stockRoutes);
 
 async function startServer() {
   await connectDB();

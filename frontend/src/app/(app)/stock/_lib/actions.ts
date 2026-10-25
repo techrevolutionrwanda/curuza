@@ -27,14 +27,25 @@ function str(v: FormDataEntryValue | null): string {
 
 function productErrors(input: {
   name: string;
+  category: string;
   price: number | null;
   qty: number | null;
 }): FormErrors {
   const errors: FormErrors = {};
   if (!input.name) errors.name = "required";
+  if (!input.category) errors.category = "required";
   if (input.price === null || input.price < 0) errors.price = "number";
   if (input.qty === null || input.qty < 0 || !Number.isInteger(input.qty)) errors.qty = "number";
   return errors;
+}
+
+function isDuplicateError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    error.status === 409
+  );
 }
 
 export async function createProductAction(
@@ -45,10 +56,10 @@ export async function createProductAction(
   const category = str(formData.get("category"));
   const price = num(formData.get("price"));
   const qty = num(formData.get("qty"));
-  const errors = productErrors({ name, price, qty });
+  const errors = productErrors({ name, category, price, qty });
   if (Object.keys(errors).length > 0) return ERR(errors);
   try {
-    const created = repo.createProduct({
+    const created = await repo.createProduct({
       name,
       category,
       price: price ?? 0,
@@ -71,10 +82,10 @@ export async function updateProductAction(
   const price = num(formData.get("price"));
   const qty = num(formData.get("qty"));
   if (!id) return ERR({ id: "invalid" });
-  const errors = productErrors({ name, price, qty });
+  const errors = productErrors({ name, category, price, qty });
   if (Object.keys(errors).length > 0) return ERR(errors);
   try {
-    const updated = repo.updateProduct(id, {
+    const updated = await repo.updateProduct(id, {
       name,
       category,
       price: price ?? 0,
@@ -94,9 +105,7 @@ export async function deleteProductAction(
   const id = str(formData.get("id"));
   if (!id) return ERR({ id: "invalid" });
   try {
-    const product = repo.getProduct(id);
-    if (!product) return ERR({ id: "invalid" });
-    repo.deleteProduct(id);
+    const product = await repo.deleteProduct(id);
     refresh();
     return OK(product.name);
   } catch {
@@ -115,7 +124,7 @@ export async function restockProductAction(
     return ERR({ amount: "number" });
   }
   try {
-    const updated = repo.restockProduct(id, amount);
+    const updated = await repo.restockProduct(id, amount);
     refresh();
     return OK(updated.name);
   } catch {
@@ -135,10 +144,9 @@ export async function createCategoryAction(
   if (!nameEn) errors.nameEn = "required";
   if (Object.keys(errors).length > 0) return ERR(errors);
   try {
-    repo.createCategory({ nameRw, nameEn });
-  } catch (e) {
-    const m = e instanceof Error ? e.message : "";
-    if (m.includes("duplicate")) return ERR({ nameRw: "duplicate" });
+    await repo.createCategory({ nameRw, nameEn });
+  } catch (error) {
+    if (isDuplicateError(error)) return ERR({ nameRw: "duplicate" });
     return ERR({ nameRw: "invalid" });
   }
   refresh();

@@ -5,7 +5,8 @@ import { listProducts } from "../stock/_lib/repository";
 
 async function HomeData() {
   await connection();
-  return <HomeView products={listProducts()} />;
+  const products = await listProducts();
+  return <HomeView products={products} />;
 }
 
 export default function Home() {
