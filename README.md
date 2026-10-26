@@ -56,8 +56,8 @@ Before running the project, make sure you have the following installed:
 ### Option 1: Terminal
 
 ```bash
-git clone https://github.com/techrevolutionrwanda/curuza.git
-cd curuza
+
+cd curuzagit clone https://github.com/techrevolutionrwanda/curuza.git
 ```
 
 ### Option 2: SSH
