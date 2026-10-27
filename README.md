@@ -56,8 +56,8 @@ Before running the project, make sure you have the following installed:
 ### Option 1: Terminal
 
 ```bash
-git clone https://github.com/techrevolutionrwanda/curuza.git
-cd curuza
+
+cd curuzagit clone https://github.com/techrevolutionrwanda/curuza.git
 ```
 
 ### Option 2: SSH
@@ -99,6 +99,21 @@ npm install
 
 ## Run the project
 
+### Configure the backend
+
+Create `backend/.env` with the MongoDB connection string and a private session secret:
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/curuza
+SESSION_SECRET=replace-with-a-long-random-secret
+PORT=4000
+FRONTEND_URL=http://localhost:3000
+```
+
+For multiple allowed frontend origins, separate them with commas. Set
+`NEXT_PUBLIC_API_URL=http://localhost:4000` in `frontend/.env.local` if the API
+is not running at its default URL.
+
 ### Start the backend
 
 From the project root:
@@ -110,9 +125,13 @@ npm run dev
 
 This starts the Express API on:
 
-- `http://localhost:5000`
+- `http://localhost:4000`
 
-The backend root endpoint returns a JSON message confirming the server is running.
+The authentication endpoints are `POST /api/auth/register` and
+`POST /api/auth/login`. `GET /api/auth/me` returns the current account, and
+`PATCH /api/auth/me` updates its profile. `POST /api/auth/logout` ends the
+session. Successful login and registration set the HTTP-only `curuza_session`
+cookie used by the frontend route gate.
 
 ### Start the frontend
 

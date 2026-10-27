@@ -1,17 +1,21 @@
 "use client";
 
+import { useI18n } from "@/i18n/locale-provider";
+
 interface PaymentToggleProps {
   value: string;
   onChange: (value: string) => void;
 }
 
 const METHODS = [
-  { key: "cash", label: "Amafaranga", sub: "Cash" },
-  { key: "partial", label: "Igice", sub: "Partial" },
-  { key: "credit", label: "Ideni", sub: "Credit" },
-];
+  { key: "cash", labelKey: "cash" },
+  { key: "partial", labelKey: "partial" },
+  { key: "credit", labelKey: "credit" },
+] as const;
 
 export function PaymentToggle({ value, onChange }: PaymentToggleProps) {
+  const { t } = useI18n();
+
   return (
     <div className="grid grid-cols-3 gap-[8px] mb-[14px] mt-[14px]">
       {METHODS.map((p) => (
@@ -25,8 +29,10 @@ export function PaymentToggle({ value, onChange }: PaymentToggleProps) {
               : "text-ink"
           }`}
         >
-          {p.label}
-          <span className="text-[12px] text-ink-2 font-normal">{p.sub}</span>
+          {t.home.sale.payment[p.labelKey].label}
+          <span className="text-[12px] text-ink-2 font-normal">
+            {t.home.sale.payment[p.labelKey].sub}
+          </span>
         </button>
       ))}
     </div>
