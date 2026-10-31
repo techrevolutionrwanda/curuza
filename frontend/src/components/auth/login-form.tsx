@@ -87,7 +87,7 @@ export function LoginForm() {
           />
           Remember me
         </label>
-        <a href="#" className={authLinkCls}>
+        <a href="/forgot-password" className={authLinkCls}>
           Forgot password?
         </a>
       </div>

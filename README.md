@@ -108,11 +108,41 @@ MONGO_URI=mongodb://127.0.0.1:27017/curuza
 SESSION_SECRET=replace-with-a-long-random-secret
 PORT=4000
 FRONTEND_URL=http://localhost:3000
+
+# SMS Connect Rwanda
+SMS_CONNECT_BASE_URL=https://smsconnect.tech/api/v1
+SMS_CONNECT_API_KEY=
+SMS_CONNECT_API_SECRET=
+SMS_CONNECT_SENDER_ID=CURUZA
+SMS_DRY_MODE=true
+SMS_UNIT_COST_RWF=10
 ```
 
 For multiple allowed frontend origins, separate them with commas. Set
 `NEXT_PUBLIC_API_URL=http://localhost:4000` in `frontend/.env.local` if the API
 is not running at its default URL.
+
+### SMS reminders
+
+Suppliers can send a reminder to one debtor or to every debtor from the
+**Debtors** page, and the backend queues automatic reminders from each sale's
+due date:
+
+- 2 days before the due date
+- on the due date
+- 3, 7 and 14 days overdue
+
+Messages are held between 21:00 and 07:00 (Central Africa Time), capped at four
+per debt and one every 24 hours per customer. The worker runs inside the API
+process by default. To run it separately, set `SMS_WORKER_INLINE=false` and
+start `npm run worker` in another terminal.
+
+Without `SMS_CONNECT_API_KEY` and `SMS_CONNECT_API_SECRET` the app stays in
+dry-run mode: messages are rendered, queued and logged, but no SMS is sent.
+When the keys are added, remove `SMS_DRY_MODE=true` (or set it to `false`) to go
+live. Each SMS costs 10 RWF and the gateway appends its own branding, so the app
+keeps the content within 112 characters to stay inside one 160-character SMS.
+
 
 ### Start the backend
 
@@ -158,6 +188,8 @@ Open the browser to that URL to view the frontend.
 npm run dev   # runs TypeScript app in watch mode
 npm run build # compiles TypeScript to dist
 npm run start # starts the built app
+npm run worker # runs SMS reminders in a dedicated process
+npm run backfill:sms -- --apply # links old sales and adds default due dates
 ```
 
 ### Frontend (`frontend/package.json`)
@@ -221,7 +253,7 @@ If you want to contribute:
 ## Troubleshooting
 
 - If `npm install` fails, check your Node.js version.
-- If the backend does not start, make sure port `5000` is free.
+- If the backend does not start, make sure port `4000` is free.
 - If the frontend does not start, make sure port `3000` is free.
 - If Git asks for credentials, verify that your GitHub account has access to the repository.
 
@@ -248,4 +280,4 @@ npm run dev
 Then open:
 
 - Frontend: http://localhost:3000
-- Backend: http://localhost:5000
+- Backend: http://localhost:4000

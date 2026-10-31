@@ -30,7 +30,7 @@ async function errorMessage(response: Response): Promise<string> {
 }
 
 export async function submitAuth(
-  action: "login" | "register",
+  action: "login" | "register" | "forgot" | "reset",
   values: Record<string, string>,
 ): Promise<void> {
   const response = await requestAuth(action, {

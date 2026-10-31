@@ -4,17 +4,23 @@ import { formatMoney, type Debtor } from "@/data/debtors";
 import { interpolate } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 
+function shortDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-GB", { timeZone: "Africa/Kigali" });
+}
+
 /** The table of the customers that owe the shop money. */
 export function DebtorsTable({
   debtors,
   isLoading,
-  onSendReminder,
+  onOpen,
   onPay,
+  onRemind,
 }: {
   debtors: Debtor[];
   isLoading: boolean;
-  onSendReminder: (debtor: Debtor) => void;
+  onOpen: (debtor: Debtor) => void;
   onPay: (debtor: Debtor) => void;
+  onRemind: (debtor: Debtor) => void;
 }) {
   const { t } = useI18n();
 
@@ -61,7 +67,17 @@ export function DebtorsTable({
               return (
                 <tr
                   key={debtor.id}
-                  className="border-b border-line last:border-b-0 hover:bg-[#FAFCFB]"
+                  tabIndex={0}
+                  aria-label={interpolate(t.common.viewDetails, { name: debtor.name })}
+                  onClick={() => onOpen(debtor)}
+                  onKeyDown={(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onOpen(debtor);
+                    }
+                  }}
+                  className="cursor-pointer border-b border-line last:border-b-0 hover:bg-[#FAFCFB] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
                 >
                   <td className="px-4 py-3 align-middle">
                     <div className="flex items-center gap-3">
@@ -70,7 +86,11 @@ export function DebtorsTable({
                       </div>
                       <div>
                         <b className="block text-sm font-bold text-ink">{debtor.name}</b>
-                        <span className="text-xs text-ink-2">{debtor.date}</span>
+                        <span className="text-xs text-ink-2">
+                          {debtor.dueDate
+                            ? `${t.debtors.dueDate} ${shortDate(debtor.dueDate)}`
+                            : shortDate(debtor.date)}
+                        </span>
                       </div>
                     </div>
                   </td>
@@ -110,21 +130,28 @@ export function DebtorsTable({
                     </b>
                   </td>
                   <td className="px-4 py-3 align-middle">
-                    <div className="flex min-w-[174px] gap-2">
-                      <button
-                        type="button"
-                        className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[11px] bg-primary-soft px-3 text-[12px] font-bold text-primary-dark transition-colors hover:bg-[#D5EEE5] disabled:cursor-not-allowed disabled:opacity-50"
-                        onClick={() => onSendReminder(debtor)}
-                      >
-                        {t.debtors.sms}
-                      </button>
+                    <div className="flex min-w-[248px] gap-2">
                       <button
                         type="button"
                         className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[11px] bg-primary px-3 text-[12px] font-bold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-                        onClick={() => onPay(debtor)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onPay(debtor);
+                        }}
                         disabled={isLoading || debtor.owed <= 0}
                       >
                         {isLoading ? t.debtors.paying : t.debtors.pay}
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[11px] border border-line bg-surface px-3 text-[12px] font-bold text-primary-dark transition-colors hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-50"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onRemind(debtor);
+                        }}
+                        disabled={isLoading || debtor.owed <= 0 || !debtor.phone}
+                      >
+                        {t.debtors.reminder.send}
                       </button>
                     </div>
                   </td>

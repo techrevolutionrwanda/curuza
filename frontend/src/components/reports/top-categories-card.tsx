@@ -3,15 +3,13 @@
 import { interpolate } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 
-const TOP_CATEGORIES = [
-  { id: "ibinyobwa", percent: 90, count: 214 },
-  { id: "ibiribwa", percent: 70, count: 167 },
-  { id: "isuku", percent: 37, count: 89 },
-] as const;
-
-/** The categories that sold the most. */
-export function TopCategoriesCard() {
+export function TopCategoriesCard({
+  categories,
+}: {
+  categories: Array<{ id: string; name: string; count: number }>;
+}) {
   const { t } = useI18n();
+  const maximum = Math.max(...categories.map((category) => category.count), 0);
 
   return (
     <section
@@ -26,20 +24,20 @@ export function TopCategoriesCard() {
       </div>
 
       <div className="divide-y divide-line">
-        {TOP_CATEGORIES.map((cat) => {
-          const name = t.stock.categories[cat.id];
+        {categories.map((cat) => {
+          const percent = maximum > 0 ? Math.round((cat.count / maximum) * 100) : 0;
           return (
             <div
               key={cat.id}
               className="flex items-center justify-between gap-[18px] py-4 max-[520px]:gap-2.5 max-[520px]:py-3.5"
             >
               <span className="min-w-[110px] font-semibold text-ink max-[520px]:min-w-[82px] max-[520px]:text-[13px]">
-                {name}
+                {cat.name}
               </span>
               <div
                 role="progressbar"
-                aria-label={interpolate(t.reports.categories.rowLabel, { name })}
-                aria-valuenow={cat.percent}
+                aria-label={interpolate(t.reports.categories.rowLabel, { name: cat.name })}
+                aria-valuenow={percent}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 className="flex-1"
@@ -47,7 +45,7 @@ export function TopCategoriesCard() {
                 <div className="h-[10px] overflow-hidden rounded-pill bg-[#EDF1EF]">
                   <div
                     className="block h-full rounded-pill bg-[linear-gradient(90deg,#72BDA4,var(--color-primary))]"
-                    style={{ width: `${cat.percent}%` }}
+                    style={{ width: `${percent}%` }}
                   />
                 </div>
               </div>
@@ -57,6 +55,9 @@ export function TopCategoriesCard() {
             </div>
           );
         })}
+        {categories.length === 0 && (
+          <p className="py-8 text-center text-sm text-ink-2">{t.reports.categories.empty}</p>
+        )}
       </div>
     </section>
   );
