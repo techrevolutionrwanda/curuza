@@ -13,17 +13,37 @@ export type AccountProfile = {
   businessName: string;
 };
 
-function isAccountProfile(value: unknown): value is AccountProfile {
-  if (typeof value !== "object" || value === null) return false;
+type AccountResponse = {
+  user: {
+    username: string;
+    email?: string | null;
+    phone: string;
+  };
+  shop: {
+    name: string;
+  };
+};
+
+function isAccountResponse(value: unknown): value is AccountResponse {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+  if (!("user" in value) || typeof value.user !== "object" || value.user === null) {
+    return false;
+  }
+  if (!("shop" in value) || typeof value.shop !== "object" || value.shop === null) {
+    return false;
+  }
+
+  const { user, shop } = value;
   return (
-    "username" in value &&
-    typeof value.username === "string" &&
-    "email" in value &&
-    (typeof value.email === "string" || value.email == null) &&
-    "phone" in value &&
-    typeof value.phone === "string" &&
-    "businessName" in value &&
-    (typeof value.businessName === "string" || value.businessName == null)
+    "username" in user &&
+    typeof user.username === "string" &&
+    (!("email" in user) || typeof user.email === "string" || user.email == null) &&
+    "phone" in user &&
+    typeof user.phone === "string" &&
+    "name" in shop &&
+    typeof shop.name === "string"
   );
 }
 
@@ -65,10 +85,7 @@ async function requestProfile(
   }
 
   if (
-    typeof result !== "object" ||
-    result === null ||
-    !("user" in result) ||
-    !isAccountProfile(result.user)
+    !isAccountResponse(result)
   ) {
     throw new Error("The server returned invalid account information.");
   }
@@ -77,7 +94,7 @@ async function requestProfile(
     username: result.user.username,
     email: result.user.email ?? "",
     phone: result.user.phone,
-    businessName: result.user.businessName ?? "",
+    businessName: result.shop.name,
   };
 }
 

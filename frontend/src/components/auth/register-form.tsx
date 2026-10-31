@@ -75,7 +75,7 @@ export function RegisterForm() {
           name="business"
           type="text"
           autoComplete="organization"
-          placeholder="e.g. Mama Keza Shop"
+          placeholder="e.g. Your shop"
           required
         />
       </div>
@@ -92,7 +92,7 @@ export function RegisterForm() {
           name="fullname"
           type="text"
           autoComplete="name"
-          placeholder="e.g. Keza Uwase"
+          placeholder="Enter your full name"
           required
         />
       </div>

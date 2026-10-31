@@ -53,7 +53,7 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel}
-        className="animate-rise w-full max-w-[520px] rounded-[26px] bg-surface p-[26px] shadow-modal"
+        className="animate-rise max-h-[90vh] w-full max-w-[520px] overflow-y-auto rounded-[26px] bg-surface p-[26px] shadow-modal"
       >
         {children}
       </div>

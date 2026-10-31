@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import type { Request, Response } from "express";
+import User from "../models/user.model.js";
 import Category from "../models/category.model.js";
 import Product from "../models/product.model.js";
+import Shop from "../models/shop.model.js";
 
 const MAX_NAME_LENGTH = 120;
 
@@ -33,6 +35,10 @@ function numberField(value: unknown): number | null {
     return Number.isFinite(parsed) ? parsed : null;
   }
   return null;
+}
+
+function rejectInvalidId(res: Response, label: string): void {
+  res.status(400).json({ message: `Invalid ${label} id.` });
 }
 
 function isDuplicateKeyError(error: unknown): boolean {
@@ -73,30 +79,34 @@ function serializeCategory(category: CategoryLike) {
   };
 }
 
-function requireOwner(req: Request, res: Response): string | null {
-  const userId = req.session.userId;
+// Guard: ensure the user has a shop, attach shop to req.shop
+async function ensureShop(req: Request, res: Response): Promise<string | null> {
+  const userId = req.session?.userId;
   if (!userId || !mongoose.isValidObjectId(userId)) {
     res.status(401).json({ message: "You are not logged in." });
     return null;
   }
-  return userId;
-}
 
-function rejectInvalidId(res: Response, label: string): void {
-  res.status(400).json({ message: `Invalid ${label} id.` });
+  const user = await User.findById(userId).select("shop");
+  if (!user?.shop) {
+    res.status(401).json({ message: "You must have a shop to access this resource." });
+    return null;
+  }
+
+  return user.shop?.toString() || "";
 }
 
 export async function listProducts(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
-  const products = await Product.find({ owner }).sort({ createdAt: -1 });
+  const products = await Product.find({ shop }).sort({ createdAt: -1 });
   res.json({ products: products.map(serializeProduct) });
 }
 
 export async function createProduct(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
   const name = stringField(req.body?.name);
   const categoryId = stringField(req.body?.category);
@@ -124,14 +134,14 @@ export async function createProduct(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  const category = await Category.findOne({ _id: categoryId, owner });
+  const category = await Category.findOne({ _id: categoryId, shop });
   if (!category) {
-    res.status(400).json({ message: "Choose a category that belongs to your account." });
+    res.status(400).json({ message: "Choose a category that belongs to your shop." });
     return;
   }
 
   const product = await Product.create({
-    owner,
+    shop,
     name,
     initials: initialsFor(name),
     category: category._id,
@@ -143,8 +153,8 @@ export async function createProduct(req: Request, res: Response): Promise<void> 
 }
 
 export async function updateProduct(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
   const id = req.params.id;
   if (!mongoose.isValidObjectId(id)) {
@@ -178,14 +188,14 @@ export async function updateProduct(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  const category = await Category.findOne({ _id: categoryId, owner });
+  const category = await Category.findOne({ _id: categoryId, shop });
   if (!category) {
-    res.status(400).json({ message: "Choose a category that belongs to your account." });
+    res.status(400).json({ message: "Choose a category that belongs to your shop." });
     return;
   }
 
   const product = await Product.findOneAndUpdate(
-    { _id: id, owner },
+    { _id: id, shop },
     {
       name,
       initials: initialsFor(name),
@@ -193,7 +203,7 @@ export async function updateProduct(req: Request, res: Response): Promise<void> 
       price: Math.trunc(price),
       qty,
     },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   );
 
   if (!product) {
@@ -205,8 +215,8 @@ export async function updateProduct(req: Request, res: Response): Promise<void> 
 }
 
 export async function deleteProduct(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
   const id = req.params.id;
   if (!mongoose.isValidObjectId(id)) {
@@ -214,7 +224,8 @@ export async function deleteProduct(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  const product = await Product.findOneAndDelete({ _id: id, owner });
+  const product = await Product.findOneAndDelete({ _id: id, shop });
+
   if (!product) {
     res.status(404).json({ message: "Product not found." });
     return;
@@ -224,8 +235,8 @@ export async function deleteProduct(req: Request, res: Response): Promise<void> 
 }
 
 export async function restockProduct(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
   const id = req.params.id;
   if (!mongoose.isValidObjectId(id)) {
@@ -240,9 +251,9 @@ export async function restockProduct(req: Request, res: Response): Promise<void>
   }
 
   const product = await Product.findOneAndUpdate(
-    { _id: id, owner },
+    { _id: id, shop },
     { $inc: { qty: amount } },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   );
 
   if (!product) {
@@ -254,16 +265,16 @@ export async function restockProduct(req: Request, res: Response): Promise<void>
 }
 
 export async function listCategories(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
-  const categories = await Category.find({ owner }).sort({ createdAt: 1 });
+  const categories = await Category.find({ shop }).sort({ createdAt: 1 });
   res.json({ categories: categories.map(serializeCategory) });
 }
 
 export async function createCategory(req: Request, res: Response): Promise<void> {
-  const owner = requireOwner(req, res);
-  if (!owner) return;
+  const shop = await ensureShop(req, res);
+  if (!shop) return;
 
   const rw = stringField(req.body?.nameRw);
   const en = stringField(req.body?.nameEn);
@@ -282,7 +293,7 @@ export async function createCategory(req: Request, res: Response): Promise<void>
   }
 
   try {
-    const category = await Category.create({ owner, rw, en });
+    const category = await Category.create({ shop, rw, en });
     res.status(201).json({ category: serializeCategory(category) });
   } catch (error) {
     if (isDuplicateKeyError(error)) {

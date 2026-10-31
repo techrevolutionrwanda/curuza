@@ -2,17 +2,21 @@
 
 import { useI18n } from "@/i18n/locale-provider";
 
-const SUMMARY_KPIS = [
-  { key: "sales", value: "612,000", trend: "up" },
-  { key: "cash", value: "427,000", trend: "up" },
-  { key: "credit", value: "185,000", trend: "down" },
-  { key: "cost", value: "351,200", trend: "" },
-  { key: "expenses", value: "46,500", trend: "" },
-] as const;
-
-/** How the shop did: what came in, what went out and what is left. */
-export function SummaryCard() {
+export function SummaryCard({
+  sales,
+  collected,
+  owed,
+}: {
+  sales: number;
+  collected: number;
+  owed: number;
+}) {
   const { t } = useI18n();
+  const rows = [
+    { key: "sales", value: sales },
+    { key: "cash", value: collected },
+    { key: "credit", value: owed },
+  ] as const;
 
   return (
     <section
@@ -24,7 +28,7 @@ export function SummaryCard() {
       </h3>
 
       <div className="divide-y divide-line">
-        {SUMMARY_KPIS.map((kpi) => (
+        {rows.map((kpi) => (
           <div
             key={kpi.key}
             className="flex items-center justify-between gap-4 py-[14px] text-[14px]"
@@ -32,16 +36,8 @@ export function SummaryCard() {
             <span className="leading-[1.4] text-ink-2">
               {t.reports.summary.rows[kpi.key]}
             </span>
-            <b
-              className={`whitespace-nowrap tabular-nums ${
-                kpi.trend === "up"
-                  ? "text-success"
-                  : kpi.trend === "down"
-                  ? "text-danger"
-                  : "text-ink"
-              }`}
-            >
-              {kpi.value}
+            <b className="whitespace-nowrap tabular-nums text-ink">
+              {kpi.value.toLocaleString("en-US")} RWF
             </b>
           </div>
         ))}

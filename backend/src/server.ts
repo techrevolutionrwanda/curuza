@@ -1,10 +1,13 @@
-import express from "express";
-import dotenv from "dotenv";
+import express, { type Request, type Response } from "express";
 import cors from "cors";
 import session from "express-session";
+import connectMongo from "connect-mongo";
+import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import stockRoutes from "./routes/stock.routes.js";
+import salesRoutes from "./routes/sales.routes.js";
+import settingsRoutes from "./routes/settings.routes.js";
 
 dotenv.config();
 
@@ -19,17 +22,10 @@ if (!sessionSecret) {
   throw new Error("SESSION_SECRET is missing from the backend environment");
 }
 
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-      return;
-    }
-    callback(new Error("Origin is not allowed by CORS"));
-  },
-  credentials: true,
-}));
-app.use(express.json({ limit: "10kb" }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+// session store backed by MongoDB (TTL index expires tokens automatically)
+import MongoStore from "connect-mongo";
 app.use(
   session({
     name: "curuza_session",
@@ -42,11 +38,19 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
+    store: new MongoStore({
+      mongoUrl: process.env.MONGO_URI,
+      ttl: 7 * 24 * 60 * 60, // 7 days
+    }),
   })
 );
 
+app.use(express.json({ limit: "10kb" }));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/stock", stockRoutes);
+app.use("/api/sales", salesRoutes);
+app.use("/api/settings", settingsRoutes);
 
 async function startServer() {
   await connectDB();

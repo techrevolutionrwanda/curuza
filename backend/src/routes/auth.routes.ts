@@ -1,18 +1,26 @@
 import { Router } from "express";
 import {
-  currentUser,
+  register,
   login,
   logout,
-  register,
+  currentUser,
   updateCurrentUser,
+  updatePassword,
+  updatePreferences,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 
 const router = Router();
 
 router.post("/register", register);
 router.post("/login", login);
+router.post("/logout", logout);
 router.get("/me", currentUser);
 router.patch("/me", updateCurrentUser);
-router.post("/logout", logout);
+router.patch("/me/password", updatePassword);
+router.patch("/me/preferences", updatePreferences);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

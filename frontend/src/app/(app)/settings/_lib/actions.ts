@@ -5,7 +5,7 @@ import { refresh } from "next/cache";
 import { isCurrency, type ToggleState } from "@/data/settings";
 import type { Locale } from "@/i18n/dictionaries";
 import { updateAccountProfile } from "./account";
-import * as repo from "./repository";
+import { updateShopSettings } from "./settings-api";
 
 export type FormErrors = Record<string, string>;
 
@@ -48,13 +48,13 @@ export async function updateBusinessAction(
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 
   try {
-    const profile = await updateAccountProfile({
+    await updateAccountProfile({
       username,
       email,
       businessName,
       phone,
     });
-    repo.updateBusiness({ ...profile, currency });
+    await updateShopSettings({ currency });
   } catch (cause) {
     return {
       ok: false,
@@ -76,8 +76,7 @@ export async function updateBusinessAction(
  * The cookie lets the browser remember the choice on the next visit.
  */
 export async function setLocaleAction(locale: Locale): Promise<SettingsActionResult> {
-  repo.setLocale(locale);
-
+  await updateShopSettings({ locale });
   const store = await cookies();
   store.set("locale", locale, {
     path: "/",
@@ -97,20 +96,23 @@ export async function setSmsRemindersAction(
   formData: FormData,
 ): Promise<ToggleState> {
   const enabled = formData.get("enabled") === "true";
-  repo.setSmsReminders(enabled);
+  await updateShopSettings({ smsReminders: enabled });
   refresh();
   return { enabled };
 }
 
 /**
  * Turn the cloud backup on or off.
+ *
+ * Switching it on runs a backup right away, so the shop never waits for
+ * the next scheduled run.
  */
 export async function setCloudBackupAction(
   _prev: ToggleState,
   formData: FormData,
 ): Promise<ToggleState> {
   const enabled = formData.get("enabled") === "true";
-  repo.setCloudBackup(enabled);
+  await updateShopSettings({ cloudBackup: enabled });
   refresh();
   return { enabled };
 }

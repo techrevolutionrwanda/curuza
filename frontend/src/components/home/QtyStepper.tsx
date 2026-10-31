@@ -3,9 +3,10 @@
 interface QtyStepperProps {
   value: number;
   onChange: (value: number) => void;
+  max?: number;
 }
 
-export function QtyStepper({ value, onChange }: QtyStepperProps) {
+export function QtyStepper({ value, onChange, max = Number.MAX_SAFE_INTEGER }: QtyStepperProps) {
   return (
     <div className="flex items-center gap-[10px]">
       <button
@@ -21,6 +22,7 @@ export function QtyStepper({ value, onChange }: QtyStepperProps) {
       <button
         type="button"
         onClick={() => onChange(value + 1)}
+        disabled={value >= max}
         className="h-[40px] w-[40px] rounded-[12px] bg-primary-soft text-primary-dark text-[20px] font-extrabold"
       >
         +

@@ -1,7 +1,6 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { SEED_SETTINGS } from "@/data/settings";
 
 /**
  * The name of the shop, shared between the settings page and the app shell.
@@ -27,15 +26,15 @@ function subscribe(onStoreChange: () => void) {
 }
 
 function getSnapshot(): string {
-  if (typeof document === "undefined") return SEED_SETTINGS.businessName;
+  if (typeof document === "undefined") return "";
   const match = document.cookie.match(
     new RegExp(`(?:^|;\\s*)${COOKIE}=([^;]*)`),
   );
-  return match ? decodeURIComponent(match[1]) : SEED_SETTINGS.businessName;
+  return match ? decodeURIComponent(match[1]) : "";
 }
 
 function getServerSnapshot(): string {
-  return SEED_SETTINGS.businessName;
+  return "";
 }
 
 /** Remember the new shop name for the sidebar and the next visit. */

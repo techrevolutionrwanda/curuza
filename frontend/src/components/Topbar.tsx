@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/locale-provider";
 import { fetchCurrentUser, logoutAuth, type AuthUser } from "@/lib/auth";
+import { publishBusinessName } from "@/lib/business-store";
 
 export function Topbar() {
   const { t } = useI18n();
@@ -24,6 +26,7 @@ export function Topbar() {
           return;
         }
         setUser(currentUser);
+        if (currentUser.businessName) publishBusinessName(currentUser.businessName);
       })
       .catch(() => {
         if (!controller.signal.aborted) {
@@ -82,21 +85,10 @@ export function Topbar() {
         />
       </label>
 
-      {/* Sync toggle */}
-      <button
-        type="button"
-        className="flex items-center gap-[7px] rounded-full bg-primary-soft px-[14px] py-[9px] text-[13px] font-semibold text-primary-dark"
-      >
-        <span className="h-[8px] w-[8px] rounded-full bg-success" />
-        <span>{t.topbar.sync}</span>
-      </button>
-
-      {/* New sale.
-          The sale dialog itself is built by another developer, so this button
-          intentionally has no click handler yet. */}
       <button
         type="button"
         aria-label={t.topbar.newSale}
+        onClick={() => router.push("/home?newSale=1")}
         className="inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-accent px-5 font-bold text-[#3A2A00] transition hover:brightness-95"
       >
         <svg
@@ -115,20 +107,27 @@ export function Topbar() {
       </button>
 
       <div className="flex items-center gap-2.5">
-        <div
-          aria-hidden="true"
-          className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark"
+        <Link
+          href="/settings"
+          aria-label={t.nav.settings}
+          title={t.nav.settings}
+          className="flex min-w-0 items-center gap-2.5 rounded-panel px-1 py-1 transition hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
-          {loadingUser ? "…" : initials}
-        </div>
-        <div className="topbar-user-text">
-          <b className="block max-w-36 truncate text-sm font-semibold text-ink">
-            {loadingUser ? "…" : user?.username}
-          </b>
-          <small className="block max-w-36 truncate text-xs text-ink-2">
-            {user?.businessName || t.topbar.owner}
-          </small>
-        </div>
+          <span
+            aria-hidden="true"
+            className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark"
+          >
+            {loadingUser ? "…" : initials}
+          </span>
+          <span className="topbar-user-text min-w-0">
+            <b className="block max-w-36 truncate text-sm font-semibold text-ink">
+              {loadingUser ? "…" : user?.username}
+            </b>
+            <small className="block max-w-36 truncate text-xs text-ink-2">
+              {user?.businessName || t.topbar.owner}
+            </small>
+          </span>
+        </Link>
         <button
           type="button"
           onClick={handleLogout}

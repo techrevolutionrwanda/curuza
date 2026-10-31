@@ -5,7 +5,7 @@ interface KpiCardProps {
   label: string;
   value: string;
   unit?: string;
-  trend: string;
+  trend?: string;
   variant?: "hero" | "default";
   iconColor?: "green" | "red" | "yellow" | "white";
   trendColor?: "hero" | "up" | "down";
@@ -60,9 +60,7 @@ export function KpiCard({
       <div className="text-[28px] font-extrabold mt-[10px] mb-[4px] tracking-[-0.02em]">
         {value} {unit && <small className={`text-[13px] font-semibold ${isHero ? "text-white/85" : "text-ink-2"}`}>{unit}</small>}
       </div>
-      <div className={`text-[12px] font-bold ${trendClass}`}>
-        {trend}
-      </div>
+      {trend ? <div className={`text-[12px] font-bold ${trendClass}`}>{trend}</div> : null}
     </div>
   );
 }

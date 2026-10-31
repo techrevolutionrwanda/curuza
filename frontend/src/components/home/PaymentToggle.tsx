@@ -1,10 +1,11 @@
 "use client";
 
 import { useI18n } from "@/i18n/locale-provider";
+import type { SalePaymentMethod } from "@/data/sales";
 
 interface PaymentToggleProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: SalePaymentMethod;
+  onChange: (value: SalePaymentMethod) => void;
 }
 
 const METHODS = [

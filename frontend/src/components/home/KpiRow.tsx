@@ -3,6 +3,8 @@
 import { stockStatus, type Product } from "@/data/products";
 import { interpolate } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
+import type { Sale } from "@/data/sales";
+import { sumSales } from "@/data/sales";
 import { KpiCard } from "./KpiCard";
 
 const ICONS = {
@@ -70,37 +72,55 @@ const ICONS = {
   ),
 };
 
-export function KpiRow({ products }: { products: Product[] }) {
+export function KpiRow({
+  products,
+  sales,
+  period,
+}: {
+  products: Product[];
+  sales: Sale[];
+  period: number;
+}) {
   const { t } = useI18n();
+  const now = new Date();
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+  if (period === 1) {
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  } else if (period === 2) {
+    start.setDate(1);
+  }
+  const periodSales = sales.filter((sale) => new Date(sale.createdAt) >= start);
   const low = products.filter((p) => stockStatus(p.qty) === "low").length;
   const out = products.filter((p) => stockStatus(p.qty) === "out").length;
   const k = t.home.kpis;
+  const debtorSales = periodSales.filter((sale) => sale.owed > 0);
+  const customerCount = new Set(debtorSales.map((sale) => sale.customerPhone)).size;
+  const amount = (value: number) => value.toLocaleString("en-US");
 
   const kpis = [
     {
       variant: "hero" as const,
       icon: ICONS.sales,
       label: k.sales.label,
-      value: "86,500",
+      value: amount(sumSales(periodSales, (sale) => sale.total)),
       unit: "RWF",
-      trend: k.sales.trend,
     },
     {
       variant: "default" as const,
       icon: ICONS.cash,
       label: k.cash.label,
-      value: "61,500",
+      value: amount(sumSales(periodSales, (sale) => sale.paid)),
       unit: "RWF",
-      trend: k.cash.trend,
       trendColor: "up" as const,
     },
     {
       variant: "default" as const,
       icon: ICONS.debtors,
       label: k.debtors.label,
-      value: "184,000",
+      value: amount(sumSales(periodSales, (sale) => sale.owed)),
       unit: "RWF",
-      trend: interpolate(k.debtors.trend, { count: "12" }),
+      trend: interpolate(k.debtors.trend, { count: String(customerCount) }),
       iconColor: "red" as const,
       trendColor: "down" as const,
     },

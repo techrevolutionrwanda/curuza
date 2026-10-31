@@ -54,16 +54,3 @@ export type ToggleAction = (
 export function isCurrency(code: string): boolean {
   return CURRENCIES.some((c) => c.code === code);
 }
-
-/** The settings a fresh install starts with. */
-export const SEED_SETTINGS: Settings = {
-  username: "",
-  email: "",
-  businessName: "",
-  phone: "",
-  currency: DEFAULT_CURRENCY,
-  locale: "rw",
-  smsReminders: false,
-  cloudBackup: true,
-  lastBackupAt: "2026-10-20T06:00:00.000Z",
-};

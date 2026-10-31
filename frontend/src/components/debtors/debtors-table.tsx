@@ -8,12 +8,10 @@ import { useI18n } from "@/i18n/locale-provider";
 export function DebtorsTable({
   debtors,
   isLoading,
-  onSendReminder,
   onPay,
 }: {
   debtors: Debtor[];
   isLoading: boolean;
-  onSendReminder: (debtor: Debtor) => void;
   onPay: (debtor: Debtor) => void;
 }) {
   const { t } = useI18n();
@@ -111,13 +109,6 @@ export function DebtorsTable({
                   </td>
                   <td className="px-4 py-3 align-middle">
                     <div className="flex min-w-[174px] gap-2">
-                      <button
-                        type="button"
-                        className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[11px] bg-primary-soft px-3 text-[12px] font-bold text-primary-dark transition-colors hover:bg-[#D5EEE5] disabled:cursor-not-allowed disabled:opacity-50"
-                        onClick={() => onSendReminder(debtor)}
-                      >
-                        {t.debtors.sms}
-                      </button>
                       <button
                         type="button"
                         className="inline-flex h-[38px] flex-1 items-center justify-center rounded-[11px] bg-primary px-3 text-[12px] font-bold text-white transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
