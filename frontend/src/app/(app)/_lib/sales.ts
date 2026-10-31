@@ -62,6 +62,7 @@ function parseSale(value: unknown): Sale | null {
     total: sale.total,
     paid: sale.paid,
     owed: sale.owed,
+    dueDate: typeof sale.dueDate === "string" ? sale.dueDate : null,
     createdAt: sale.createdAt,
   };
 }

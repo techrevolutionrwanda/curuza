@@ -17,6 +17,17 @@ interface SaleModalProps {
 
 const inputCls = "min-h-11 w-full rounded-panel border border-line bg-surface px-3 outline-none focus:border-primary";
 
+function localDateKey(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function defaultDueDate(): string {
+  const date = new Date();
+  date.setDate(date.getDate() + 14);
+  return localDateKey(date);
+}
+
 export function SaleModal({ open, products, onClose, onSuccess }: SaleModalProps) {
   const { t } = useI18n();
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
@@ -26,6 +37,7 @@ export function SaleModal({ open, products, onClose, onSuccess }: SaleModalProps
   const [paymentMethod, setPaymentMethod] = useState<SalePaymentMethod>("cash");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [dueDate, setDueDate] = useState(defaultDueDate);
   const [amountReceived, setAmountReceived] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -77,6 +89,10 @@ export function SaleModal({ open, products, onClose, onSuccess }: SaleModalProps
       setError(t.home.sale.customerRequired);
       return;
     }
+    if (paid < total && !dueDate) {
+      setError(t.home.sale.dueDate);
+      return;
+    }
 
     setSaving(true);
     try {
@@ -89,6 +105,7 @@ export function SaleModal({ open, products, onClose, onSuccess }: SaleModalProps
         paid,
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
+        dueDate: paid < total ? dueDate : undefined,
       });
       onSuccess();
       onClose();
@@ -194,6 +211,19 @@ export function SaleModal({ open, products, onClose, onSuccess }: SaleModalProps
             />
           </label>
         </div>
+        {paymentMethod !== "cash" && (
+          <label className="mb-3 block text-[13px] font-semibold text-ink-2">
+            {t.home.sale.dueDate}
+            <input
+              type="date"
+              required
+              min={localDateKey(new Date())}
+              value={dueDate}
+              onChange={(event) => setDueDate(event.target.value)}
+              className={`${inputCls} mt-1`}
+            />
+          </label>
+        )}
         {paymentMethod === "partial" && (
           <label className="mb-3 block text-[13px] font-semibold text-ink-2">
             {t.home.sale.amountReceived}

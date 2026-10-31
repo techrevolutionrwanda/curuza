@@ -8,6 +8,8 @@ import authRoutes from "./routes/auth.routes.js";
 import stockRoutes from "./routes/stock.routes.js";
 import salesRoutes from "./routes/sales.routes.js";
 import settingsRoutes from "./routes/settings.routes.js";
+import smsRoutes from "./routes/sms.routes.js";
+import { startSmsWorker } from "./workers/sms.worker.js";
 
 dotenv.config();
 
@@ -51,12 +53,19 @@ app.use("/api/auth", authRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/sms", smsRoutes);
 
 async function startServer() {
   await connectDB();
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+
+  // Small deployments run the reminder loop in-process. Set
+  // SMS_WORKER_INLINE=false when a dedicated worker process is used instead.
+  if (process.env.SMS_WORKER_INLINE !== "false" && process.env.NODE_ENV !== "test") {
+    startSmsWorker();
+  }
 }
 
 void startServer();

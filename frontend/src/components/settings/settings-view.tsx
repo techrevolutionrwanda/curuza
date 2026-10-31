@@ -67,7 +67,11 @@ export function SettingsView({ settings }: { settings: Settings }) {
 
         <SettingRow label={t.settings.rows.sms}>
           <div className="flex items-center gap-2.5">
-            <SettingBadge tone="info">{t.settings.badge.plus}</SettingBadge>
+            <SettingBadge tone={settings.smsReminders ? "ok" : "off"}>
+              {settings.smsReminders
+                ? t.settings.badge.active
+                : t.settings.badge.inactive}
+            </SettingBadge>
             <SettingToggle
               action={setSmsRemindersAction}
               enabled={settings.smsReminders}

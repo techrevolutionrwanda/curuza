@@ -154,12 +154,16 @@ export function StockView({
                 return (
                   <tr key={p.id}>
                     <td className={tdCls}>
-                      <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setEditProduct(p)}
+                        className="flex items-center gap-3 text-left hover:text-primary-dark"
+                      >
                         <div className="grid h-[42px] w-[42px] flex-none place-items-center rounded-panel bg-primary-soft font-extrabold text-primary-dark">
                           {p.initials}
                         </div>
                         <b>{p.name}</b>
-                      </div>
+                      </button>
                     </td>
                     <td className={`${tdCls} text-ink-2`}>{categoryLabel}</td>
                     <td className={`num ${tdCls} text-right`}>{p.price.toLocaleString("en-US")}</td>

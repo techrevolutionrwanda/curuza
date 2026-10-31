@@ -140,6 +140,61 @@
   }
 }
 
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .app {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .app .side,
+  .topbar,
+  .reports-actions,
+  .report-chart-controls {
+    display: none !important;
+  }
+
+  .reports-screen {
+    display: none !important;
+  }
+
+  .reports-print-view {
+    display: block !important;
+    color: #10201b;
+  }
+
+  .app .main .page {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .reports-print-view section {
+    break-inside: avoid;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+
+  .reports-print-view .pointer-events-none {
+    display: none !important;
+  }
+
+  .reports-print-period {
+    display: block !important;
+  }
+}
+
+.reports-print-view {
+  display: none;
+}
+
 /* Topbar mobile behaviour, matching the web template. */
 @media (max-width: 820px) {
   .topbar {

@@ -6,6 +6,7 @@ export type Debtor = {
   initial: string;
   phone: string;
   date: string;
+  dueDate: string | null;
   total: number;
   paid: number;
   owed: number;
@@ -27,6 +28,7 @@ export function saleToDebtor(sale: Sale): Debtor {
     initial: initials || "?",
     phone: sale.customerPhone,
     date: sale.createdAt,
+    dueDate: sale.dueDate,
     total: sale.total,
     paid: sale.paid,
     owed: sale.owed,

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Product } from "@/data/products";
 import type { Sale } from "@/data/sales";
-import { saleToDebtor } from "@/data/debtors";
 import { SegmentControl } from "@/components/SegmentControl";
 import { useI18n } from "@/i18n/locale-provider";
 import { KpiRow } from "./KpiRow";
@@ -63,7 +62,7 @@ export function HomeView({
       </div>
 
       <DebtorsTable
-        debtors={sales.filter((sale) => sale.owed > 0).slice(0, 5).map(saleToDebtor)}
+        sales={sales.filter((sale) => sale.owed > 0).slice(0, 5)}
       />
 
       {open && (

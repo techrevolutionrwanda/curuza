@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "worker": "tsx watch src/workers/sms.worker.ts",
+    "worker:start": "node dist/workers/sms.worker.js",
+    "backfill:sms": "tsx src/scripts/backfill-customers.ts"
   },
   "keywords": [],
   "dependencies": {

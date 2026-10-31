@@ -3,10 +3,15 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { formatMoney, saleToDebtor, type Debtor } from "@/data/debtors";
 import type { Sale } from "@/data/sales";
+import { interpolate } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 import { recordSalePayment } from "@/lib/sales-api";
+import { sendAllReminders } from "@/lib/sms-api";
+import { CustomerCard } from "@/components/customers/customer-card";
+import { Toast, type ToastMsg } from "@/components/toast";
 import { DebtorsSummary } from "./debtors-summary";
 import { DebtorsTable } from "./debtors-table";
+import { SmsReminderModal } from "./sms-reminder-modal";
 
 /**
  * The debtors page: the customers that owe the shop money, how much they
@@ -20,8 +25,21 @@ export function DebtorsView({ sales }: { sales: Sale[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [paymentDebtor, setPaymentDebtor] = useState<Debtor | null>(null);
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentError, setPaymentError] = useState("");
+  const [reminderDebtor, setReminderDebtor] = useState<Debtor | null>(null);
+  const [toasts, setToasts] = useState<ToastMsg[]>([]);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [bulkNote, setBulkNote] = useState("");
+
+  function toastId() {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  }
+
+  const dismissToast = (id: string) => {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  };
 
   const filtered = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -68,14 +86,54 @@ export function DebtorsView({ sales }: { sales: Sale[] }) {
     }
   };
 
+  const handleRemindAll = async () => {
+    if (bulkBusy || debtors.length === 0) return;
+    const confirmed = window.confirm(
+      interpolate(t.debtors.reminder.bulkConfirm, { count: String(debtors.length) }),
+    );
+    if (!confirmed) return;
+
+    setBulkBusy(true);
+    setBulkNote("");
+    try {
+      const result = await sendAllReminders();
+      setBulkNote(
+        interpolate(t.debtors.reminder.bulkDone, {
+          queued: String(result.queued),
+          skipped: String(result.skipped),
+        }),
+      );
+    } catch (cause) {
+      setBulkNote(cause instanceof Error ? cause.message : t.debtors.paymentError);
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   return (
     <div className="page mx-auto w-full max-w-[1400px]">
-      <div className="mb-6">
-        <h1 className="text-[28px] font-bold leading-tight tracking-[-0.02em] text-ink">
-          {t.debtors.title}
-        </h1>
-        <p className="mt-1 text-sm text-ink-2">{t.debtors.subtitle}</p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[28px] font-bold leading-tight tracking-[-0.02em] text-ink">
+            {t.debtors.title}
+          </h1>
+          <p className="mt-1 text-sm text-ink-2">{t.debtors.subtitle}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => void handleRemindAll()}
+          disabled={bulkBusy || debtors.length === 0}
+          className="inline-flex min-h-11 items-center justify-center rounded-panel border border-line bg-surface px-4 text-sm font-bold text-primary-dark transition-colors hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {bulkBusy ? t.debtors.reminder.sending : t.debtors.reminder.bulk}
+        </button>
       </div>
+
+      {bulkNote && (
+        <p role="status" className="mb-4 rounded-panel bg-primary-soft px-3 py-2 text-sm font-semibold text-primary-dark">
+          {bulkNote}
+        </p>
+      )}
 
       {/* Search */}
       <div className="mb-5 flex items-center gap-3">
@@ -114,12 +172,38 @@ export function DebtorsView({ sales }: { sales: Sale[] }) {
       <DebtorsTable
         debtors={filtered}
         isLoading={isLoading}
+        onOpen={(debtor) => {
+          const sale = sales.find((item) => item.id === debtor.id);
+          setSelectedSale(sale ? { ...sale, paid: debtor.paid, owed: debtor.owed } : null);
+        }}
         onPay={(debtor) => {
           setPaymentDebtor(debtor);
           setPaymentAmount(String(debtor.owed));
           setPaymentError("");
         }}
+        onRemind={setReminderDebtor}
       />
+
+      {selectedSale && (
+        <CustomerCard
+          sale={selectedSale}
+          onClose={() => setSelectedSale(null)}
+          onPay={() => {
+            const debtor = debtors.find((item) => item.id === selectedSale.id);
+            setSelectedSale(null);
+            if (!debtor) return;
+            setPaymentDebtor(debtor);
+            setPaymentAmount(String(debtor.owed));
+            setPaymentError("");
+          }}
+          onRemind={() => {
+            const debtor = debtors.find((item) => item.id === selectedSale.id);
+            setSelectedSale(null);
+            if (!debtor) return;
+            setReminderDebtor(debtor);
+          }}
+        />
+      )}
 
       {paymentDebtor && (
         <div
@@ -163,6 +247,21 @@ export function DebtorsView({ sales }: { sales: Sale[] }) {
           </form>
         </div>
       )}
+      {reminderDebtor && (
+        <SmsReminderModal
+          open
+          debtor={reminderDebtor}
+          onClose={() => setReminderDebtor(null)}
+          onSent={() =>
+            setToasts((current) => [
+              ...current,
+              { id: toastId(), key: "reminderSent" },
+            ])
+          }
+        />
+      )}
+
+      <Toast toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

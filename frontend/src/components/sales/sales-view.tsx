@@ -4,9 +4,11 @@ import { format } from "date-fns";
 import type { Sale } from "@/data/sales";
 import type { Product } from "@/data/products";
 import { useI18n } from "@/i18n/locale-provider";
+import { interpolate } from "@/i18n/dictionaries";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SaleModal } from "@/components/home/SaleModal";
+import { CustomerCard } from "@/components/customers/customer-card";
 
 const cell = "border-b border-line px-3 py-3.5 align-top";
 
@@ -14,6 +16,7 @@ export function SalesView({ sales, products }: { sales: Sale[]; products: Produc
   const { t } = useI18n();
   const router = useRouter();
   const [saleOpen, setSaleOpen] = useState(false);
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   return (
     <main className="mx-auto w-full max-w-[1400px]">
@@ -50,12 +53,25 @@ export function SalesView({ sales, products }: { sales: Sale[]; products: Produc
           </thead>
           <tbody>
             {sales.map((sale) => (
-              <tr key={sale.id} className="hover:bg-bg/60">
+              <tr
+                key={sale.id}
+                tabIndex={0}
+                aria-label={interpolate(t.common.viewDetails, { name: sale.customerName || t.sales.walkIn })}
+                onClick={() => setSelectedSale(sale)}
+                onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget) return;
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedSale(sale);
+                  }
+                }}
+                className="cursor-pointer hover:bg-bg/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              >
                 <td className={`${cell} whitespace-nowrap text-ink-2`}>
                   {sale.createdAt && format(new Date(sale.createdAt), "PPp")}
                 </td>
-                <td className={`${cell} font-semibold text-ink`}>
-                  {sale.customerName || t.sales.walkIn}
+                <td className={cell}>
+                  <b className="font-semibold text-ink">{sale.customerName || t.sales.walkIn}</b>
                 </td>
                 <td className={`${cell} whitespace-nowrap text-ink-2`}>
                   {sale.customerPhone || "-"}
@@ -105,6 +121,9 @@ export function SalesView({ sales, products }: { sales: Sale[]; products: Produc
           onClose={() => setSaleOpen(false)}
           onSuccess={() => router.refresh()}
         />
+      )}
+      {selectedSale && (
+        <CustomerCard sale={selectedSale} onClose={() => setSelectedSale(null)} />
       )}
     </main>
   );

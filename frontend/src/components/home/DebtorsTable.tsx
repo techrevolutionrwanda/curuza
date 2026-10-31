@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/dist/client/link";
+import { useState } from "react";
 import { useI18n } from "@/i18n/locale-provider";
-import type { Debtor } from "@/data/debtors";
+import { interpolate } from "@/i18n/dictionaries";
+import { saleToDebtor } from "@/data/debtors";
+import type { Sale } from "@/data/sales";
+import { CustomerCard } from "@/components/customers/customer-card";
 
-export function DebtorsTable({ debtors }: { debtors: Debtor[] }) {
+export function DebtorsTable({ sales }: { sales: Sale[] }) {
   const { t, locale } = useI18n();
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const debtors = sales.map(saleToDebtor);
 
   const dateLabel = (value: string) =>
     new Date(value).toLocaleDateString(locale === "en" ? "en-US" : "rw-RW", {
@@ -15,6 +21,7 @@ export function DebtorsTable({ debtors }: { debtors: Debtor[] }) {
     });
 
   return (
+    <>
     <div className="bg-surface rounded-lg p-[22px] shadow-md">
       <div className="flex justify-between items-center mb-[16px] gap-[10px] flex-wrap">
         <div>
@@ -49,7 +56,20 @@ export function DebtorsTable({ debtors }: { debtors: Debtor[] }) {
           </thead>
           <tbody>
             {debtors.map((d, i) => (
-              <tr key={i} className="hover:bg-[#fafcfb]">
+              <tr
+                key={d.id}
+                tabIndex={0}
+                aria-label={interpolate(t.common.viewDetails, { name: d.name })}
+                onClick={() => setSelectedSale(sales[i])}
+                onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget) return;
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedSale(sales[i]);
+                  }
+                }}
+                className="cursor-pointer hover:bg-[#fafcfb] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              >
                 <td
                   className={`px-[12px] py-[14px] align-middle ${
                     i === debtors.length - 1 ? "border-b-0" : "border-b border-line"
@@ -103,7 +123,18 @@ export function DebtorsTable({ debtors }: { debtors: Debtor[] }) {
         {debtors.map((d) => (
           <div
             key={d.id}
-            className={`border border-line rounded-lg p-[16px] mb-[12px] bg-surface hover:bg-[#fafcfb] transition-colors`}
+            role="button"
+            tabIndex={0}
+            aria-label={interpolate(t.common.viewDetails, { name: d.name })}
+            onClick={() => setSelectedSale(sales.find((sale) => sale.id === d.id) ?? null)}
+            onKeyDown={(event) => {
+              if (event.target !== event.currentTarget) return;
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setSelectedSale(sales.find((sale) => sale.id === d.id) ?? null);
+              }
+            }}
+            className="mb-[12px] cursor-pointer rounded-lg border border-line bg-surface p-[16px] transition-colors hover:bg-[#fafcfb] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
           >
             <div className="flex items-center gap-3 mb-[12px]">
               <div className="h-[42px] w-[42px] rounded-[14px] bg-primary-soft text-primary-dark grid place-items-center font-extrabold shrink-0">
@@ -136,5 +167,9 @@ export function DebtorsTable({ debtors }: { debtors: Debtor[] }) {
         )}
       </div>
     </div>
+    {selectedSale && (
+      <CustomerCard sale={selectedSale} onClose={() => setSelectedSale(null)} />
+    )}
+    </>
   );
 }
