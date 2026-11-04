@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Product } from "@/data/products";
-import type { Sale } from "@/data/sales";
+import { filterSalesByPeriod, type Sale } from "@/data/sales";
 import { SegmentControl } from "@/components/SegmentControl";
 import { useI18n } from "@/i18n/locale-provider";
 import { KpiRow } from "./KpiRow";
@@ -57,12 +57,14 @@ export function HomeView({
       <KpiRow products={products} sales={sales} period={segment} />
 
       <div className="home-cols grid grid-cols-[2fr_1fr] gap-[16px] mb-[16px]">
-        <WeeklyChart sales={sales} />
+        <WeeklyChart sales={sales} period={segment} />
         <RestockList products={products} />
       </div>
 
       <DebtorsTable
-        sales={sales.filter((sale) => sale.owed > 0).slice(0, 5)}
+        sales={filterSalesByPeriod(sales, segment)
+          .filter((sale) => sale.owed > 0)
+          .slice(0, 5)}
       />
 
       {open && (
