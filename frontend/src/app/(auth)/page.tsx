@@ -4,7 +4,7 @@ import { AuthShell, authLinkCls } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
-  title: "Log in · Curuza",
+  title: "Log in",
   description: "Log in to Curuza to manage your business.",
 };
 

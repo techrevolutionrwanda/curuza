@@ -13,8 +13,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Ledger",
-  description: "Dashboard for the Smart Ledger shops",
+  title: {
+    default: "Curuza",
+    template: "Curuza - %s",
+  },
+  description:
+    "Curuza helps you track your stock, sales and customer debts in one simple place.",
+  applicationName: "Curuza",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
