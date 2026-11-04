@@ -132,7 +132,7 @@ export function Topbar() {
           type="button"
           onClick={handleLogout}
           disabled={loggingOut}
-          className="rounded-[10px] border border-line px-3 py-2 text-sm font-semibold text-ink-2 transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-[10px] border border-line px-3 py-2 text-sm font-semibold hover:text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 bg-red-600 text-white cursor-pointer "
         >
           {loggingOut ? t.topbar.loggingOut : t.topbar.logout}
         </button>
