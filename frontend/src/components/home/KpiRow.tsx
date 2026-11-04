@@ -1,6 +1,6 @@
 "use client";
 
-import { stockStatus, type Product } from "@/data/products";
+import { countLowStock, stockStatus, type Product } from "@/data/products";
 import { interpolate } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 import type { Sale } from "@/data/sales";
@@ -91,8 +91,8 @@ export function KpiRow({
     start.setDate(1);
   }
   const periodSales = sales.filter((sale) => new Date(sale.createdAt) >= start);
-  const low = products.filter((p) => stockStatus(p.qty) === "low").length;
-  const out = products.filter((p) => stockStatus(p.qty) === "out").length;
+  const low = countLowStock(products);
+  const lowOnly = products.filter((p) => stockStatus(p.qty) === "low").length;
   const k = t.home.kpis;
   const debtorSales = periodSales.filter((sale) => sale.owed > 0);
   const customerCount = new Set(debtorSales.map((sale) => sale.customerPhone)).size;
@@ -130,7 +130,7 @@ export function KpiRow({
       label: k.lowStock.label,
       value: String(low),
       unit: k.lowStock.unit,
-      trend: interpolate(k.lowStock.trend, { count: String(out) }),
+      trend: interpolate(k.lowStock.trend, { low: String(lowOnly) }),
       iconColor: "yellow" as const,
       trendColor: "down" as const,
     },

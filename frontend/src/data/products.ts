@@ -22,6 +22,11 @@ export function stockStatus(qty: number): StockStatus {
   return "ok";
 }
 
+/** Products that need restocking: low stock or completely out. */
+export function countLowStock(products: Product[]): number {
+  return products.filter((product) => stockStatus(product.qty) !== "ok").length;
+}
+
 export function initialsFor(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
