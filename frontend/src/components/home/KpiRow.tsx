@@ -4,7 +4,7 @@ import { countLowStock, stockStatus, type Product } from "@/data/products";
 import { interpolate } from "@/i18n/dictionaries";
 import { useI18n } from "@/i18n/locale-provider";
 import type { Sale } from "@/data/sales";
-import { sumSales } from "@/data/sales";
+import { filterSalesByPeriod, sumSales } from "@/data/sales";
 import { KpiCard } from "./KpiCard";
 
 const ICONS = {
@@ -82,15 +82,7 @@ export function KpiRow({
   period: number;
 }) {
   const { t } = useI18n();
-  const now = new Date();
-  const start = new Date(now);
-  start.setHours(0, 0, 0, 0);
-  if (period === 1) {
-    start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
-  } else if (period === 2) {
-    start.setDate(1);
-  }
-  const periodSales = sales.filter((sale) => new Date(sale.createdAt) >= start);
+  const periodSales = filterSalesByPeriod(sales, period);
   const low = countLowStock(products);
   const lowOnly = products.filter((p) => stockStatus(p.qty) === "low").length;
   const k = t.home.kpis;

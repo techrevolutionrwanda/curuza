@@ -133,8 +133,17 @@ const rw = {
       },
     },
     chart: {
-      title: "Ibyagurishijwe mu cyumweru",
-      subtitle: "Sales this week · RWF",
+      titles: [
+        "Ibyagurishijwe uyu munsi",
+        "Ibyagurishijwe mu cyumweru",
+        "Ibyagurishijwe uku kwezi",
+      ],
+      subtitles: [
+        "Sales today · RWF",
+        "Sales this week · RWF",
+        "Sales this month · RWF",
+      ],
+      weekBucket: "Icyumweru {number}",
     },
     restock: {
       title: "Biri hafi gushira",
@@ -464,8 +473,13 @@ const en: Dictionary = {
       },
     },
     chart: {
-      title: "Sales this week",
-      subtitle: "Sales of the last 7 days · RWF",
+      titles: ["Sales today", "Sales this week", "Sales this month"],
+      subtitles: [
+        "Sales today · RWF",
+        "Sales this week · RWF",
+        "Sales this month · RWF",
+      ],
+      weekBucket: "Week {number}",
     },
     restock: {
       title: "Needs restocking",
