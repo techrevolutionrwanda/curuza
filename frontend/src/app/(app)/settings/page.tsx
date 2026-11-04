@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
 import { SettingsSkeleton } from "@/components/settings/settings-skeleton";
 import { SettingsView } from "@/components/settings/settings-view";
 import { getSettings } from "./_lib/repository";
 import { getAccountProfile } from "./_lib/account";
+
+export const metadata: Metadata = {
+  title: "Settings",
+};
 
 async function SettingsData() {
   await connection();

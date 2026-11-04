@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
 import { StockView } from "@/components/stock/stock-view";
 import { listCategories, listProducts } from "./_lib/repository";
+
+export const metadata: Metadata = {
+  title: "Stock",
+};
 
 async function StockData() {
   await connection();

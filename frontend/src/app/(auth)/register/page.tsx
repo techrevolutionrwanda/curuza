@@ -4,7 +4,7 @@ import { AuthShell, authLinkCls } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/register-form";
 
 export const metadata: Metadata = {
-  title: "Create account · Curuza",
+  title: "Register",
   description:
     "Create your Curuza account and start recording sales, stock and debts today.",
 };
