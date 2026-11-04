@@ -57,7 +57,6 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/stock",
     labelKey: "stock",
-    badge: 4,
     icon: (
       <svg
         width="22"
@@ -136,7 +135,7 @@ aria-hidden="true"
   },
 ];
 
-export function Sidebar() {
+export function Sidebar({ lowStockCount }: { lowStockCount: number }) {
   const pathname = usePathname();
   const businessName = useBusinessName();
   const { t } = useI18n();
@@ -177,6 +176,7 @@ export function Sidebar() {
       <nav className="sidebar-nav flex flex-col gap-2">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
+          const badge = item.href === "/stock" ? lowStockCount : item.badge;
           return (
             <Link
               key={item.href}
@@ -191,9 +191,9 @@ export function Sidebar() {
             >
               {item.icon}
               <span>{t.nav[item.labelKey]}</span>
-              {item.badge !== undefined && (
+              {badge !== undefined && badge > 0 && (
                 <span className="sidebar-pill ml-auto rounded-pill bg-danger px-2 py-0.5 text-xs font-extrabold text-white">
-                  {item.badge}
+                  {badge}
                 </span>
               )}
             </Link>
