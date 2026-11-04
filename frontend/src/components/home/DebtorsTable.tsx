@@ -9,15 +9,17 @@ import type { Sale } from "@/data/sales";
 import { CustomerCard } from "@/components/customers/customer-card";
 
 export function DebtorsTable({ sales }: { sales: Sale[] }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const debtors = sales.map(saleToDebtor);
 
+  // Keep this locale-independent so the server and browser always render the
+  // same text (browsers may not ship `rw-RW` Intl data).
   const dateLabel = (value: string) =>
-    new Date(value).toLocaleDateString(locale === "en" ? "en-US" : "rw-RW", {
+    new Date(value).toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
-      timeZone: "UTC",
+      timeZone: "Africa/Kigali",
     });
 
   return (
