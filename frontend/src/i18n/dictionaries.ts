@@ -129,7 +129,7 @@ const rw = {
       lowStock: {
         label: "Stock nke · Low stock",
         unit: "ibicuruzwa",
-        trend: "{count} byashize",
+        trend: "{low} biri hafi gushira",
       },
     },
     chart: {
@@ -460,7 +460,7 @@ const en: Dictionary = {
       lowStock: {
         label: "Low stock",
         unit: "products",
-        trend: "{count} out of stock",
+        trend: "{low} low",
       },
     },
     chart: {
