@@ -3,6 +3,10 @@ import type { Request, Response } from "express";
 import User from "../models/user.model.js";
 import Shop from "../models/shop.model.js";
 import PasswordResetToken from "../models/password-reset-token.model.js";
+import {
+  SESSION_COOKIE_NAME,
+  getClearSessionCookieOptions,
+} from "../config/cookies.js";
 import mongoose from "mongoose";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,6 +17,14 @@ const INVITE_TOKEN_EXPIRES_DAYS = 7;
 
 function stringField(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+/** The public frontend URL used in password-reset links. */
+function frontendBaseUrl(): string {
+  const first = (process.env.FRONTEND_URL || "http://localhost:3000")
+    .split(",")[0]
+    ?.trim();
+  return (first || "http://localhost:3000").replace(/\/$/, "");
 }
 
 function isDuplicateKeyError(error: unknown): boolean {
@@ -327,12 +339,8 @@ export async function logout(req: Request, res: Response): Promise<void> {
     });
   }
 
-  // Clear the session cookie
-  res.clearCookie("curuza_session", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+  // Clear the session cookie with the same attributes used to set it.
+  res.clearCookie(SESSION_COOKIE_NAME, getClearSessionCookieOptions());
 
   res.sendStatus(204);
 }
@@ -360,11 +368,7 @@ export async function currentUser(req: Request, res: Response): Promise<void> {
         else resolve();
       });
     });
-    res.clearCookie("curuza_session", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
+    res.clearCookie(SESSION_COOKIE_NAME, getClearSessionCookieOptions());
     res.status(401).json({ ok: false, message: "Your account session has expired." });
     return;
   }
@@ -757,7 +761,7 @@ async function sendResetEmail(contact: string, token: string, purpose: "reset" |
     process.env.NODE_ENV !== "production" &&
     (!process.env.SMTP_HOST || process.env.SMTP_HOST === "smtp.example.com")
   ) {
-    const resetUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/reset-password?token=${token}`;
+    const resetUrl = `${frontendBaseUrl()}/reset-password?token=${token}`;
     console.log(`[dev] ${purpose === "reset" ? "Reset" : "Invite"} link for ${contact}: ${resetUrl}`);
     return;
   }
@@ -775,7 +779,7 @@ async function sendResetEmail(contact: string, token: string, purpose: "reset" |
     },
   });
 
-  const resetUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/reset-password?token=${token}`;
+  const resetUrl = `${frontendBaseUrl()}/reset-password?token=${token}`;
 
   const mailOptions = {
     from: process.env.SMTP_FROM || "Curuza <no-reply@curuza.local>",
