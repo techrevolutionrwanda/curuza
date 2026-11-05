@@ -1,9 +1,9 @@
+"use client";
+
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function ForgotPage() {
   const [error, setError] = useState("");
-  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,8 +21,8 @@ export default function ForgotPage() {
           credentials: "include",
         }
       );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Unable to process request.");
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.message || "Unable to process request.");
       setError(
         "If an account with that phone or email exists, a password reset link has been sent."
       );

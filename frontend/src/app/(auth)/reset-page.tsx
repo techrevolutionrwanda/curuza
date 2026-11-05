@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -36,8 +38,8 @@ export default function ResetPage() {
           credentials: "include",
         }
       );
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Unable to reset password.");
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.message || "Unable to reset password.");
       setSuccess(true);
     } catch (cause) {
       setError(

@@ -45,7 +45,7 @@ curuza/
 Before running the project, make sure you have the following installed:
 
 - Git
-- Node.js 18 or later
+- Node.js 20.9 or later (Node 22 recommended)
 - npm
 - VS Code (recommended, optional but helpful)
 
@@ -57,7 +57,7 @@ Before running the project, make sure you have the following installed:
 
 ```bash
 
-cd curuzagit clone https://github.com/techrevolutionrwanda/curuza.git
+git clone https://github.com/techrevolutionrwanda/curuza.git
 ```
 
 ### Option 2: SSH
@@ -228,6 +228,17 @@ Examples:
 Use these as reference or starting points for UI mockups and project presentations.
 
 ---
+
+## Deployment
+
+Production uses Vercel for the frontend and Render for the backend:
+
+- Backend: `https://curuza-nub1.onrender.com`
+- Frontend: your Vercel project URL
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the required environment variables,
+Render/Vercel settings, CORS rules, cross-site cookie configuration, and the
+post-deploy verification checklist.
 
 ## Notes
 
