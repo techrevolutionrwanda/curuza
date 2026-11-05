@@ -1,5 +1,4 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
+import { apiBaseUrl } from "@/lib/api-base";
 
 export type AuthUser = {
   id: string;
@@ -13,7 +12,7 @@ async function requestAuth(
   path: string,
   init?: RequestInit,
 ): Promise<Response> {
-  return fetch(`${API_BASE_URL}/api/auth/${path}`, {
+  return fetch(`${apiBaseUrl()}/api/auth/${path}`, {
     ...init,
     credentials: "include",
   });

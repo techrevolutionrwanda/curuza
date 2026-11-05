@@ -2,10 +2,10 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/lib/session";
+import { apiBaseUrl } from "@/lib/api-base";
 import type { Sale } from "@/data/sales";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
+const API_BASE_URL = apiBaseUrl();
 
 function record(value: unknown): Record<string, unknown> | null {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return null;

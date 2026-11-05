@@ -1,7 +1,5 @@
 import type { Locale } from "@/i18n/dictionaries";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
+import { apiBaseUrl } from "@/lib/api-base";
 
 export type ReminderBlockedReason =
   | "disabled"
@@ -55,7 +53,7 @@ type ApiResponse = {
 };
 
 async function request<T>(path: string, body?: unknown): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}/api/sms${path}`, {
+  const response = await fetch(`${apiBaseUrl()}/api/sms${path}`, {
     method: body === undefined ? "GET" : "POST",
     credentials: "include",
     headers: body === undefined ? undefined : { "Content-Type": "application/json" },

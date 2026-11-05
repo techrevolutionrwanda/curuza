@@ -2,9 +2,9 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/lib/session";
+import { apiBaseUrl } from "@/lib/api-base";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
+const API_BASE_URL = apiBaseUrl();
 
 export type AccountProfile = {
   username: string;

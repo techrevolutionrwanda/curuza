@@ -1,10 +1,8 @@
 import type { CreateSaleInput, Sale } from "@/data/sales";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:4000";
+import { apiBaseUrl } from "@/lib/api-base";
 
 async function request(path: string, body: unknown): Promise<Sale> {
-  const response = await fetch(`${API_BASE_URL}/api/sales${path}`, {
+  const response = await fetch(`${apiBaseUrl()}/api/sales${path}`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
