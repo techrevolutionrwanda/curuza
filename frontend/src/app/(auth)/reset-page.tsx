@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { apiBaseUrl } from "@/lib/api-base";
 
 export default function ResetPage() {
   const params = useSearchParams();
@@ -30,7 +31,7 @@ export default function ResetPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/auth/reset-password`,
+        `${apiBaseUrl()}/api/auth/reset-password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

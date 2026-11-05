@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { apiBaseUrl } from "@/lib/api-base";
 
 export default function ForgotPage() {
   const [error, setError] = useState("");
@@ -13,7 +14,7 @@ export default function ForgotPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/auth/forgot-password`,
+        `${apiBaseUrl()}/api/auth/forgot-password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
