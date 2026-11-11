@@ -97,6 +97,7 @@ const rw = {
     stock: "Stock",
     debtors: "Amadeni",
     reports: "Raporo",
+    ai: "AI",
     settings: "Igenamiterere",
     planDescription:
       "Ubutumwa (SMS) bwo kurembera abakiriya, raporo nziza n'ubwikorezi bwa cloud.",
@@ -438,6 +439,7 @@ const en: Dictionary = {
     stock: "Stock",
     debtors: "Debtors",
     reports: "Reports",
+    ai: "AI",
     settings: "Settings",
     planDescription: "SMS reminders, richer reports and cloud backup.",
     planCta: "Learn more",
