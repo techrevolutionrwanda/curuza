@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/lib/session";
 import { apiBaseUrl } from "@/lib/api-base";
@@ -67,7 +68,9 @@ function parseSale(value: unknown): Sale | null {
   };
 }
 
-export async function listSales(): Promise<Sale[]> {
+// The app shell and the pages both read sales during one render; share the
+// request instead of hitting the API twice.
+export const listSales = cache(async (): Promise<Sale[]> => {
   const sessionCookie = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!sessionCookie) throw new Error("Your session has expired. Please log in again.");
 
@@ -86,4 +89,4 @@ export async function listSales(): Promise<Sale[]> {
     throw new Error("The server returned invalid sales data.");
   }
   return sales as Sale[];
-}
+});

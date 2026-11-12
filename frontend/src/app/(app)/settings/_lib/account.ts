@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/lib/session";
 import { apiBaseUrl } from "@/lib/api-base";
@@ -98,9 +99,9 @@ async function requestProfile(
   };
 }
 
-export function getAccountProfile(): Promise<AccountProfile> {
+export const getAccountProfile = cache((): Promise<AccountProfile> => {
   return requestProfile("GET");
-}
+});
 
 export function updateAccountProfile(
   profile: AccountProfile,
