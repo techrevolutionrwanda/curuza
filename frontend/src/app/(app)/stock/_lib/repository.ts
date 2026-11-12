@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/lib/session";
 import { apiBaseUrl } from "@/lib/api-base";
@@ -139,23 +140,25 @@ async function request(
   return result;
 }
 
-export async function listProducts(): Promise<Product[]> {
+// The app shell and the page both ask for products during one render. `cache`
+// keeps that as one backend request instead of two.
+export const listProducts = cache(async (): Promise<Product[]> => {
   try {
     const result = await request("products");
     return requiredArray(result, "products").map(parseProduct);
   } catch {
     return [];
   }
-}
+});
 
-export async function listCategories(): Promise<Category[]> {
+export const listCategories = cache(async (): Promise<Category[]> => {
   try {
     const result = await request("categories");
     return requiredArray(result, "categories").map(parseCategory);
   } catch {
     return [];
   }
-}
+});
 
 export async function createProduct(input: {
   name: string;
