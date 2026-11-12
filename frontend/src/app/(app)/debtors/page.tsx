@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DebtorsView } from "@/components/debtors/debtors-view";
+import { DebtorsSkeleton } from "@/components/skeletons/debtors-skeleton";
 import { connection } from "next/server";
 import { listSales } from "../_lib/sales";
 
@@ -16,7 +17,7 @@ async function DebtorsData() {
 
 export default function DebtorsPage() {
   return (
-    <Suspense fallback={<div className="h-[420px] animate-pulse rounded-card bg-surface" />}>
+    <Suspense fallback={<DebtorsSkeleton />}>
       <DebtorsData />
     </Suspense>
   );

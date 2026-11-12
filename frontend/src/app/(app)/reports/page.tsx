@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ReportsView } from "@/components/reports/reports-view";
+import { ReportsSkeleton } from "@/components/skeletons/reports-skeleton";
 import { connection } from "next/server";
 import { listSales } from "../_lib/sales";
 import { listCategories } from "../stock/_lib/repository";
@@ -17,7 +18,7 @@ async function ReportsData() {
 
 export default function ReportsPage() {
   return (
-    <Suspense fallback={<div className="h-[420px] animate-pulse rounded-card bg-surface" />}>
+    <Suspense fallback={<ReportsSkeleton />}>
       <ReportsData />
     </Suspense>
   );

@@ -1,21 +1,55 @@
+import { Skeleton, SkeletonPage } from "../skeletons/skeleton";
+
+const INPUT_ROWS = [0, 1, 2, 3, 4];
+const TOGGLE_ROWS = [0, 1];
+
+/** Loading shape of the settings page: head and the profile/settings card. */
 export function SettingsSkeleton() {
   return (
-    <div className="w-full">
+    <SkeletonPage className="w-full">
       <div className="mb-[22px]">
-        <div className="h-[34px] w-[220px] animate-pulse rounded-panel bg-line" />
-        <div className="mt-2 h-[22px] w-[280px] animate-pulse rounded-panel bg-line" />
+        <Skeleton className="h-[30px] w-[160px]" />
+        <Skeleton className="mt-2 h-[18px] w-[280px]" />
       </div>
+
       <div className="max-w-[640px] rounded-card bg-surface p-[22px] shadow-card">
-        {Array.from({ length: 5 }).map((_, i) => (
+        {INPUT_ROWS.map((row) => (
           <div
-            key={i}
-            className="flex items-center justify-between border-b border-line py-[13px] last:border-b-0"
+            key={row}
+            className="flex flex-col gap-2 border-b border-line py-[13px] sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
-            <div className="h-[20px] w-[160px] animate-pulse rounded-panel bg-line" />
-            <div className="h-[24px] w-[110px] animate-pulse rounded-pill bg-line" />
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-10 w-full sm:w-[240px]" />
           </div>
         ))}
+
+        <div className="flex justify-end border-b border-line pt-[14px] pb-[13px]">
+          <Skeleton className="h-12 w-full bg-primary-soft sm:w-[96px]" />
+        </div>
+
+        <div className="flex flex-col gap-2 border-b border-line py-[13px] sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <Skeleton className="h-4 w-[90px]" />
+          <Skeleton className="h-10 w-[170px]" />
+        </div>
+
+        {TOGGLE_ROWS.map((row) => (
+          <div
+            key={row}
+            className="flex flex-col gap-2 border-b border-line py-[13px] sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          >
+            <Skeleton className="h-4 w-[110px]" />
+            <div className="flex items-center gap-2.5">
+              <Skeleton className="h-[26px] w-[70px] rounded-pill" />
+              <Skeleton className="h-[26px] w-[46px] rounded-pill" />
+            </div>
+          </div>
+        ))}
+
+        <div className="flex flex-col gap-2 py-[13px] sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <Skeleton className="h-4 w-[130px]" />
+          <Skeleton className="h-4 w-[140px]" />
+        </div>
       </div>
-    </div>
+    </SkeletonPage>
   );
 }
