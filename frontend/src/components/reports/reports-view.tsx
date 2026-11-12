@@ -1,6 +1,5 @@
 "use client";
 
-import ExcelJS from "exceljs";
 import { useState } from "react";
 import { ProfitCard } from "./profit-card";
 import { ReportsHead } from "./reports-head";
@@ -68,6 +67,9 @@ export function ReportsView({
         period={period}
         onPeriodChange={setPeriod}
         onExcelExport={async () => {
+          // ExcelJS is ~260 KB compressed. Load it only when the user actually
+          // exports, instead of with the Reports page.
+          const { default: ExcelJS } = await import("exceljs");
           const workbook = new ExcelJS.Workbook();
           workbook.creator = "Curuza";
           workbook.created = new Date();
