@@ -63,7 +63,7 @@ export function Topbar() {
   return (
     <header className="topbar sticky top-0 z-10 flex items-center gap-3.5 border-b border-line bg-bg/90 px-8 py-4 backdrop-blur">
       {/* Search */}
-      <label className="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border-[1.5px] border-line bg-surface px-[14px] min-h-12 focus-within:border-primary max-w-[460px]">
+      <label className="topbar-search flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border-[1.5px] border-line bg-surface px-[14px] min-h-12 focus-within:border-primary max-w-[460px]">
         <svg
           className="h-5 w-5 shrink-0 text-ink-3"
           width="20"
@@ -89,7 +89,7 @@ export function Topbar() {
         type="button"
         aria-label={t.topbar.newSale}
         onClick={() => router.push("/home?newSale=1")}
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-accent px-5 font-bold text-[#3A2A00] transition hover:brightness-95"
+        className="topbar-new-sale inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-accent px-5 font-bold text-[#3A2A00] transition hover:brightness-95"
       >
         <svg
           width="20"
@@ -106,16 +106,16 @@ export function Topbar() {
         <span className="topbar-gold-text">{t.topbar.newSale}</span>
       </button>
 
-      <div className="flex items-center gap-2.5">
+      <div className="topbar-actions flex items-center gap-2.5">
         <Link
           href="/settings"
           aria-label={t.nav.settings}
           title={t.nav.settings}
-          className="flex min-w-0 items-center gap-2.5 rounded-panel px-1 py-1 transition hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="topbar-user flex min-w-0 items-center gap-2.5 rounded-panel px-1 py-1 transition hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <span
             aria-hidden="true"
-            className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark"
+            className="topbar-avatar grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[14px] bg-primary-soft font-extrabold text-primary-dark"
           >
             {loadingUser ? "…" : initials}
           </span>
@@ -132,15 +132,33 @@ export function Topbar() {
           type="button"
           onClick={handleLogout}
           disabled={loggingOut}
-          className="rounded-[10px] border border-line px-3 py-2 text-sm font-semibold hover:text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 bg-red-600 text-white cursor-pointer "
+          aria-label={t.topbar.logout}
+          className="topbar-logout inline-flex items-center justify-center gap-2 rounded-[10px] border border-line bg-red-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loggingOut ? t.topbar.loggingOut : t.topbar.logout}
+          <svg
+            className="topbar-logout-icon hidden"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="M16 17l5-5-5-5M21 12H9" />
+          </svg>
+          <span className="topbar-logout-text">
+            {loggingOut ? t.topbar.loggingOut : t.topbar.logout}
+          </span>
         </button>
       </div>
       {error ? (
         <span
           role="alert"
-          className="max-w-40 truncate text-xs font-medium text-danger"
+          className="topbar-error max-w-40 truncate text-xs font-medium text-danger"
         >
           {error}
         </span>

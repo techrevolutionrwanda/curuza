@@ -102,6 +102,9 @@ const rw = {
     planDescription:
       "Ubutumwa (SMS) bwo kurembera abakiriya, raporo nziza n'ubwikorezi bwa cloud.",
     planCta: "Menya byinshi",
+    more: "Ibindi",
+    menu: "Ibikubiye",
+    close: "Funga",
   },
   topbar: {
     search: "Shakisha igicuruzwa cyangwa umukiriya…",
@@ -443,6 +446,9 @@ const en: Dictionary = {
     settings: "Settings",
     planDescription: "SMS reminders, richer reports and cloud backup.",
     planCta: "Learn more",
+    more: "More",
+    menu: "Menu",
+    close: "Close",
   },
   topbar: {
     search: "Search for a product or a customer…",

@@ -111,8 +111,8 @@ export function DebtorsView({ sales }: { sales: Sale[] }) {
   };
 
   return (
-    <div className="page mx-auto w-full max-w-[1400px]">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div className="mx-auto w-full max-w-[1400px]">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
         <div>
           <h1 className="text-[28px] font-bold leading-tight tracking-[-0.02em] text-ink">
             {t.debtors.title}
@@ -123,7 +123,7 @@ export function DebtorsView({ sales }: { sales: Sale[] }) {
           type="button"
           onClick={() => void handleRemindAll()}
           disabled={bulkBusy || debtors.length === 0}
-          className="inline-flex min-h-11 items-center justify-center rounded-panel border border-line bg-surface px-4 text-sm font-bold text-primary-dark transition-colors hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-panel border border-line bg-surface px-4 text-sm font-bold text-primary-dark transition-colors hover:bg-primary-soft disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {bulkBusy ? t.debtors.reminder.sending : t.debtors.reminder.bulk}
         </button>
