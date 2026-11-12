@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useBusinessName } from "@/lib/business-store";
 import { useI18n, type Dictionary } from "@/i18n/locale-provider";
 
@@ -134,31 +134,106 @@ const NAV_ITEMS: NavItem[] = [
   },
   // settings
   {
-href: "/settings",
-labelKey: "settings",
-icon: (
-<svg
-width="22"
-height="22"
-viewBox="0 0 24 24"
-fill="none"
-stroke="currentColor"
-strokeWidth="2"
-strokeLinecap="round"
-strokeLinejoin="round"
-aria-hidden="true"
->
-<circle cx="12" cy="12" r="3" />
-<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.51-1H7a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 9 13.6a1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H15a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 19.4 9z" />
-</svg>
-),
+    href: "/settings",
+    labelKey: "settings",
+    icon: (
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.51-1H7a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 9 13.6a1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H15a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 19.4 9z" />
+      </svg>
+    ),
   },
 ];
+
+/** The four destinations that stay in the mobile tab bar. */
+const PRIMARY_HREFS = new Set(["/home", "/sales", "/stock", "/debtors"]);
+
+const PRIMARY_ITEMS = NAV_ITEMS.filter((item) => PRIMARY_HREFS.has(item.href));
+const MORE_ITEMS = NAV_ITEMS.filter((item) => !PRIMARY_HREFS.has(item.href));
+
+const MORE_ICON = (
+  <svg
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.4"
+    strokeLinecap="round"
+    aria-hidden="true"
+  >
+    <path d="M5 12h.01M12 12h.01M19 12h.01" />
+  </svg>
+);
 
 export function Sidebar({ lowStockCount }: { lowStockCount: number }) {
   const pathname = usePathname();
   const businessName = useBusinessName();
   const { t } = useI18n();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Lock the page behind the mobile menu and let Escape close it.
+  useEffect(() => {
+    if (!moreOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMoreOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [moreOpen]);
+
+  const closeMore = () => {
+    setMoreOpen(false);
+    moreButtonRef.current?.focus();
+  };
+
+  const renderItem = (item: NavItem) => {
+    const active = pathname === item.href;
+    const badge = item.href === "/stock" ? lowStockCount : item.badge;
+
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        aria-current={active ? "page" : undefined}
+        className={[
+          "sidebar-nav-item flex min-h-12 items-center gap-3 rounded-[14px] px-[14px] text-sm font-semibold",
+          active
+            ? "bg-primary-soft text-primary-dark"
+            : "text-ink-2 hover:bg-bg",
+        ].join(" ")}
+      >
+        {item.icon}
+        <span>{t.nav[item.labelKey]}</span>
+        {badge !== undefined && badge > 0 && (
+          <span className="sidebar-pill ml-auto rounded-pill bg-danger px-2 py-0.5 text-xs font-extrabold text-white">
+            {badge}
+          </span>
+        )}
+      </Link>
+    );
+  };
+
+  const moreActive =
+    moreOpen || MORE_ITEMS.some((item) => item.href === pathname);
 
   return (
     <aside className="side sticky top-0 flex h-full flex-col gap-1.5 border-r border-line bg-surface px-[14px] py-5">
@@ -192,33 +267,37 @@ export function Sidebar({ lowStockCount }: { lowStockCount: number }) {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="sidebar-nav flex flex-col gap-2">
-        {NAV_ITEMS.map((item) => {
-          const active = pathname === item.href;
-          const badge = item.href === "/stock" ? lowStockCount : item.badge;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={[
-                "sidebar-nav-item flex min-h-12 items-center gap-3 rounded-[14px] px-[14px] text-sm font-semibold",
-                active
-                  ? "bg-primary-soft text-primary-dark"
-                  : "text-ink-2 hover:bg-bg",
-              ].join(" ")}
-            >
-              {item.icon}
-              <span>{t.nav[item.labelKey]}</span>
-              {badge !== undefined && badge > 0 && (
-                <span className="sidebar-pill ml-auto rounded-pill bg-danger px-2 py-0.5 text-xs font-extrabold text-white">
-                  {badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+      {/* Desktop navigation */}
+      <nav
+        className="sidebar-nav sidebar-nav-desktop flex flex-col gap-2"
+        aria-label={t.nav.menu}
+      >
+        {NAV_ITEMS.map(renderItem)}
+      </nav>
+
+      {/* Mobile tab bar: four primary destinations plus the rest behind "More". */}
+      <nav
+        className="sidebar-nav sidebar-nav-mobile"
+        aria-label={t.nav.menu}
+      >
+        {PRIMARY_ITEMS.map(renderItem)}
+        <button
+          type="button"
+          ref={moreButtonRef}
+          aria-expanded={moreOpen}
+          aria-controls="sidebar-more"
+          aria-haspopup="dialog"
+          onClick={() => setMoreOpen((open) => !open)}
+          className={[
+            "sidebar-nav-item flex min-h-12 items-center gap-3 rounded-[14px] px-[14px] text-sm font-semibold",
+            moreActive
+              ? "bg-primary-soft text-primary-dark"
+              : "text-ink-2 hover:bg-bg",
+          ].join(" ")}
+        >
+          {MORE_ICON}
+          <span>{t.nav.more}</span>
+        </button>
       </nav>
 
       <div className="sidebar-spacer flex-1" aria-hidden="true" />
@@ -236,6 +315,70 @@ export function Sidebar({ lowStockCount }: { lowStockCount: number }) {
           {t.nav.planCta}
         </button>
       </div>
+
+      {moreOpen && (
+        <div
+          className="sidebar-sheet-layer"
+          role="presentation"
+          onClick={closeMore}
+        >
+          <div
+            id="sidebar-more"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sidebar-more-title"
+            className="sidebar-sheet"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <span className="sidebar-sheet-handle" aria-hidden="true" />
+            <div className="sidebar-sheet-head">
+              <h2 id="sidebar-more-title" className="sidebar-sheet-title">
+                {t.nav.menu}
+              </h2>
+              <button
+                type="button"
+                className="sidebar-sheet-close"
+                aria-label={t.nav.close}
+                onClick={closeMore}
+                autoFocus
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+            <div className="sidebar-sheet-list">
+              {MORE_ITEMS.map((item) => {
+                const active = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    onClick={closeMore}
+                    className={[
+                      "sidebar-sheet-item",
+                      active ? "is-active" : "",
+                    ].join(" ")}
+                  >
+                    {item.icon}
+                    <span>{t.nav[item.labelKey]}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
