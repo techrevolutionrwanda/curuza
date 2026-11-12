@@ -70,6 +70,7 @@ function toNumber(value: string) {
 export function ScanPanel() {
   const [stage, setStage] = useState<"review" | "saved">("review");
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [form, setForm] = useState<Form>(INITIAL_FORM);
   const [touched, setTouched] = useState<Partial<Record<EditableField, boolean>>>(
@@ -99,9 +100,10 @@ export function ScanPanel() {
 
   const closeCamera = useCallback(() => setCameraOpen(false), []);
 
-  const completeScan = useCallback(() => {
+  const completeScan = useCallback((photo?: string) => {
     setCameraOpen(false);
     setStage("review");
+    if (photo) setCapturedPhoto(photo);
   }, []);
 
   function updateField(field: EditableField, value: string) {
@@ -148,7 +150,9 @@ export function ScanPanel() {
           <div className="scan-cols">
             <section className="photo-panel" aria-label="Scanned photo">
               <div className="photo-head">
-                <span className="photo-file">receipt-10-11.jpg</span>
+                <span className="photo-file">
+                  {capturedPhoto ? "captured-photo.jpg" : "receipt-10-11.jpg"}
+                </span>
                 <span className="photo-tools">
                   <button
                     type="button"
@@ -180,42 +184,55 @@ export function ScanPanel() {
                 </span>
               </div>
 
-              <div className="photo-canvas">
-                <div
-                  className="receipt"
-                  style={{ transform: `scale(${zoom})` }}
-                  aria-hidden="true"
-                >
-                  <div className="r-title" />
-                  <div className="r-sub r-outline-amber" />
-                  <div className="r-rule" />
-                  <div className="r-row">
-                    <div
-                      className="r-bar r-outline"
-                      style={{ width: "55%" }}
-                    />
-                    <div className="r-bar" style={{ width: "18%" }} />
-                  </div>
-                  <div className="r-row">
-                    <div className="r-bar" style={{ width: "40%" }} />
-                    <div className="r-bar" style={{ width: "14%" }} />
-                  </div>
-                  <div className="r-rule" />
-                  <div className="r-row">
-                    <div
-                      className="r-bar r-bar-strong"
-                      style={{ width: "26%" }}
-                    />
-                    <div
-                      className="r-bar r-bar-strong"
-                      style={{ width: "24%" }}
-                    />
-                  </div>
-                  <div
-                    className="r-bar r-outline-amber r-foot"
-                    style={{ width: "30%" }}
+              <div
+                className={`photo-canvas${capturedPhoto ? " has-photo" : ""}`}
+              >
+                {capturedPhoto ? (
+                  // Captured camera/gallery data URL, so next/image can't optimize it.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    className="receipt-photo"
+                    src={capturedPhoto}
+                    alt="Captured record"
+                    style={{ transform: `scale(${zoom})` }}
                   />
-                </div>
+                ) : (
+                  <div
+                    className="receipt"
+                    style={{ transform: `scale(${zoom})` }}
+                    aria-hidden="true"
+                  >
+                    <div className="r-title" />
+                    <div className="r-sub r-outline-amber" />
+                    <div className="r-rule" />
+                    <div className="r-row">
+                      <div
+                        className="r-bar r-outline"
+                        style={{ width: "55%" }}
+                      />
+                      <div className="r-bar" style={{ width: "18%" }} />
+                    </div>
+                    <div className="r-row">
+                      <div className="r-bar" style={{ width: "40%" }} />
+                      <div className="r-bar" style={{ width: "14%" }} />
+                    </div>
+                    <div className="r-rule" />
+                    <div className="r-row">
+                      <div
+                        className="r-bar r-bar-strong"
+                        style={{ width: "26%" }}
+                      />
+                      <div
+                        className="r-bar r-bar-strong"
+                        style={{ width: "24%" }}
+                      />
+                    </div>
+                    <div
+                      className="r-bar r-outline-amber r-foot"
+                      style={{ width: "30%" }}
+                    />
+                  </div>
+                )}
               </div>
 
               <span className="photo-legend">
