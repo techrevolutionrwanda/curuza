@@ -24,7 +24,7 @@ export function DebtorsSummary({
     "mt-0.5 text-[25px] font-extrabold leading-tight tracking-[-0.02em] text-ink num";
 
   return (
-    <div className="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       <section className={card}>
         <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -54,7 +54,7 @@ export function DebtorsSummary({
         </div>
       </section>
 
-      <section className={`${card} sm:col-span-2 xl:col-span-1`}>
+      <section className={`${card} sm:col-span-2 lg:col-span-1`}>
         <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent-soft text-warning">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M12 2v4l7 4-7 4v-4L5 6l7-4Z" />
