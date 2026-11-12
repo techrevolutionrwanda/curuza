@@ -71,7 +71,7 @@ export function AiWorkspace() {
           aria-labelledby="ai-tab-voice"
           hidden={tab !== "voice"}
         >
-          <VoicePanel />
+          <VoicePanel active={tab === "voice"} />
         </div>
 
         <div
