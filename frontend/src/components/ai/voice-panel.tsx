@@ -14,9 +14,10 @@ import {
   MicIcon,
   SpeakerIcon,
   UploadIcon,
+  WarningIcon,
 } from "./icons";
+import { useSpeechRecognition } from "./use-speech-recognition";
 
-const DEFAULT_TRANSCRIPT = "Add an expense of 15,000 francs for transport";
 const SUGGESTIONS = [
   "Add 20 bags of cement",
   "Show yesterday's records",
@@ -108,11 +109,11 @@ function Transcript({ text }: { text: string }) {
   );
 }
 
-export function VoicePanel() {
+export function VoicePanel({ active = true }: { active?: boolean }) {
   const [mode, setMode] = useState<Mode>("listening");
   const [typing, setTyping] = useState(false);
   const [input, setInput] = useState("");
-  const [transcript, setTranscript] = useState(DEFAULT_TRANSCRIPT);
+  const [transcript, setTranscript] = useState("");
   const [confirmKind, setConfirmKind] = useState<ConfirmKind>("expense");
   const [question, setQuestion] = useState("How much did I receive this month?");
   const [answer, setAnswer] = useState<Answer>(ANSWERS.month);
@@ -121,26 +122,96 @@ export function VoicePanel() {
   );
   const [showSuccess, setShowSuccess] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const {
+    status: speechStatus,
+    error: speechError,
+    transcript: speechTranscript,
+    interim: speechInterim,
+    start: startSpeech,
+    stop: stopSpeech,
+    cancel: cancelSpeech,
+  } = useSpeechRecognition({ onFinal: submitCommand });
+
+  const speechBusy =
+    speechStatus === "listening" || speechStatus === "requesting";
+  const liveTranscript = speechInterim || speechTranscript || transcript;
+  const listeningLabel = typing
+    ? "Type a command"
+    : speechStatus === "requesting"
+      ? "Opening microphone…"
+      : speechStatus === "listening"
+        ? "Listening…"
+        : speechStatus === "blocked"
+          ? "Microphone blocked"
+          : speechStatus === "error"
+            ? "Microphone problem"
+            : speechStatus === "unsupported"
+              ? "Voice input unavailable"
+              : "Ready to listen";
 
   useEffect(() => {
     if (typing) inputRef.current?.focus();
   }, [typing]);
 
+  // Switching tabs should release the microphone and stop any read-aloud.
+  useEffect(() => {
+    if (active) return;
+    cancelSpeech();
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, [active, cancelSpeech]);
+
+  function submitCommand(text: string) {
+    setTranscript(text);
+    setInput("");
+    setTyping(false);
+    setShowSuccess(false);
+
+    if (/\b(add|expense|stock|sold|buy|bought)\b/i.test(text)) {
+      setConfirmKind(
+        /\b(bag|bags|cement|stock)\b/i.test(text) ? "stock" : "expense",
+      );
+      setMode("confirm");
+      return;
+    }
+
+    setQuestion(text);
+    setAnswer(ANSWERS.month);
+    setMode("answer");
+  }
+
   function startListening() {
+    cancelSpeech();
     setMode("listening");
     setTyping(false);
-    setTranscript(DEFAULT_TRANSCRIPT);
+    setTranscript("");
     setShowSuccess(false);
     setInput("");
   }
 
-  function stopListening() {
-    setConfirmKind("expense");
-    setMode("confirm");
+  function toggleListening() {
+    if (speechBusy) {
+      stopSpeech();
+      return;
+    }
+
+    setMode("listening");
     setTyping(false);
+    setTranscript("");
+    setShowSuccess(false);
+    setInput("");
+    startSpeech();
+  }
+
+  function startTyping() {
+    cancelSpeech();
+    setTranscript("");
+    setTyping(true);
   }
 
   function pickSuggestion(text: string) {
+    cancelSpeech();
     setTranscript(text);
     setTyping(false);
 
@@ -182,8 +253,7 @@ export function VoicePanel() {
   }
 
   function changeAction() {
-    setMode("listening");
-    setShowSuccess(false);
+    startListening();
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -191,20 +261,7 @@ export function VoicePanel() {
     const text = input.trim();
     if (!text) return;
 
-    setTranscript(text);
-    setInput("");
-    setTyping(false);
-    setShowSuccess(false);
-
-    if (/\b(add|expense|stock|sold|buy|bought)\b/i.test(text)) {
-      setConfirmKind(/\b(bag|bags|cement|stock)\b/i.test(text) ? "stock" : "expense");
-      setMode("confirm");
-      return;
-    }
-
-    setQuestion(text);
-    setAnswer(ANSWERS.month);
-    setMode("answer");
+    submitCommand(text);
   }
 
   function readAloud() {
@@ -219,9 +276,7 @@ export function VoicePanel() {
 
   const status =
     mode === "listening"
-      ? typing
-        ? "Type a command"
-        : "Listening…"
+      ? listeningLabel
       : mode === "confirm"
         ? "Needs your confirmation"
         : "Answer ready";
@@ -246,13 +301,26 @@ export function VoicePanel() {
       <div className="voice-body">
         {mode === "listening" ? (
           <div className="listening">
-            <span className="listening-label">
-              {typing ? "Type a command" : "Listening…"}
-            </span>
-            <p className="listening-quote">
-              <Transcript text={transcript} />
+            <span className="listening-label">{listeningLabel}</span>
+            <p className={`listening-quote${liveTranscript ? "" : " is-hint"}`}>
+              {liveTranscript ? (
+                <Transcript text={liveTranscript} />
+              ) : (
+                "Tap the microphone and say what happened."
+              )}
             </p>
-            <div className="wave" aria-hidden="true">
+
+            {speechError ? (
+              <p className="voice-error" role="alert">
+                <WarningIcon size={16} />
+                {speechError}
+              </p>
+            ) : null}
+
+            <div
+              className={`wave${speechStatus === "listening" ? " is-live" : ""}`}
+              aria-hidden="true"
+            >
               <span />
               <span />
               <span />
@@ -267,13 +335,25 @@ export function VoicePanel() {
             <div className="stop-wrap">
               <button
                 type="button"
-                className="stop"
-                aria-label="Stop and send"
-                onClick={stopListening}
+                className={`stop${speechBusy ? "" : " is-start"}`}
+                aria-label={speechBusy ? "Stop and send" : "Start listening"}
+                onClick={toggleListening}
+                disabled={speechStatus === "unsupported"}
               >
-                <span />
+                {speechBusy ? <span /> : <MicIcon size={32} />}
               </button>
-              <span className="stop-hint">Tap to stop</span>
+              <span className="stop-hint">
+                {speechStatus === "listening"
+                  ? "Tap to stop"
+                  : speechStatus === "requesting"
+                    ? "Opening microphone…"
+                    : speechStatus === "unsupported"
+                      ? "Type a command instead"
+                      : speechStatus === "blocked" ||
+                          speechStatus === "error"
+                        ? "Tap to try again"
+                        : "Tap to speak"}
+              </span>
             </div>
 
             <div className="suggest">
@@ -293,7 +373,7 @@ export function VoicePanel() {
               <button
                 type="button"
                 className="type-instead"
-                onClick={() => setTyping(true)}
+                onClick={startTyping}
               >
                 <KeyboardIcon size={18} />
                 Type a command instead
