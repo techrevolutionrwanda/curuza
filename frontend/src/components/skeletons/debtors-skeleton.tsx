@@ -49,8 +49,8 @@ export function DebtorsSkeleton() {
             <thead>
               <tr className="bg-[#FAFCFB]">
                 {["w-[88px]", "w-[70px]", "w-[58px]", "w-[64px]", "w-[48px]", "w-[64px]"].map(
-                  (width) => (
-                    <th key={width} className="border-b border-line px-4 py-3 text-left">
+                  (width, index) => (
+                    <th key={index} className="border-b border-line px-4 py-3 text-left">
                       <Skeleton className={`h-[11px] ${width}`} />
                     </th>
                   ),

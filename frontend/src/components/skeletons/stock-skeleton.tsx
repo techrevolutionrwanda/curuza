@@ -21,8 +21,8 @@ export function StockSkeleton() {
       <div className="rounded-card bg-surface p-5 shadow-card sm:p-[22px]">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2">
-            {CHIPS.map((width) => (
-              <Skeleton key={width} className={`h-[38px] ${width} rounded-pill`} />
+            {CHIPS.map((width, index) => (
+              <Skeleton key={index} className={`h-[38px] ${width} rounded-pill`} />
             ))}
           </div>
           <Skeleton className="h-12 w-full max-w-[340px]" />
@@ -35,7 +35,7 @@ export function StockSkeleton() {
                 {["w-[80px]", "w-[72px]", "w-[48px]", "w-[64px]", "w-[56px]", "w-[24px]"].map(
                   (width, index) => (
                     <th
-                      key={width}
+                      key={index}
                       className={`border-b border-line px-3 py-2.5 ${
                         index >= 2 && index <= 3 ? "text-right" : "text-left"
                       }`}

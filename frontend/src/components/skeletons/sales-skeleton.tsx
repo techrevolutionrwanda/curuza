@@ -22,8 +22,8 @@ export function SalesSkeleton() {
           <thead>
             <tr className="bg-bg">
               {["w-[64px]", "w-[72px]", "w-[56px]", "w-[64px]", "w-[48px]", "w-[64px]", "w-[44px]", "w-[52px]"].map(
-                (width) => (
-                  <th key={width} className="px-3 py-3 text-left">
+                (width, index) => (
+                  <th key={index} className="px-3 py-3 text-left">
                     <Skeleton className={`h-[11px] ${width}`} />
                   </th>
                 ),
